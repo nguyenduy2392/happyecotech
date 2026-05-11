@@ -1,0 +1,7 @@
+services:
+  happy-ecotech:
+    image: nguyenduy2392/happyecotech:0.1.1
+    container_name: happy-ecotech
+    ports:
+      - "80:80"
+    restart: unless-stopped
