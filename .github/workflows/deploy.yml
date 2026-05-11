@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.meta.outputs.version }}
 
     steps:
       - name: Checkout code
@@ -49,6 +51,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /opt/eco/happy-ecotech
-            docker compose -f docker-compose.prod.yml pull happy-ecotech
-            docker compose -f docker-compose.prod.yml up -d happy-ecotech
+            cd /opt/eco
+            sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=${{ needs.build.outputs.image_tag }}/" .env
+            docker-compose -f docker-compose.prod.yml pull happy-ecotech
+            docker-compose -f docker-compose.prod.yml up -d happy-ecotech
