@@ -1,0 +1,39 @@
+# Stack đầy đủ cho Happy Ecotech CMS: app (Laravel/Filament) + PostgreSQL.
+# Dev: docker compose up -d ; sau đó chạy migrate/seed (xem docs/DEPLOY_HAPPY_ECOTECH_CMS.md).
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: happyecotech-cms:latest
+    container_name: happyecotech-app
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    volumes:
+      # Giữ media upload bền vững ngoài container.
+      - storage_public:/var/www/html/storage/app/public
+
+  db:
+    image: postgres:16-alpine
+    container_name: happyecotech-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-happyecotech}
+      POSTGRES_USER: ${DB_USERNAME:-happyecotech}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-happyecotech} -d ${DB_DATABASE:-happyecotech}"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+volumes:
+  db_data:
+  storage_public:
