@@ -39,6 +39,8 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
 
     steps:
       - name: Deploy via SSH
@@ -49,6 +51,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /opt/eco
-            sed -i "s/^SERVICE_TAG_HAPPY_ECOTECH=.*/SERVICE_TAG_HAPPY_ECOTECH=${{ needs.build.outputs.image_tag }}/" .env
+            sed -i "s/^SERVICE_TAG_HAPPY_ECOTECH=.*/SERVICE_TAG_HAPPY_ECOTECH=${{ env.IMAGE_TAG }}/" .env  # cập nhật SERVICE_TAG trong file .env
             docker-compose -f docker-compose.prod.yml pull happy-ecotech
             docker-compose -f docker-compose.prod.yml up -d happy-ecotech
