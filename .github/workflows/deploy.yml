@@ -49,6 +49,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /opt/eco
-            sed -i "s/^SERVICE_TAG_LANDINGPAGE=.*/SERVICE_TAG_LANDINGPAGE=${{ needs.build.outputs.image_tag }}/" .env
+            sed -i "s/^SERVICE_TAG_HAPPY_ECOTECH=.*/SERVICE_TAG_HAPPY_ECOTECH=${{ needs.build.outputs.image_tag }}/" .env
             docker-compose -f docker-compose.prod.yml pull happy-ecotech
             docker-compose -f docker-compose.prod.yml up -d happy-ecotech
