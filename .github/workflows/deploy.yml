@@ -54,3 +54,4 @@ jobs:
             sed -i "s/^SERVICE_TAG_HAPPY_ECOTECH=.*/SERVICE_TAG_HAPPY_ECOTECH=${{ env.IMAGE_TAG }}/" .env  # cập nhật SERVICE_TAG trong file .env
             docker-compose -f docker-compose.prod.yml pull happy-ecotech
             docker-compose -f docker-compose.prod.yml up -d happy-ecotech
+            docker-compose -f docker-compose.prod.yml exec gateway nginx -s reload # reload nginx để áp dụng thay đổi nếu cần
