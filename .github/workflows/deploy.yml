@@ -39,7 +39,8 @@ jobs:
 
       # Chặn deploy nếu image dùng PHP < 8.3.36 (CVE-2026-109618 / CVE-2026-109619)
       - name: Verify PHP version
-        run: docker run --rm --entrypoint php ${{ steps.meta.outputs.tags }} -r 'exit(PHP_VERSION_ID >= 80336 ? 0 : 1);'
+        run: |
+          docker run --rm --entrypoint php nguyenduy2392/happyecotech:${{ steps.meta.outputs.version }} -r 'echo PHP_VERSION, PHP_EOL; exit(PHP_VERSION_ID >= 80336 ? 0 : 1);'
 
   deploy:
     needs: build
