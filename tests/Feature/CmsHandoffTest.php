@@ -18,6 +18,11 @@ class CmsHandoffTest extends TestCase
 
     public function test_cms_urls_are_filtered_on_read_and_rejected_in_filament(): void
     {
+        foreach ([' JaVaScRiPt:alert(1) ', 'DaTa:text/html,content', 'vBsCrIpT:content', 'javascript&#58;alert(1)',
+            'java&Tab;script:alert(1)', '&#47;&#47;example.test', "\t/duong-dan"] as $url) {
+            $this->assertNull(safe_url($url));
+        }
+        $this->assertSame('HTTPS://example.test/app?a=1&b=2', safe_url(' HTTPS://example.test/app?a=1&amp;b=2 '));
         foreach (['javascript:alert(1)', 'data:text/html,content', '//example.test', '/\\example.test', "https://example.test/\npath"] as $url) {
             $this->assertNull(safe_url($url));
             $this->assertSame('#', (new MenuItem(['url' => $url, 'link_type' => 'url']))->resolveUrl());
