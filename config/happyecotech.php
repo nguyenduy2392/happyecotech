@@ -6,4 +6,5 @@ return [
     | Để trống thì bỏ qua gửi email (lead vẫn được lưu vào DB).
     */
     'contact_notify_to' => env('CONTACT_NOTIFY_TO'),
+    'admin_password' => env('HE_ADMIN_PASSWORD'),
 ];
