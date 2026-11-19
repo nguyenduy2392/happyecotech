@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Support\CompanyProfile;
 use App\Support\ProductPositioning;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\LandingCopy;
 use DOMDocument;
 use DOMXPath;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -145,6 +146,41 @@ class ProductPositioningTest extends TestCase
             'contact_zalo' => 'http://zalo.me/1747723032009789626',
             'social_facebook' => 'javascript:alert(1)',
         ])->call('save')->assertHasFormErrors(['contact_zalo', 'social_facebook']);
+    }
+
+    public function test_home_faq_follows_product_order_and_only_replaces_stock_items(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        $block = Page::whereSlug('home')->firstOrFail()->blocks()->where('block_type', 'faq')->firstOrFail();
+        $items = $block->data['items'];
+        $questions = array_column($items, 'question');
+        $this->assertSame(['TaskFlow', 'TaskFlow', 'TaskFlow', 'MiniCRM', 'SmartLabel'], array_map(
+            fn (string $question) => preg_match('/TaskFlow|MiniCRM|SmartLabel/', $question, $match) ? $match[0] : '',
+            $questions,
+        ));
+        $document = $this->html($this->get('/')->assertOk()->getContent());
+        $visible = $document->evaluate('string(//main)');
+        $positions = array_map(fn (string $question) => mb_strpos($visible, $question), $questions);
+        $this->assertNotContains(false, $positions);
+        $sorted = $positions;
+        sort($sorted);
+        $this->assertSame($positions, $sorted);
+        $faq = collect($this->schema($document))->firstWhere('@type', 'FAQPage');
+        $this->assertSame($questions, array_column($faq['mainEntity'], 'name'));
+        $this->assertSame(array_column($items, 'answer'), array_column(array_column($faq['mainEntity'], 'acceptedAnswer'), 'text'));
+
+        $legacy = LandingCopy::LEGACY_HOME['faq'];
+        $block->update(['data' => $legacy + ['editor_note' => 'Giữ nguyên']]);
+        $this->artisan('ecotech:apply-positioning')->assertSuccessful();
+        $this->assertSame($legacy['items'], $block->refresh()->data['items']);
+        $this->artisan('ecotech:apply-positioning', ['--force' => true])->assertSuccessful();
+        $this->assertSame($items, $block->refresh()->data['items']);
+        $this->assertSame('Giữ nguyên', $block->data['editor_note']);
+
+        $custom = [['question' => 'Câu hỏi đã biên tập?', 'answer' => 'Câu trả lời đã biên tập.']];
+        $block->update(['data' => array_replace($legacy, ['items' => $custom])]);
+        $this->artisan('ecotech:apply-positioning', ['--force' => true])->assertSuccessful();
+        $this->assertSame($custom, $block->refresh()->data['items']);
     }
 
     private function html(string $html): DOMXPath
