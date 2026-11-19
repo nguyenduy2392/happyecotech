@@ -15,7 +15,6 @@ class ContactController extends Controller
             'services' => Service::query()->published()->ordered()->get(),
             'seo' => he_seo([
                 'title' => 'Liên hệ',
-                'description' => 'Liên hệ với '.setting('site_name', config('app.name')).'.',
                 'og_image' => seo_url('/assets/img/v2/og-about-contact.webp'),
             ]),
         ]);
@@ -25,7 +24,7 @@ class ContactController extends Controller
     {
         // Honeypot đã điền => coi như bot: giả thành công, không lưu, không báo lỗi.
         if (filled($request->input('website'))) {
-            return redirect()->route('contact')->with('contact_success', true)->withFragment('contact-form');
+            return $this->submissionAccepted($request);
         }
 
         $data = $request->validated();
@@ -46,6 +45,15 @@ class ContactController extends Controller
         ]);
 
         $this->notify($submission);
+
+        return $this->submissionAccepted($request);
+    }
+
+    private function submissionAccepted(ContactSubmissionRequest $request)
+    {
+        if ($request->wantsSubmissionJson()) {
+            return response()->json(['ok' => true, 'message' => 'Cảm ơn bạn. Happy Ecotech đã nhận được thông tin và sẽ sớm liên hệ.']);
+        }
 
         return redirect()->route('contact')
             ->with('contact_success', true)

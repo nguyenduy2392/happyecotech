@@ -14,7 +14,6 @@ class ServiceController extends Controller
             'services' => $services,
             'seo' => he_seo([
                 'title' => 'Dịch vụ',
-                'description' => 'Danh sách dịch vụ của '.setting('site_name', config('app.name')).'.',
             ]),
         ]);
     }

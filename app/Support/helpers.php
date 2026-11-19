@@ -4,6 +4,7 @@ use App\Models\MediaAsset;
 use App\Models\SiteSetting;
 use App\Support\MediaVariants;
 use App\Support\RequestMedia;
+use App\Support\SeoDescription;
 use App\Support\SeoSchema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -78,13 +79,17 @@ if (! function_exists('he_seo')) {
         );
         $canonical = $overrides['canonical'] ?? seo_url(request()->getPathInfo());
         $image = $ogImage ?: seo_url('/assets/img/v2/og.png');
-        $description = $clean($overrides['description'] ?? '') ?: $clean(setting('seo_default_description'))
-            ?: $clean(setting('tagline')) ?: $siteName;
         $robots = $overrides['robots'] ?? setting('seo_robots', 'index,follow');
+        $description = SeoDescription::forPage(
+            $overrides['description'] ?? (request()->routeIs('home') ? setting('seo_default_description') : null),
+            $title,
+            $overrides['not_found'] ?? false,
+            $overrides['description_page'] ?? 1,
+        );
 
         return [
             'title' => Str::limit($clean(($overrides['standalone_title'] ?? false) ? $title : $fullTitle) ?: $siteName, 65, '…'),
-            'description' => Str::limit($description, 160, '…'),
+            'description' => $description,
             'canonical' => $canonical,
             'og_image' => $image,
             'image_alt' => ($ogImage ? $imageAlt : null) ?: $siteName,

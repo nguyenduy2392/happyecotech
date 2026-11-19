@@ -91,6 +91,29 @@ class PublicSiteTest extends TestCase
             ->assertSessionHasErrors(['name', 'phone', 'message']);
     }
 
+    public function test_contact_returns_json_success_and_field_errors(): void
+    {
+        $this->postJson('/lien-he', [
+            'name' => 'Người gửi thử', 'phone' => '0900000000', 'source' => 'lead-form', 'consent' => '1',
+        ])->assertOk()->assertExactJson([
+            'ok' => true, 'message' => 'Cảm ơn bạn. Happy Ecotech đã nhận được thông tin và sẽ sớm liên hệ.',
+        ]);
+
+        $this->post('/lien-he', ['consent' => '1'], [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'Accept' => 'text/html',
+        ])->assertUnprocessable()->assertExactJson([
+            'ok' => false,
+            'errors' => [
+                'name' => ['Vui lòng nhập họ tên.'],
+                'phone' => ['Vui lòng nhập số điện thoại.'],
+                'message' => ['Vui lòng nhập nội dung.'],
+            ],
+        ]);
+        $this->postJson('/lien-he', ['website' => 'https://example.test'])->assertOk()->assertJsonPath('ok', true);
+        $this->assertDatabaseCount('contact_submissions', 1);
+    }
+
     public function test_sitemap_lists_published_service(): void
     {
         $this->get('/sitemap.xml')

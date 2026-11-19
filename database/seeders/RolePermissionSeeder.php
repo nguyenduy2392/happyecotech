@@ -38,13 +38,20 @@ class RolePermissionSeeder extends Seeder
      */
     private function seedSuperAdmin(): void
     {
+        $password = config('happyecotech.admin_password');
+        if (! is_string($password) || mb_strlen(trim($password)) < 16 || strlen($password) > 72) {
+            $this->command?->warn('Bỏ qua tạo SuperAdmin: hãy đặt HE_ADMIN_PASSWORD từ 16 ký tự và tối đa 72 byte.');
+
+            return;
+        }
+
         $email = env('HE_ADMIN_EMAIL', 'admin@happyecotech.com');
 
         $user = User::firstOrCreate(
             ['email' => $email],
             [
                 'name' => env('HE_ADMIN_NAME', 'Super Admin'),
-                'password' => Hash::make(env('HE_ADMIN_PASSWORD', 'ChangeMe!2026')),
+                'password' => Hash::make($password),
                 'is_active' => true,
                 'email_verified_at' => now(),
             ],
