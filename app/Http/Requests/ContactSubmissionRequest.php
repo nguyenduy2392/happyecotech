@@ -2,13 +2,32 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ContactSubmissionRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true;
+    }
+
+    public function wantsSubmissionJson(): bool
+    {
+        return $this->expectsJson() || $this->ajax();
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        if ($this->wantsSubmissionJson()) {
+            throw new HttpResponseException(response()->json([
+                'ok' => false,
+                'errors' => $validator->errors()->messages(),
+            ], 422));
+        }
+
+        parent::failedValidation($validator);
     }
 
     /**
