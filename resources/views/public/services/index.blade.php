@@ -43,7 +43,7 @@
                                     @endforeach
                                 </ul>
                             @endif
-                            <div class="mt-6 flex flex-wrap gap-3 pt-2">
+                            <div class="mt-auto flex flex-wrap gap-3 pt-6">
                                 <a href="{{ route('services.show', $service) }}" data-cta="list-{{ $service->slug }}" class="btn btn-primary">Xem chi tiết {{ $service->name }} <x-glyph name="arrow-right" :size="18" /></a>
                                 <a href="{{ route('contact') }}#contact-form" data-cta="list-{{ $service->slug }}-consult" class="btn btn-outline">Nhận tư vấn</a>
                             </div>
