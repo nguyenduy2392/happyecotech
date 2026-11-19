@@ -5,12 +5,8 @@
     // Các trang khác: giữ đúng thứ tự admin sắp xếp.
     $blocks = $page->blocks;
     $isHome = $page->slug === 'home';
-    $defaults = $isHome ? require resource_path('views/blocks/defaults/home.php') : [];
 
     if ($isHome) {
-        if (! $blocks->contains('block_type', 'faq') && ! empty($defaults['faq'])) {
-            $blocks = $blocks->push(new \App\Models\PageBlock(['block_type' => 'faq', 'data' => $defaults['faq'], 'is_enabled' => true]));
-        }
         $order = array_flip(['hero', 'partners', 'featured_services', 'stats', 'why_choose', 'vision_mission', 'core_values', 'app_download', 'latest_news', 'richtext', 'faq', 'cta']);
         $blocks = $blocks->sortBy(fn ($b) => $order[$b->block_type] ?? 50)->values();
     }

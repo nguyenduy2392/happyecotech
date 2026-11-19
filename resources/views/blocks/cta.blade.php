@@ -23,7 +23,7 @@
         @if ($showForm)
             <div class="rounded-xl bg-white p-6 text-ink-900 md:p-8">
                 <h3 id="cta-form-title" class="mb-5 text-h3">Để lại thông tin, chúng tôi gọi lại</h3>
-                <x-lead-form id="cta-form" :source="'Biểu mẫu tư vấn nhanh ('.request()->path().')'" />
+                <x-lead-form id="cta-form" />
             </div>
         @endif
     </div>

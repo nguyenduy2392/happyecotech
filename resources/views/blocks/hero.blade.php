@@ -1,6 +1,6 @@
 @php
     $tag = $headingTag ?? 'h2';
-    $heading = $data['heading'] ?? setting('site_name', 'Happy Ecotech');
+    $heading = $data['h1'] ?? $data['heading'] ?? setting('site_name', 'Happy Ecotech');
     $sub = $data['subheading'] ?? $data['description'] ?? null;
     $ctaText = $data['cta_text'] ?? 'Nhận tư vấn';
     $ctaUrl = $data['cta_url'] ?? (route('contact').'#contact-form');

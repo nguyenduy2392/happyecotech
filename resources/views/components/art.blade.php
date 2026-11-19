@@ -40,6 +40,11 @@
     $alt = $alt ?? $manifestAlt ?? '';
 @endphp
 @if ($found)
+    @if ($priority && $srcset)
+        @push('head')
+            <link rel="preload" as="image" imagesrcset="{{ $srcset }}" imagesizes="{{ $sizes }}" fetchpriority="high" />
+        @endpush
+    @endif
     <img src="{{ asset('assets/img/v2/'.$found) }}" alt="{{ $alt }}" width="{{ $width }}" height="{{ $height }}"
         @if ($srcset) srcset="{{ $srcset }}" @endif sizes="{{ $sizes }}"
         @if ($priority) fetchpriority="high" decoding="async" @else loading="lazy" decoding="async" @endif

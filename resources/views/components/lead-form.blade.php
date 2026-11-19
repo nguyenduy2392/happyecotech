@@ -1,11 +1,9 @@
 @props([
     'id' => 'lead-form',
-    'source' => 'Biểu mẫu tư vấn nhanh',
     'serviceId' => null,
     'tone' => 'light',
 ])
-{{-- Form lead ngắn: Họ tên, SĐT, Công ty, Giải pháp. POST về route contact.submit (backend hiện có).
-     "message" là trường bắt buộc của request nên gửi kèm giá trị ẩn mô tả nguồn lead. --}}
+{{-- Form lead ngắn: Họ tên, SĐT, Công ty, Giải pháp. POST về contact.submit với source=lead-form (không cần message). --}}
 @php
     $services = \App\Models\Service::query()->published()->ordered()->get(['id', 'name']);
     $selected = old('service_id', $serviceId);
@@ -19,7 +17,7 @@
     @else
         @csrf
     @endif
-    <input type="hidden" name="message" value="{{ $source }}{{ $serviceId ? ' (trang giải pháp)' : '' }}" />
+    <input type="hidden" name="source" value="lead-form" />
     <div class="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
         <label for="{{ $id }}-website">Không điền vào ô này</label>
         <input type="text" id="{{ $id }}-website" name="website" tabindex="-1" autocomplete="off" />
@@ -54,6 +52,14 @@
         </select>
     </div>
 
+    <div class="field">
+        <label class="flex items-start gap-3 font-normal">
+            <input type="checkbox" name="consent" value="1" class="mt-1 size-5 accent-brand-600" @checked(old('consent')) required
+                @error('consent') aria-invalid="true" aria-describedby="{{ $id }}-consent-err" @enderror />
+            <span>Tôi đồng ý để Happy Ecotech liên hệ tư vấn qua thông tin trên.</span>
+        </label>
+        @error('consent') <p id="{{ $id }}-consent-err" class="field-error">{{ $message }}</p> @enderror
+    </div>
+
     <button type="submit" class="btn btn-primary btn-lg w-full">Nhận tư vấn</button>
-    <p class="field-hint {{ $tone === 'dark' ? 'text-ink-300' : '' }}">Chúng tôi chỉ dùng thông tin này để liên hệ tư vấn cho bạn.</p>
 </form>

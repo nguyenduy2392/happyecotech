@@ -179,7 +179,7 @@
                 <p class="mt-4 max-w-xl text-lead text-ink-300">Để lại thông tin, đội ngũ Happy Ecotech sẽ liên hệ tư vấn và sắp xếp demo phù hợp.</p>
             </div>
             <div class="rounded-xl bg-white p-6 text-ink-900 md:p-8">
-                <x-lead-form id="svc-form" :service-id="$service->id" :source="'Biểu mẫu tư vấn: '.$service->name" />
+                <x-lead-form id="svc-form" :service-id="$service->id" />
             </div>
         </div>
     </section>
