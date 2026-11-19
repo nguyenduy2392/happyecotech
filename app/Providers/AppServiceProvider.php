@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Console\LocalServeCommand;
 use App\Http\Middleware\CachePublicHtml;
+use App\Http\Requests\ContactSubmissionRequest;
 use App\Models\AuditLog;
+use App\Models\ContactSubmission;
 use App\Models\MediaAsset;
 use App\Models\Menu;
 use App\Models\MenuItem;
@@ -67,10 +69,20 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Role::class, RolePolicy::class);
 
         // Chống spam/brute-force cho form liên hệ.
-        RateLimiter::for('contact', fn ($request) => [
-            Limit::perMinute(5)->by($request->ip()),
-            Limit::perDay(50)->by($request->ip()),
-        ]);
+        RateLimiter::for('contact', function ($request) {
+            $key = ContactSubmissionRequest::normalizeIdempotencyKey($request->input('idempotency_key'));
+            if ($key !== null && blank($request->input('website'))
+                && ContactSubmission::withTrashed()->where('idempotency_key', $key)->exists()) {
+                $request->attributes->set('contact.replay', true);
+
+                return Limit::none();
+            }
+
+            return [
+                Limit::perMinute(5)->by($request->ip()),
+                Limit::perDay(50)->by($request->ip()),
+            ];
+        });
 
         // Audit log cho model nội dung (chỉ thao tác của user đã đăng nhập).
         foreach ([Service::class, Post::class, Page::class, TeamMember::class, Menu::class, User::class] as $model) {

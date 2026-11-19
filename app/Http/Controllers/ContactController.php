@@ -23,7 +23,7 @@ class ContactController extends Controller
     public function submit(ContactSubmissionRequest $request)
     {
         // Honeypot đã điền => coi như bot: giả thành công, không lưu, không báo lỗi.
-        if (filled($request->input('website'))) {
+        if ($request->attributes->get('contact.replay') === true || filled($request->input('website'))) {
             return $this->submissionAccepted($request);
         }
 

@@ -142,8 +142,23 @@ class PublicSiteTest extends TestCase
         $this->assertDatabaseHas('contact_submissions', [
             'idempotency_key' => $lead['idempotency_key'], 'name' => $lead['name'],
         ]);
-        $this->postJson('/lien-he', array_replace($lead, ['idempotency_key' => 'invalid']))
-            ->assertUnprocessable()->assertJsonValidationErrors('idempotency_key');
+    }
+
+    public function test_only_new_submissions_consume_throttle_and_invalid_keys_are_ignored(): void
+    {
+        $lead = ['name' => 'Người gửi thử', 'phone' => '0936685886', 'source' => 'lead-form', 'consent' => '1'];
+        $key = (string) Str::uuid();
+        $expected = $this->postJson('/lien-he', $lead + ['idempotency_key' => $key])->assertOk()->json();
+        for ($i = 0; $i < 8; $i++) {
+            $this->postJson('/lien-he', ['idempotency_key' => $key])->assertOk()->assertExactJson($expected);
+        }
+        foreach (['invalid', 'a1b2c3d4-5678-1234-8234-123456789abc', ['invalid'], null] as $invalid) {
+            $this->postJson('/lien-he', $lead + ['idempotency_key' => $invalid])->assertOk();
+        }
+        $this->postJson('/lien-he', $lead)->assertTooManyRequests();
+        $this->postJson('/lien-he', ['idempotency_key' => $key])->assertOk()->assertExactJson($expected);
+        $this->assertDatabaseCount('contact_submissions', 5);
+        $this->assertSame(4, ContactSubmission::whereNull('idempotency_key')->count());
     }
 
     public function test_sitemap_lists_published_service(): void
