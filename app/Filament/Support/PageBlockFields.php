@@ -7,6 +7,7 @@ use App\Models\Service;
 use App\Rules\SafeUrl;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -67,10 +68,39 @@ class PageBlockFields
                 Select::make('slugs')->label('Sản phẩm')->multiple()->options(fn () => Service::ordered()->pluck('name', 'slug')),
             ])->defaultItems(0)],
             'latest_news' => [$heading, $limit],
+            'ecosystem_overview' => [
+                $heading, Textarea::make('intro')->label('Giới thiệu'),
+                Repeater::make('items')->label('Sản phẩm và giải pháp')->schema([
+                    ...self::ecosystemIdentity(),
+                    Textarea::make('summary')->label('Tóm tắt')->required(),
+                    TextInput::make('anchor_or_url')->label('Liên kết')->rules([new SafeUrl])->required(),
+                ])->defaultItems(0),
+            ],
+            'other_solutions' => [
+                $heading,
+                Repeater::make('items')->label('Giải pháp')->schema([
+                    ...self::ecosystemIdentity(),
+                    TextInput::make('title')->label('Tiêu đề lợi ích')->required(),
+                    Textarea::make('description')->label('Mô tả')->required(),
+                    TagsInput::make('highlights')->label('Điểm nổi bật')->maxItems(3),
+                    TextInput::make('image')->label('Tên ảnh trong v2')->regex('/\A[a-z0-9-]+\.webp\z/')->required(),
+                    TextInput::make('cta_label')->label('Nhãn nút')->required(),
+                    TextInput::make('url')->label('Liên kết')->rules([new SafeUrl]),
+                ])->defaultItems(0),
+            ],
             'richtext' => [TextInput::make('title')->label('Tiêu đề'), Textarea::make('html')->label('Nội dung HTML')],
             'faq' => [$heading, $subheading, self::faq('items')],
             default => [],
         };
+    }
+
+    private static function ecosystemIdentity(): array
+    {
+        return [
+            TextInput::make('key')->label('Slug')->regex('/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/')->maxLength(80)->required(),
+            TextInput::make('name')->label('Tên sản phẩm')->required(),
+            TextInput::make('category')->label('Nhãn giá trị')->required(),
+        ];
     }
 
     public static function faq(string $key): Repeater

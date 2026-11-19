@@ -26,6 +26,7 @@ class Service extends Model
     ];
 
     protected $fillable = [
+        'category_label', 'tagline',
         'h1', 'benefits', 'steps', 'faq',
         'name', 'slug', 'short_description', 'content',
         'icon_media_id', 'cover_media_id', 'og_image_media_id',

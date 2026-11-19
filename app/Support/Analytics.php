@@ -15,7 +15,7 @@ class Analytics
     /** Giá trị `solution` ổn định cho mọi sự kiện (ngoài ra: none = chưa chọn, other = giá trị lạ). */
     public const SOLUTIONS = ['taskflow', 'minicrm', 'smartlabel', 'farm2home', 'datahub', 'omc'];
 
-    /** Sản phẩm chủ lực -> product_tier=flagship. */
+    /** TaskFlow uses the flagship analytics tier. */
     public const FLAGSHIP = ['taskflow', 'minicrm'];
 
     public static function clean(mixed $value, string $pattern): ?string

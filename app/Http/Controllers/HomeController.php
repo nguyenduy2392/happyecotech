@@ -54,6 +54,7 @@ class HomeController extends Controller
             // Existing views continue to consume the effective heading.
             $hero->data = array_replace($hero->data, ['heading' => $hero->data['h1']]);
         }
+        $this->resolveSolutionLinks($page);
 
         return view('public.page', [
             'page' => $page,
@@ -71,6 +72,35 @@ class HomeController extends Controller
                 'faq' => $page->blocks->where('block_type', 'faq')->flatMap(fn ($block) => $block->data['items'] ?? [])->all(),
             ]),
         ]);
+    }
+
+    private function resolveSolutionLinks(Page $page): void
+    {
+        $blocks = $page->blocks->where('block_type', 'other_solutions');
+        $keys = $blocks->flatMap(fn ($block) => array_column($block->data['items'] ?? [], 'key'))
+            ->filter(fn ($key) => is_string($key) && preg_match('/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/', $key))->unique();
+        if ($keys->isEmpty()) {
+            return;
+        }
+
+        $published = Service::published()->whereIn('slug', $keys)->pluck('slug')->flip();
+        foreach ($blocks as $block) {
+            $data = $block->data;
+            $data['items'] = array_map(function ($item) use ($keys, $published) {
+                $slug = $item['key'] ?? null;
+                if (is_string($slug) && $keys->containsStrict($slug)) {
+                    $public = '/dich-vu/'.$slug;
+                    $contact = '/lien-he?solution='.$slug;
+                    $url = $item['url'] ?? null;
+                    if (blank($url) || in_array($url, [$public, $contact], true)) {
+                        $item['url'] = $published->has($slug) ? $public : $contact;
+                    }
+                }
+
+                return $item;
+            }, $data['items'] ?? []);
+            $block->data = $data;
+        }
     }
 
     private function limit(mixed $value, int $default): int

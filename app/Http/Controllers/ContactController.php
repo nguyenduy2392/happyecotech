@@ -11,8 +11,11 @@ class ContactController extends Controller
 {
     public function show()
     {
+        $solution = request()->query('solution');
+
         return view('public.contact', [
             'services' => Service::query()->published()->ordered()->get(),
+            'selectedSolution' => is_string($solution) && strlen($solution) <= 255 && preg_match('/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/', $solution) ? $solution : null,
             'seo' => he_seo([
                 'title' => 'Liên hệ',
                 'og_image' => seo_url('/assets/img/v2/og-about-contact.webp'),
@@ -28,14 +31,17 @@ class ContactController extends Controller
         }
 
         $data = $request->validated();
-        $service = isset($data['service_id']) ? Service::published()->find($data['service_id']) : null;
+        $solution = $data['solution'] ?? null;
+        $service = $solution !== null
+            ? Service::published()->whereSlug($solution)->first()
+            : (isset($data['service_id']) ? Service::published()->find($data['service_id']) : null);
         $attributes = [
             'name' => $request->string('name'),
             'phone' => $request->string('phone'),
             'email' => $request->input('email'),
             'company' => $request->input('company'),
             'service_id' => $service?->id,
-            'service_interest' => $service?->name ?? ($data['solution'] ?? null),
+            'service_interest' => $solution ?? $service?->name,
             'source' => $data['source'] ?? 'contact-form',
             'message' => $data['message'] ?? null,
             'consent' => $request->boolean('consent'),

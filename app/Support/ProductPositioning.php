@@ -13,17 +13,17 @@ final class ProductPositioning
     public const ORDER = ['taskflow' => 1, 'minicrm' => 2, 'smartlabel' => 3, 'farm2home' => 4];
 
     public const HERO = [
-        'h1' => 'TaskFlow giúp đội nhóm giao việc rõ ràng và theo dõi tiến độ đến khi hoàn tất',
-        'heading' => 'TaskFlow giúp đội nhóm giao việc rõ ràng và theo dõi tiến độ đến khi hoàn tất',
-        'subheading' => 'Giao đầu việc cho từng người, đặt hạn xử lý và theo dõi trạng thái trong TaskFlow. Với MiniCRM, đội kinh doanh có một nơi lưu hồ sơ và lịch chăm sóc khách hàng.',
+        'h1' => 'Quản lý công việc với TaskFlow để đội nhóm giao việc rõ ràng và theo dõi tiến độ',
+        'heading' => 'Quản lý công việc với TaskFlow để đội nhóm giao việc rõ ràng và theo dõi tiến độ',
+        'subheading' => 'Giao việc cho từng người, đặt hạn xử lý và xem trạng thái trong TaskFlow. Dùng MiniCRM để lưu hồ sơ và theo dõi lịch chăm sóc khách hàng.',
         'cta_text' => 'Khám phá TaskFlow', 'cta_url' => '/dich-vu/taskflow',
         'secondary_cta_text' => 'Tìm hiểu MiniCRM', 'secondary_cta_url' => '/dich-vu/minicrm',
         'art' => 'hero-taskflow', 'image_alt' => 'Màn hình TaskFlow minh họa danh sách và chi tiết công việc.',
     ];
 
     public const GROUPS = [
-        ['title' => 'Sản phẩm chủ lực', 'icon' => 'workflow', 'art' => 'group-operations', 'description' => 'TaskFlow quản lý công việc. MiniCRM quản lý khách hàng và lịch chăm sóc.', 'slugs' => ['taskflow', 'minicrm']],
-        ['title' => 'Giải pháp khác', 'icon' => 'layers', 'art' => 'group-traceability', 'description' => 'Các giải pháp cho truy xuất nguồn gốc, kết nối nông sản và hành chính số.', 'slugs' => ['smartlabel', 'farm2home', 'datahub', 'omc']],
+        ['title' => 'Giao việc và chăm sóc khách hàng', 'icon' => 'workflow', 'art' => 'group-operations', 'description' => 'TaskFlow quản lý công việc. MiniCRM quản lý khách hàng và lịch chăm sóc.', 'slugs' => ['taskflow', 'minicrm']],
+        ['title' => 'Truy xuất, nông sản và hành chính số', 'icon' => 'layers', 'art' => 'group-traceability', 'description' => 'Các giải pháp cho truy xuất nguồn gốc, kết nối nông sản và hành chính số.', 'slugs' => ['smartlabel', 'farm2home', 'datahub', 'omc']],
     ];
 
     // TaskFlow: DashboardTasks, TaskDetail, ProjectDetail và Comments.

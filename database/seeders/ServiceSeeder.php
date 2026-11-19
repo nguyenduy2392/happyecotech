@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\MediaAsset;
 use App\Models\Service;
+use App\Support\EcosystemCopy;
 use App\Support\ProductPositioning;
 use Illuminate\Database\Seeder;
 
@@ -66,7 +67,7 @@ class ServiceSeeder extends Seeder
             $copy = ProductPositioning::PRODUCTS[$slug] ?? LandingCopy::SERVICES[$slug] ?? [];
             $service = Service::firstOrCreate(
                 ['slug' => $slug],
-                $copy + [
+                $copy + EcosystemCopy::LABELS[$slug] + [
                     'name' => $data['name'],
                     'short_description' => $data['short_description'],
                     'content' => '<p>'.e($copy['short_description'] ?? $data['short_description']).'</p>',

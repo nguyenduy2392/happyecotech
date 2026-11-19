@@ -60,7 +60,7 @@ class ContactSubmissionRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:255'],
             'company' => ['nullable', 'string', 'max:255'],
             'service_id' => ['nullable', 'integer', 'exists:services,id'],
-            'solution' => ['nullable', 'string', 'max:255'],
+            'solution' => ['nullable', 'string', 'max:255', 'regex:/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/'],
             'source' => ['nullable', 'in:contact-form,lead-form'],
             'idempotency_key' => ['nullable', 'uuid:4'],
             'message' => ['required_unless:source,lead-form', 'nullable', 'string', 'max:5000'],

@@ -39,7 +39,7 @@ class ServiceController extends Controller
             'service' => $service,
             'related' => $related,
             'seo' => he_seo([
-                'title' => $service->seo_title ?: $service->name,
+                'title' => $service->seo_title ?: ($service->tagline ? $service->name.' – '.$service->tagline : $service->name),
                 'description' => $service->seo_description ?: $service->short_description,
                 'canonical' => seo_url(route('services.show', $service, false)),
                 'og_image' => $this->socialImage($service),
@@ -56,7 +56,7 @@ class ServiceController extends Controller
         $entity = [
             '@type' => 'Service',
             'name' => $service->name,
-            'description' => $service->short_description,
+            'description' => $service->short_description ?: $service->tagline,
             'provider' => ['@id' => seo_url('/').'#organization'],
         ];
         if (isset(ProductPositioning::PRODUCTS[$service->slug])) {
@@ -65,6 +65,8 @@ class ServiceController extends Controller
             if ($service->slug === 'taskflow') {
                 $entity['operatingSystem'] = ['iOS', 'Android'];
             }
+        } elseif (filled($service->category_label)) {
+            $entity['serviceType'] = $service->category_label;
         }
 
         return $entity;
