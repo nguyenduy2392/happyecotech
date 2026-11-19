@@ -10,6 +10,7 @@ use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Support\CompanyProfile;
 use App\Support\EcosystemCopy;
+use App\Support\JsonValue;
 use App\Support\ProductPositioning;
 use Database\Seeders\LandingCopy;
 use Illuminate\Console\Command;
@@ -26,7 +27,8 @@ class ApplyPositioning extends Command
 
     private const PREVIOUS_HERO = 'TaskFlow giúp đội nhóm giao việc rõ ràng và theo dõi tiến độ đến khi hoàn tất';
 
-    private const PREVIOUS_GROUPS_HASH = 'ed7b684e99ea2c1a092ec0c086a0858edfd4a4c3201768dab2b68e6be76b22d7';
+    // Fingerprint of the previous stock groups with object keys ordered recursively.
+    private const PREVIOUS_GROUPS_HASH = 'd2e1dc253fcaa1bd84bf23997f74f1bac5a94f237c412ab8953477cd7a234e3a';
 
     private bool $write = false;
 
@@ -163,7 +165,7 @@ class ApplyPositioning extends Command
                 if (($data['subheading'] ?? null) === $previousLead) {
                     $before['subheading'] = $previousLead;
                 }
-            } elseif (isset($data['groups']) && hash('sha256', json_encode($data['groups'], JSON_UNESCAPED_UNICODE)) === self::PREVIOUS_GROUPS_HASH) {
+            } elseif (isset($data['groups']) && hash('sha256', json_encode(JsonValue::orderedKeys($data['groups']), JSON_UNESCAPED_UNICODE)) === self::PREVIOUS_GROUPS_HASH) {
                 $before['groups'] = $data['groups'];
             }
             $label = "home.{$block->block_type}.{$block->id}";
@@ -214,7 +216,7 @@ class ApplyPositioning extends Command
                     'question' => "Tìm hiểu {$service->name} ở đâu?",
                     'answer' => 'Bạn có thể liên hệ Happy Ecotech để trao đổi nhu cầu và phạm vi triển khai phù hợp.',
                 ]];
-                if ($service->faq === $legacyFaq) {
+                if (JsonValue::orderedKeys($service->faq) === JsonValue::orderedKeys($legacyFaq)) {
                     $before['faq'] = $legacyFaq;
                 } elseif ($slug === 'taskflow') {
                     $before['faq'] = [ProductPositioning::PRODUCTS['taskflow']['faq'][0]];
@@ -245,10 +247,11 @@ class ApplyPositioning extends Command
         $changes = [];
         foreach ($next as $field => $value) {
             $existing = $current[$field] ?? null;
-            if ($existing === $value) {
+            $normalized = JsonValue::orderedKeys($existing);
+            if ($normalized === JsonValue::orderedKeys($value)) {
                 continue;
             }
-            if ((blank($existing) && ! is_array($existing)) || (array_key_exists($field, $before) && $existing === $before[$field])) {
+            if ((blank($existing) && ! is_array($existing)) || (array_key_exists($field, $before) && $normalized === JsonValue::orderedKeys($before[$field]))) {
                 $changes[$field] = $value;
                 $summary = is_array($value) ? count($value).' mục' : (string) $value;
                 $this->line("  {$label}.{$field} → {$summary}");

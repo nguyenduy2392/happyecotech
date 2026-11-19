@@ -103,7 +103,7 @@ class SeoEngineTest extends TestCase
             ->callTableAction('edit', $block, data: ['data' => ['heading' => 'Tầm nhìn mới']])
             ->assertHasNoTableActionErrors();
         $this->assertSame('Tầm nhìn mới', $block->refresh()->data['heading']);
-        $this->assertSame($values, $block->data['values']);
+        $this->assertSameJsonValue($values, $block->data['values']);
         $this->assertSame('Nội dung cũ', $block->data['_note']);
     }
 
@@ -158,7 +158,7 @@ class SeoEngineTest extends TestCase
         $smartlabel->update(['faq' => [$legacy]]);
         $taskflow->update(['faq' => null, 'h1' => 'Tiêu đề của biên tập viên', 'benefits' => null]);
         $this->seed(ServiceSeeder::class);
-        $this->assertSame([$legacy], $smartlabel->refresh()->faq);
+        $this->assertSameJsonValue([$legacy], $smartlabel->refresh()->faq);
         $this->assertNull($taskflow->refresh()->faq);
         $this->assertNull($taskflow->benefits);
         $this->assertSame('Tiêu đề của biên tập viên', $taskflow->h1);

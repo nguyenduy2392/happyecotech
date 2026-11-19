@@ -130,7 +130,7 @@ class ProductPositioningTest extends TestCase
         $this->assertSame(1, $task->refresh()->sort_order);
         $this->assertSame('H1 của biên tập viên', $task->h1);
         $this->assertSame([], $task->faq);
-        $this->assertSame(ProductPositioning::PRODUCTS['minicrm']['faq'], $crm->refresh()->faq);
+        $this->assertSameJsonValue(ProductPositioning::PRODUCTS['minicrm']['faq'], $crm->refresh()->faq);
         $this->assertDatabaseHas('services', ['slug' => 'datahub', 'status' => 'draft']);
         $this->assertDatabaseHas('services', ['slug' => 'omc', 'status' => 'draft']);
         $this->assertDatabaseHas('pages', ['slug' => 'chinh-sach-bao-mat', 'status' => 'draft']);
@@ -207,17 +207,18 @@ class ProductPositioningTest extends TestCase
         $this->assertSame(array_column($items, 'answer'), array_column(array_column($faq['mainEntity'], 'acceptedAnswer'), 'text'));
 
         $legacy = LandingCopy::LEGACY_HOME['faq'];
+        $legacy['items'] = array_map(fn (array $item) => array_reverse($item, true), $legacy['items']);
         $block->update(['data' => $legacy + ['editor_note' => 'Giữ nguyên']]);
         $this->artisan('ecotech:apply-positioning')->assertSuccessful();
-        $this->assertSame($legacy['items'], $block->refresh()->data['items']);
+        $this->assertSameJsonValue($legacy['items'], $block->refresh()->data['items']);
         $this->artisan('ecotech:apply-positioning', ['--force' => true])->assertSuccessful();
-        $this->assertSame($items, $block->refresh()->data['items']);
+        $this->assertSameJsonValue($items, $block->refresh()->data['items']);
         $this->assertSame('Giữ nguyên', $block->data['editor_note']);
 
         $custom = [['question' => 'Câu hỏi đã biên tập?', 'answer' => 'Câu trả lời đã biên tập.']];
         $block->update(['data' => array_replace($legacy, ['items' => $custom])]);
         $this->artisan('ecotech:apply-positioning', ['--force' => true])->assertSuccessful();
-        $this->assertSame($custom, $block->refresh()->data['items']);
+        $this->assertSameJsonValue($custom, $block->refresh()->data['items']);
     }
 
     private function html(string $html): DOMXPath

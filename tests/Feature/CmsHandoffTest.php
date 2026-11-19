@@ -54,7 +54,7 @@ class CmsHandoffTest extends TestCase
         $migration = require database_path('migrations/2026_11_19_000004_enable_existing_landing_cta_forms.php');
         $migration->up();
         $migration->up();
-        $this->assertSame(['cta_text' => 'Nội dung đã có', 'show_form' => true], $home->refresh()->data);
+        $this->assertSameJsonValue(['cta_text' => 'Nội dung đã có', 'show_form' => true], $home->refresh()->data);
         $this->assertFalse($about->refresh()->data['show_form']);
         $this->assertArrayNotHasKey('show_form', $other->refresh()->data);
         $farm = Service::whereSlug('farm2home')->firstOrFail();
