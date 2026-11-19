@@ -29,7 +29,7 @@ class ContactController extends Controller
 
         $data = $request->validated();
         $service = isset($data['service_id']) ? Service::published()->find($data['service_id']) : null;
-        $submission = ContactSubmission::create([
+        $attributes = [
             'name' => $request->string('name'),
             'phone' => $request->string('phone'),
             'email' => $request->input('email'),
@@ -42,9 +42,14 @@ class ContactController extends Controller
             'status' => 'new',
             'ip_address' => $request->ip(),
             'user_agent' => substr((string) $request->userAgent(), 0, 255),
-        ]);
-
-        $this->notify($submission);
+        ];
+        $key = $data['idempotency_key'] ?? null;
+        $submission = $key === null
+            ? ContactSubmission::create($attributes)
+            : ContactSubmission::withTrashed()->firstOrCreate(['idempotency_key' => strtolower($key)], $attributes);
+        if ($submission->wasRecentlyCreated) {
+            $this->notify($submission);
+        }
 
         return $this->submissionAccepted($request);
     }

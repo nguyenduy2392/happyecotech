@@ -47,6 +47,7 @@ class ContactSubmissionRequest extends FormRequest
             'service_id' => ['nullable', 'integer', 'exists:services,id'],
             'solution' => ['nullable', 'string', 'max:255'],
             'source' => ['nullable', 'in:contact-form,lead-form'],
+            'idempotency_key' => ['nullable', 'uuid'],
             'message' => ['required_unless:source,lead-form', 'nullable', 'string', 'max:5000'],
             'consent' => $this->input('source') === 'lead-form' ? ['required', 'accepted'] : ['sometimes', 'accepted'],
             // Honeypot: bot thường điền, người dùng thật để trống.
