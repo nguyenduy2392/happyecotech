@@ -1,7 +1,7 @@
 @php
     $seo = $seo ?? he_seo();
     $favicon = setting('favicon_media_id');
-    $faviconUrl = $favicon?->url ?? asset('assets/img/favicon.svg');
+    $faviconUrl = $favicon?->url ?? asset('assets/img/v2/favicon.svg');
     $zalo = setting('zalo_site_verification');
 @endphp
 <!DOCTYPE html>
@@ -14,6 +14,7 @@
     @include('partials.seo', ['seo' => $seo])
 
     <link rel="icon" href="{{ $faviconUrl }}" />
+    <link rel="apple-touch-icon" href="{{ asset('assets/img/v2/apple-touch-icon.png') }}" />
     @if ($zalo)
         <meta name="zalo-platform-site-verification" content="{{ $zalo }}" />
     @endif

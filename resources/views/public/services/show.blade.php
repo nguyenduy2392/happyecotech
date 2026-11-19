@@ -74,9 +74,6 @@
         <section class="section section-tint" aria-labelledby="how-title">
             <div class="container-page">
                 <div class="section-head"><h2 id="how-title">{{ $service->name }} hoạt động thế nào</h2></div>
-                @if ($service->slug === 'smartlabel')
-                    <x-art name="process-traceability" width="1280" height="720" class="mb-8 w-full rounded-xl" sizes="(min-width: 1200px) 1100px, 100vw" />
-                @endif
                 <ol class="grid gap-6 md:grid-cols-3">
                     @foreach ($steps as $i => $step)
                         <li class="card">
@@ -86,6 +83,9 @@
                         </li>
                     @endforeach
                 </ol>
+                @if ($service->slug === 'smartlabel')
+                    <x-art name="process-traceability" width="1280" height="720" class="mx-auto mt-10 w-full max-w-4xl rounded-xl" sizes="(min-width: 960px) 896px, 100vw" />
+                @endif
             </div>
         </section>
     @endif

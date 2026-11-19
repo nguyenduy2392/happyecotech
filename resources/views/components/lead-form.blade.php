@@ -9,9 +9,16 @@
 @php
     $services = \App\Models\Service::query()->published()->ordered()->get(['id', 'name']);
     $selected = old('service_id', $serviceId);
+    // Trang công khai được cache HTML: token CSRF không được nằm trong HTML cache -> lấy qua endpoint (luồng A) khi có.
+    $tokenUrl = \Illuminate\Support\Facades\Route::has('csrf.token') ? route('csrf.token', [], false) : null;
 @endphp
-<form method="POST" action="{{ route('contact.submit') }}" class="grid gap-4" novalidate aria-labelledby="{{ $id }}-title">
-    @csrf
+<form method="POST" action="{{ route('contact.submit') }}" class="grid gap-4" novalidate data-lead-form>
+    @if ($tokenUrl)
+        <input type="hidden" name="_token" value="" data-csrf-from="{{ $tokenUrl }}" />
+        <noscript><p class="field-hint">Vui lòng bật JavaScript hoặc dùng <a class="underline" href="{{ route('contact') }}#contact-form">trang Liên hệ</a>.</p></noscript>
+    @else
+        @csrf
+    @endif
     <input type="hidden" name="message" value="{{ $source }}{{ $serviceId ? ' (trang giải pháp)' : '' }}" />
     <div class="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
         <label for="{{ $id }}-website">Không điền vào ô này</label>

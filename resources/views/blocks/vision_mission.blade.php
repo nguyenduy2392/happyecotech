@@ -24,9 +24,9 @@
 
         @if ($values->isNotEmpty())
             <h3 class="mt-14 text-h2">Giá trị cốt lõi</h3>
-            <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-6">
                 @foreach ($values as $i => $value)
-                    <li class="card">
+                    <li class="card {{ $values->count() === 5 ? ($i < 3 ? 'lg:col-span-2' : 'lg:col-span-3') : 'lg:col-span-2' }}">
                         @php $icon = ['value-transparency', 'value-integrity', 'value-people', 'value-responsibility', 'value-sustainability'][$i] ?? null; @endphp
                         @if ($icon && is_file(public_path("assets/img/v2/{$icon}.svg")))
                             <x-art :name="$icon" width="128" height="128" class="size-14" sizes="56px" />
