@@ -8,8 +8,11 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TeamController;
 use App\Http\Middleware\NormalizePublicUrl;
 use App\Models\Page;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Http\Request;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/gioi-thieu', [HomeController::class, 'about'])->name('about');
@@ -29,7 +32,12 @@ Route::post('/lien-he', [ContactController::class, 'submit'])
     ->name('contact.submit');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
-Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])
+    ->withoutMiddleware([
+        StartSession::class,
+        ShareErrorsFromSession::class,
+        PreventRequestForgery::class,
+    ])->name('robots');
 
 // Trang tĩnh động (chính sách, điều khoản...). PHẢI đặt cuối và loại trừ các prefix hệ thống
 // để không bao giờ che route /admin, /livewire, /storage...
