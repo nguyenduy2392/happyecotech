@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\MediaAsset;
 use App\Models\Service;
+use App\Support\ProductPositioning;
 use Illuminate\Database\Seeder;
 
 class ServiceSeeder extends Seeder
@@ -62,13 +63,13 @@ class ServiceSeeder extends Seeder
             $draft = $data['draft'] ?? false;
             $iconId = $this->assetId("icon-{$slug}.svg");
             $coverId = $this->assetId("service-{$slug}-lg.webp");
-            $copy = LandingCopy::SERVICES[$slug] ?? [];
-            Service::firstOrCreate(
+            $copy = ProductPositioning::PRODUCTS[$slug] ?? LandingCopy::SERVICES[$slug] ?? [];
+            $service = Service::firstOrCreate(
                 ['slug' => $slug],
-                [
+                $copy + [
                     'name' => $data['name'],
                     'short_description' => $data['short_description'],
-                    'content' => '<p>'.e($data['short_description']).'</p>',
+                    'content' => '<p>'.e($copy['short_description'] ?? $data['short_description']).'</p>',
                     'icon_media_id' => $iconId,
                     'cover_media_id' => $coverId,
                     'external_url' => $data['external_url'] ?? null,
@@ -78,15 +79,18 @@ class ServiceSeeder extends Seeder
                     'cta_url' => '/lien-he#contact-form',
                     'status' => $draft ? 'draft' : 'published',
                     'is_featured' => ! $draft,
-                    'sort_order' => $i + 1,
+                    'sort_order' => ProductPositioning::ORDER[$slug] ?? $i + 1,
                     'published_at' => $draft ? null : now(),
-                ] + $copy + ($slug === 'taskflow' ? [
-                    'faq' => [[
-                        'question' => 'TaskFlow có ứng dụng trên điện thoại không?',
-                        'answer' => 'Có. TaskFlow có ứng dụng trên App Store và Google Play. Bạn có thể mở liên kết tải ứng dụng ở đầu trang.',
-                    ]],
-                ] : []),
+                ],
             );
+            if ($service->wasRecentlyCreated && isset(ProductPositioning::FEATURES[$slug])) {
+                foreach (ProductPositioning::FEATURES[$slug] as $order => $feature) {
+                    $service->features()->create($feature + ['sort_order' => $order + 1]);
+                }
+                foreach (range(1, 4) as $order) {
+                    $service->gallery()->attach($this->assetId("screen-{$slug}-{$order}.webp"), ['sort_order' => $order]);
+                }
+            }
         }
     }
 

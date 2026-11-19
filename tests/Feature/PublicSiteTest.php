@@ -24,7 +24,7 @@ class PublicSiteTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('Minh bạch từ gốc', false)
+            ->assertSee('TaskFlow giúp đội nhóm giao việc rõ ràng', false)
             ->assertSee('SmartLabel');
     }
 

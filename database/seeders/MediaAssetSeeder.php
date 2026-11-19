@@ -22,7 +22,8 @@ class MediaAssetSeeder extends Seeder
 
         $manifest = json_decode(file_get_contents(public_path('assets/img/v2/manifest.json')), true, flags: JSON_THROW_ON_ERROR);
         foreach ($manifest as $asset) {
-            if ($asset['file'] === 'hero.webp' || preg_match('/^(?:service-.+-lg\.webp|icon-(?!.*-48).*\.svg|og[^\/]*\.(?:png|webp))$/D', $asset['file'])) {
+            if (in_array($asset['file'], ['hero.webp', 'hero-taskflow.webp'], true)
+                || preg_match('/^(?:service-.+-lg\.webp|screen-(?:taskflow|minicrm)-[1-4]\.webp|icon-(?!.*-48).*\.svg|og[^\/]*\.(?:png|webp))$/D', $asset['file'])) {
                 $items[] = ['img/v2/'.$asset['file'], str($asset['use'])->before('.')->toString(), $asset['alt']];
             }
         }

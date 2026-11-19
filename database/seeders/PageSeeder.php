@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\MediaAsset;
 use App\Models\Page;
 use App\Models\PageBlock;
+use App\Support\ProductPositioning;
 use Illuminate\Database\Seeder;
 
 class PageSeeder extends Seeder
@@ -24,24 +25,17 @@ class PageSeeder extends Seeder
                 'title' => 'Trang chủ',
                 'status' => 'published',
                 'is_system' => true,
-                'seo_title' => 'HappyEcotech | Minh bạch từ gốc – Hạnh phúc từ công nghệ',
-                'seo_description' => 'Hệ sinh thái công nghệ minh bạch dữ liệu, tem điện tử, SmartLabel, truy xuất nguồn gốc, TaskFlow, MiniCRM và Farm2Home.',
+                'seo_title' => ProductPositioning::HOME_TITLE,
+                'seo_description' => ProductPositioning::HOME_DESCRIPTION,
             ],
         );
 
-        $heroId = MediaAsset::where('disk', 'assets')->where('path', 'img/v2/hero.webp')->value('id');
+        $heroId = MediaAsset::where('disk', 'assets')->where('path', 'img/v2/hero-taskflow.webp')->value('id');
         $qrIos = MediaAsset::where('disk', 'assets')->where('path', 'qr/ios.png')->value('id');
         $qrAndroid = MediaAsset::where('disk', 'assets')->where('path', 'qr/google-play.png')->value('id');
 
         $blocks = [
-            ['hero', 'Hero', true, [
-                'h1' => 'Giải pháp truy xuất nguồn gốc và vận hành số cho doanh nghiệp',
-                'heading' => 'Minh bạch từ gốc – Hạnh phúc từ công nghệ',
-                'subheading' => 'Hệ sinh thái công nghệ minh bạch dữ liệu, tem điện tử, SmartLabel, truy xuất nguồn gốc, TaskFlow, MiniCRM và Farm2Home.',
-                'cta_text' => 'Liên hệ hợp tác',
-                'cta_url' => '/lien-he#contact-form',
-                'image_media_id' => $heroId,
-            ]],
+            ['hero', 'Hero', true, ProductPositioning::HERO + ['image_media_id' => $heroId]],
             ['partners', 'Đối tác', false, [
                 // Logo đối tác cũ là placeholder của template → tắt sẵn, chờ logo thật.
                 'heading' => 'Đối tác',
@@ -61,8 +55,9 @@ class PageSeeder extends Seeder
                 ],
             ]],
             ['featured_services', 'Dịch vụ nổi bật', true, [
-                'heading' => 'Dịch vụ',
-                'subheading' => 'Hệ sinh thái công nghệ minh bạch dữ liệu, tem điện tử, SmartLabel, truy xuất nguồn gốc, TaskFlow, MiniCRM và Farm2Home.',
+                'heading' => 'Sản phẩm và giải pháp',
+                'subheading' => 'Tìm công cụ quản lý công việc, khách hàng hoặc giải pháp cho nhu cầu vận hành của bạn.',
+                'groups' => ProductPositioning::GROUPS,
                 'limit' => 4,
             ]],
             ['stats', 'Số liệu nổi bật', false, [
@@ -105,21 +100,10 @@ class PageSeeder extends Seeder
         ];
 
         foreach ($blocks as $i => [$type, $title, $enabled, $data]) {
-            $block = PageBlock::firstOrCreate(
+            PageBlock::firstOrCreate(
                 ['page_id' => $page->id, 'block_type' => $type],
                 ['title' => $title, 'is_enabled' => $enabled, 'sort_order' => $i, 'data' => $data],
             );
-            if ($type === 'hero' && ! $block->wasRecentlyCreated) {
-                $current = $block->data ?? [];
-                if (($current['heading'] ?? null) === $data['heading'] && ! array_key_exists('h1', $current)) {
-                    $current['h1'] = $data['h1'];
-                }
-                $media = MediaAsset::find($current['image_media_id'] ?? null);
-                if (! $media || ($media->disk === 'assets' && ! is_file(public_path('assets/'.$media->path)))) {
-                    $current['image_media_id'] = $heroId;
-                }
-                $block->update(['data' => $current]);
-            }
         }
     }
 

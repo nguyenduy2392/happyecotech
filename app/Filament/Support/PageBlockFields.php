@@ -3,6 +3,7 @@
 namespace App\Filament\Support;
 
 use App\Models\MediaAsset;
+use App\Models\Service;
 use App\Rules\SafeUrl;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -27,6 +28,8 @@ class PageBlockFields
                 TextInput::make('h1')->label('H1 trang')->maxLength(255), $heading, $subheading, ...$cta,
                 TextInput::make('secondary_cta_text')->label('Nhãn nút phụ'),
                 TextInput::make('secondary_cta_url')->label('URL nút phụ')->rules([new SafeUrl]),
+                Select::make('art')->label('Minh họa mặc định')->options(['hero-taskflow' => 'TaskFlow', 'hero-smartlabel' => 'SmartLabel']),
+                TextInput::make('image_alt')->label('Mô tả ảnh')->maxLength(255),
                 self::image('image_media_id', 'Ảnh'),
             ],
             'cta' => [$heading, $subheading, ...$cta, Toggle::make('show_form')->label('Hiện biểu mẫu tư vấn')->default(false)],
@@ -56,7 +59,13 @@ class PageBlockFields
                 TextInput::make('android_url')->label('Google Play')->rules([new SafeUrl(absolute: true)]),
                 self::image('ios_qr_media_id', 'QR iOS'), self::image('android_qr_media_id', 'QR Android'),
             ],
-            'featured_services' => [$heading, $subheading, $limit],
+            'featured_services' => [$heading, $subheading, $limit, Repeater::make('groups')->label('Nhóm sản phẩm')->schema([
+                TextInput::make('title')->label('Tên nhóm')->required(),
+                Textarea::make('description')->label('Mô tả'),
+                Select::make('icon')->label('Biểu tượng')->options(['workflow' => 'Công việc', 'layers' => 'Giải pháp', 'qr' => 'Truy xuất', 'building' => 'Hành chính']),
+                Select::make('art')->label('Ảnh nhóm')->options(['group-operations' => 'Vận hành', 'group-traceability' => 'Truy xuất', 'group-egov' => 'Hành chính']),
+                Select::make('slugs')->label('Sản phẩm')->multiple()->options(fn () => Service::ordered()->pluck('name', 'slug')),
+            ])->defaultItems(0)],
             'latest_news' => [$heading, $limit],
             'richtext' => [TextInput::make('title')->label('Tiêu đề'), Textarea::make('html')->label('Nội dung HTML')],
             'faq' => [$heading, $subheading, self::faq('items')],

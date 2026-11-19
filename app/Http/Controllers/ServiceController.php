@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use App\Support\ProductPositioning;
 
 class ServiceController extends Controller
 {
@@ -13,7 +14,7 @@ class ServiceController extends Controller
         return view('public.services.index', [
             'services' => $services,
             'seo' => he_seo([
-                'title' => 'Dịch vụ',
+                'title' => 'Sản phẩm và giải pháp',
             ]),
         ]);
     }
@@ -43,16 +44,30 @@ class ServiceController extends Controller
                 'canonical' => seo_url(route('services.show', $service, false)),
                 'og_image' => $this->socialImage($service),
                 'image_alt' => $service->ogImage?->alt ?: $service->name,
-                'breadcrumbs' => [['Dịch vụ', seo_url('/dich-vu')]],
+                'breadcrumbs' => [['Sản phẩm', seo_url('/dich-vu')]],
                 'faq' => $faq,
-                'entity' => [
-                    '@type' => 'Service',
-                    'name' => $service->name,
-                    'description' => $service->short_description,
-                    'provider' => ['@id' => seo_url('/').'#organization'],
-                ],
+                'entity' => $this->entity($service),
             ]),
         ]);
+    }
+
+    private function entity(Service $service): array
+    {
+        $entity = [
+            '@type' => 'Service',
+            'name' => $service->name,
+            'description' => $service->short_description,
+            'provider' => ['@id' => seo_url('/').'#organization'],
+        ];
+        if (isset(ProductPositioning::PRODUCTS[$service->slug])) {
+            $entity['@type'] = 'SoftwareApplication';
+            $entity['applicationCategory'] = 'BusinessApplication';
+            if ($service->slug === 'taskflow') {
+                $entity['operatingSystem'] = ['iOS', 'Android'];
+            }
+        }
+
+        return $entity;
     }
 
     private function socialImage(Service $service): ?string
