@@ -592,5 +592,185 @@
     "alt": "Trụ sở hành chính kết nối hồ sơ văn thư và công cụ theo dõi xử lý.",
     "source": "render",
     "notes": "Minh họa nhóm giải pháp."
+  },
+  {
+    "file": "process-traceability.webp",
+    "w": 1280,
+    "h": 720,
+    "use": "home.process.16x9",
+    "alt": "Ba bước truy xuất: khai báo hồ sơ, gắn tem lên sản phẩm và quét mã để xem nguồn gốc.",
+    "source": "render",
+    "notes": "Sơ đồ ba bước dành cho layout B."
+  },
+  {
+    "file": "process-traceability-sm.webp",
+    "w": 480,
+    "h": 270,
+    "use": "home.process.16x9",
+    "alt": "Ba bước truy xuất: khai báo hồ sơ, gắn tem lên sản phẩm và quét mã để xem nguồn gốc.",
+    "source": "render",
+    "notes": "Sơ đồ ba bước dành cho layout B."
+  },
+  {
+    "file": "process-traceability-md.webp",
+    "w": 960,
+    "h": 540,
+    "use": "home.process.16x9",
+    "alt": "Ba bước truy xuất: khai báo hồ sơ, gắn tem lên sản phẩm và quét mã để xem nguồn gốc.",
+    "source": "render",
+    "notes": "Sơ đồ ba bước dành cho layout B."
+  },
+  {
+    "file": "process-print-to-origin.svg",
+    "w": 1280,
+    "h": 540,
+    "use": "home.process.detail",
+    "alt": "Bốn thao tác: in tem, dán tem, quét mã và xem hồ sơ nguồn gốc.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "ecosystem-traceability.svg",
+    "w": 1280,
+    "h": 540,
+    "use": "home.ecosystem",
+    "alt": "Sơ đồ hệ sinh thái từ nông trại qua chế biến và phân phối đến người dùng.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "app-taskflow.webp",
+    "w": 720,
+    "h": 960,
+    "use": "home.app.taskflow",
+    "alt": "Điện thoại hiển thị giao diện TaskFlow minh họa với thẻ công việc và các dòng dữ liệu ẩn.",
+    "source": "render",
+    "notes": "Mockup minh họa không có nội dung người dùng."
+  },
+  {
+    "file": "app-taskflow-sm.webp",
+    "w": 360,
+    "h": 480,
+    "use": "home.app.taskflow",
+    "alt": "Điện thoại hiển thị giao diện TaskFlow minh họa với thẻ công việc và các dòng dữ liệu ẩn.",
+    "source": "render",
+    "notes": "Mockup minh họa không có nội dung người dùng."
+  },
+  {
+    "file": "app-taskflow-md.webp",
+    "w": 540,
+    "h": 720,
+    "use": "home.app.taskflow",
+    "alt": "Điện thoại hiển thị giao diện TaskFlow minh họa với thẻ công việc và các dòng dữ liệu ẩn.",
+    "source": "render",
+    "notes": "Mockup minh họa không có nội dung người dùng."
+  },
+  {
+    "file": "post-fallback.webp",
+    "w": 1280,
+    "h": 720,
+    "use": "post.placeholder",
+    "alt": "Khung hình và các dòng chú thích cách điệu dùng cho bài viết chưa có ảnh.",
+    "source": "render",
+    "notes": ""
+  },
+  {
+    "file": "post-fallback-sm.webp",
+    "w": 480,
+    "h": 270,
+    "use": "post.placeholder",
+    "alt": "Khung hình và các dòng chú thích cách điệu dùng cho bài viết chưa có ảnh.",
+    "source": "render",
+    "notes": ""
+  },
+  {
+    "file": "post-fallback-md.webp",
+    "w": 960,
+    "h": 540,
+    "use": "post.placeholder",
+    "alt": "Khung hình và các dòng chú thích cách điệu dùng cho bài viết chưa có ảnh.",
+    "source": "render",
+    "notes": ""
+  },
+  {
+    "file": "avatar-fallback.svg",
+    "w": 256,
+    "h": 256,
+    "use": "team.placeholder",
+    "alt": "Biểu tượng hồ sơ minh họa cho thành viên chưa có ảnh.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "value-transparency.svg",
+    "w": 128,
+    "h": 128,
+    "use": "home.values.transparency",
+    "alt": "Biểu tượng giá trị Minh bạch.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "value-integrity.svg",
+    "w": 128,
+    "h": 128,
+    "use": "home.values.integrity",
+    "alt": "Biểu tượng giá trị Chính trực.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "value-people.svg",
+    "w": 128,
+    "h": 128,
+    "use": "home.values.people",
+    "alt": "Biểu tượng giá trị Công nghệ vì con người.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "value-responsibility.svg",
+    "w": 128,
+    "h": 128,
+    "use": "home.values.responsibility",
+    "alt": "Biểu tượng giá trị Trách nhiệm xã hội.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "value-sustainability.svg",
+    "w": 128,
+    "h": 128,
+    "use": "home.values.sustainability",
+    "alt": "Biểu tượng giá trị Bền vững.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "industry-cooperative.svg",
+    "w": 800,
+    "h": 600,
+    "use": "industry.cooperative",
+    "alt": "Nhà kho hợp tác xã kết nối tổ sản xuất và hồ sơ truy xuất.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "industry-produce.svg",
+    "w": 800,
+    "h": 600,
+    "use": "industry.produce",
+    "alt": "Biểu tượng nông sản kết nối vùng trồng và thùng đóng gói.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "industry-commune.svg",
+    "w": 800,
+    "h": 600,
+    "use": "industry.commune",
+    "alt": "Trụ sở cấp xã kết nối hồ sơ hành chính và người dân.",
+    "source": "vector",
+    "notes": ""
   }
 ]

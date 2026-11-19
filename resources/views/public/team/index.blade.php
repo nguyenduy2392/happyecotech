@@ -19,6 +19,8 @@
                                 @if ($member->photo)
                                     <x-media-img :media="$member->photo" :alt="$member->name" width="400" height="400"
                                         class="size-full object-cover" sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 100vw" />
+                                @else
+                                    <x-art name="avatar-fallback" width="400" height="400" :alt="''" class="size-full object-cover" sizes="280px" />
                                 @endif
                             </div>
                             <div class="p-5">
