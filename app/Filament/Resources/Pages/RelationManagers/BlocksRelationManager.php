@@ -2,15 +2,18 @@
 
 namespace App\Filament\Resources\Pages\RelationManagers;
 
+use App\Filament\Support\PageBlockFields;
+use App\Http\Middleware\CachePublicHtml;
 use App\Models\PageBlock;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -29,6 +32,7 @@ class BlocksRelationManager extends RelationManager
                 Select::make('block_type')
                     ->label('Loại block')
                     ->options(PageBlock::TYPES)
+                    ->live()
                     ->required(),
                 TextInput::make('title')
                     ->label('Tiêu đề')
@@ -40,8 +44,9 @@ class BlocksRelationManager extends RelationManager
                     ->label('Thứ tự')
                     ->numeric()
                     ->default(0),
-                KeyValue::make('data')
-                    ->label('Dữ liệu (JSON key-value)')
+                Group::make()
+                    ->statePath('data')
+                    ->schema(fn (Get $get) => PageBlockFields::for($get('block_type')))
                     ->columnSpanFull(),
             ]);
     }
@@ -50,6 +55,7 @@ class BlocksRelationManager extends RelationManager
     {
         return $table
             ->reorderable('sort_order')
+            ->afterReordering(fn () => CachePublicHtml::invalidate())
             ->defaultSort('sort_order')
             ->columns([
                 TextColumn::make('block_type')
@@ -70,7 +76,12 @@ class BlocksRelationManager extends RelationManager
                 CreateAction::make(),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()->mutateDataUsing(function (array $data, PageBlock $record): array {
+                    // Existing keys outside the typed fields, such as seed notes, survive edits.
+                    $data['data'] = array_replace($record->data ?? [], $data['data'] ?? []);
+
+                    return $data;
+                }),
                 DeleteAction::make(),
             ]);
     }

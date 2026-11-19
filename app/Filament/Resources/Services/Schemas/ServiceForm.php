@@ -79,7 +79,6 @@ class ServiceForm
                     ->collapsed()
                     ->schema([
                         TextInput::make('seo_title')->label('SEO title')->maxLength(255),
-                        TextInput::make('seo_canonical')->label('Canonical URL')->url(),
                         Textarea::make('seo_description')->label('SEO description')->rows(2)->columnSpanFull(),
                     ]),
             ]);

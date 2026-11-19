@@ -12,6 +12,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PageForm
 {
@@ -27,13 +28,22 @@ class PageForm
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
+                            ->afterStateUpdated(function (Set $set, ?string $state, ?Page $record) {
+                                if ($record?->slug !== 'home') {
+                                    $set('slug', Str::slug((string) $state));
+                                }
+                            }),
                         TextInput::make('slug')
                             ->label('Đường dẫn (slug)')
+                            ->disabled(fn (?Page $record) => $record?->slug === 'home')
+                            ->regex('/^'.Page::PUBLIC_SLUG_PATTERN.'$/D')
+                            ->rule(fn (?Page $record) => Rule::notIn(array_diff(Page::FIXED_ROUTES, [$record?->slug])))
+                            ->unique(ignoreRecord: true)
                             ->required()
                             ->maxLength(255),
                         Select::make('status')
                             ->label('Trạng thái')
+                            ->disabled(fn (?Page $record) => $record?->slug === 'home')
                             ->options(Page::STATUSES)
                             ->default('draft')
                             ->required(),
@@ -48,9 +58,6 @@ class PageForm
                     ->schema([
                         TextInput::make('seo_title')
                             ->label('Tiêu đề SEO')
-                            ->maxLength(255),
-                        TextInput::make('seo_canonical')
-                            ->label('URL Canonical')
                             ->maxLength(255),
                         Textarea::make('seo_description')
                             ->label('Mô tả SEO')

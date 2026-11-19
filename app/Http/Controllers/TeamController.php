@@ -14,7 +14,7 @@ class TeamController extends Controller
             'members' => $members,
             'seo' => he_seo([
                 'title' => 'Đội ngũ',
-                'description' => 'Đội ngũ nhân sự của Happy Ecotech.',
+                'description' => 'Đội ngũ nhân sự của '.setting('site_name', config('app.name')).'.',
             ]),
         ]);
     }

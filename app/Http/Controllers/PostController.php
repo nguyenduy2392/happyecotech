@@ -15,7 +15,11 @@ class PostController extends Controller
         return view('public.posts.index', [
             'posts' => $posts,
             'categories' => $this->categories(),
-            'seo' => he_seo(['title' => 'Tin tức', 'description' => 'Tin tức mới nhất từ Happy Ecotech.']),
+            'seo' => he_seo([
+                'title' => 'Tin tức',
+                'description' => 'Tin tức mới nhất từ '.setting('site_name', config('app.name')).'.',
+                'canonical' => $this->paginatedCanonical('posts.index', $posts->currentPage()),
+            ]),
         ]);
     }
 
@@ -31,6 +35,8 @@ class PostController extends Controller
             'seo' => he_seo([
                 'title' => $category->name,
                 'description' => $category->description ?: ('Bài viết thuộc danh mục '.$category->name),
+                'canonical' => $this->paginatedCanonical('posts.category', $posts->currentPage(), ['category' => $category]),
+                'breadcrumbs' => [['Tin tức', seo_url('/tin-tuc')]],
             ]),
         ]);
     }
@@ -39,10 +45,10 @@ class PostController extends Controller
     {
         abort_unless($post->isPublished(), 404);
 
-        $post->load(['featuredMedia', 'author', 'categories', 'tags']);
+        $post->load(['featuredMedia', 'ogImage', 'author', 'categories', 'tags']);
 
         $categoryIds = $post->categories->pluck('id');
-        $related = Post::query()->published()
+        $related = Post::query()->published()->with('featuredMedia')
             ->where('id', '!=', $post->id)
             ->when($categoryIds->isNotEmpty(), fn ($q) => $q->whereHas('categories', fn ($c) => $c->whereIn('post_categories.id', $categoryIds)))
             ->latest('published_at')->limit(3)->get();
@@ -53,9 +59,19 @@ class PostController extends Controller
             'seo' => he_seo([
                 'title' => $post->seo_title ?: $post->title,
                 'description' => $post->seo_description ?: $post->excerpt,
-                'canonical' => $post->seo_canonical ?: route('posts.show', $post),
-                'og_image' => $post->ogImage?->url ?? $post->featuredMedia?->url,
+                'canonical' => seo_url(route('posts.show', $post, false)),
+                'og_image' => ($image = $post->ogImage ?? $post->featuredMedia)?->url,
+                'image_alt' => $image?->alt ?: $post->title,
                 'type' => 'article',
+                'breadcrumbs' => [['Tin tức', seo_url('/tin-tuc')]],
+                'entity' => [
+                    '@type' => 'BlogPosting',
+                    'headline' => $post->title,
+                    'datePublished' => $post->published_at?->toAtomString(),
+                    'dateModified' => $post->updated_at?->toAtomString(),
+                    'author' => $post->author ? ['@type' => 'Person', 'name' => $post->author->name] : null,
+                    'publisher' => ['@id' => seo_url('/').'#organization'],
+                ],
             ]),
         ]);
     }
@@ -63,5 +79,13 @@ class PostController extends Controller
     private function categories()
     {
         return PostCategory::query()->ordered()->withCount(['posts' => fn ($q) => $q->published()])->get();
+    }
+
+    private function paginatedCanonical(string $name, int $page, array $parameters = []): string
+    {
+        $requestedPage = request()->query('page');
+        $hasPage = is_scalar($requestedPage) && (string) $requestedPage === (string) $page;
+
+        return seo_url(route($name, $parameters + ($page > 1 || $hasPage ? ['page' => $page] : []), false));
     }
 }

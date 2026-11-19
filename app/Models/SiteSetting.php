@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\RequestMedia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
@@ -62,7 +63,7 @@ class SiteSetting extends Model
             'boolean' => (bool) $value,
             'integer' => (int) $value,
             'json' => json_decode((string) $value, true),
-            'media' => $value ? MediaAsset::find($value) : null,
+            'media' => app(RequestMedia::class)->find($value),
             default => $value,
         };
     }

@@ -30,7 +30,8 @@ COPY --chown=www-data:www-data . /var/www/html
 COPY --chown=www-data:www-data --from=assets /app/public/build /var/www/html/public/build
 
 RUN composer dump-autoload --optimize --no-interaction \
-    && php artisan storage:link || true
+    && rm -f public/robots.txt \
+    && (php artisan storage:link || test -L public/storage)
 
 ENV APP_ENV=production \
     APP_DEBUG=false \

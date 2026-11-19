@@ -15,7 +15,7 @@ class ContactController extends Controller
             'services' => Service::query()->published()->ordered()->get(),
             'seo' => he_seo([
                 'title' => 'Liên hệ',
-                'description' => 'Liên hệ với Happy Ecotech.',
+                'description' => 'Liên hệ với '.setting('site_name', config('app.name')).'.',
             ]),
         ]);
     }
