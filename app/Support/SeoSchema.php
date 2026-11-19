@@ -44,12 +44,14 @@ class SeoSchema
             $graph[] = ['@type' => 'BreadcrumbList', 'itemListElement' => $items];
         }
 
-        if (isset($data['entity'])) {
-            $entity = $data['entity'] + ['url' => $url, 'image' => $image];
+        $people = $data['people'] ?? [];
+        $entity = $data['entity'] ?? null;
+        if ($url !== $home && ($people !== [] || in_array($organization['@id'], [$entity['provider']['@id'] ?? null, $entity['publisher']['@id'] ?? null], true))) {
+            $graph[] = $organization;
+        }
+        if ($entity !== null) {
+            $entity += ['url' => $url, 'image' => $image];
             $entity['image'] = self::absoluteUrl($entity['image']);
-            if ($url !== $home && in_array($organization['@id'], [$entity['provider']['@id'] ?? null, $entity['publisher']['@id'] ?? null], true)) {
-                $graph[] = $organization;
-            }
             $graph[] = array_filter($entity);
         }
 
@@ -65,9 +67,9 @@ class SeoSchema
             $graph[] = ['@type' => 'FAQPage', 'mainEntity' => $questions];
         }
 
-        foreach ($data['people'] ?? [] as $person) {
+        foreach ($people as $person) {
             $person['image'] = self::absoluteUrl($person['image'] ?? null);
-            $graph[] = array_filter(['@type' => 'Person'] + $person);
+            $graph[] = array_filter(['@type' => 'Person', 'worksFor' => ['@id' => $organization['@id']]] + $person);
         }
 
         return ['@context' => 'https://schema.org', '@graph' => $graph];

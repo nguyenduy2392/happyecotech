@@ -9,6 +9,11 @@ class TeamMemberSeeder extends Seeder
 {
     public function run(): void
     {
-        CompanyProfile::attachPortrait(CompanyProfile::chiefExecutive());
+        $leader = CompanyProfile::chiefExecutive();
+        if ($leader?->slug === CompanyProfile::CEO_SLUG && $leader->name === CompanyProfile::CEO_ROLE) {
+            // The old seed used the role as a placeholder for the missing name.
+            $leader->update(['name' => CompanyProfile::CEO_NAME]);
+        }
+        CompanyProfile::attachPortrait($leader);
     }
 }

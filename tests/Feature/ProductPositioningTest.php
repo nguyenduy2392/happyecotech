@@ -145,7 +145,10 @@ class ProductPositioningTest extends TestCase
         $this->assertSame([CompanyProfile::FACEBOOK, CompanyProfile::ZALO], $this->schema($home)[0]['sameAs']);
 
         $leader = TeamMember::whereSlug(CompanyProfile::CEO_SLUG)->firstOrFail();
-        $this->assertSame(CompanyProfile::CEO_ROLE, $leader->name);
+        $this->assertSame(CompanyProfile::CEO_NAME, $leader->name);
+        $this->assertSame(CompanyProfile::CEO_ROLE, $leader->position);
+        $this->assertNull($leader->bio);
+        $this->assertNull($leader->short_bio);
         $this->assertSame(CompanyProfile::CEO_PHOTO, $leader->photo->path);
         $this->assertSame(CompanyProfile::CEO_ALT, $leader->photo->alt);
         foreach (['sm' => [160, 200], 'md' => [240, 300], 'lg' => [360, 450], 'original' => [361, 481]] as $version => $dimensions) {
@@ -155,11 +158,30 @@ class ProductPositioningTest extends TestCase
         }
         $this->assertStringEndsWith('team/ceo-portrait-sm.webp', media_url($leader->photo, 'sm'));
 
+        foreach (['/gioi-thieu', '/doi-ngu'] as $path) {
+            $document = $this->html($this->get($path)->assertOk()->getContent());
+            $schema = collect($this->schema($document));
+            $person = $schema->firstWhere('@type', 'Person');
+            $this->assertSameJsonValue([
+                '@type' => 'Person',
+                'name' => CompanyProfile::CEO_NAME,
+                'jobTitle' => CompanyProfile::CEO_ROLE,
+                'image' => seo_url('/assets/'.CompanyProfile::CEO_PHOTO),
+                'worksFor' => ['@id' => $schema->firstWhere('@type', 'Organization')['@id']],
+            ], $person);
+        }
+        $leader->update(['name' => CompanyProfile::CEO_ROLE]);
         $team = $this->html($this->get('/doi-ngu')->assertOk()->getContent());
         $this->assertNotContains('Person', array_column($this->schema($team), '@type'));
-        $leader->update(['name' => 'Tên thật đã xác nhận trong fixture']);
-        $team = $this->html($this->get('/doi-ngu')->assertOk()->getContent());
-        $this->assertContains('Person', array_column($this->schema($team), '@type'));
+
+        $this->artisan('ecotech:apply-positioning', ['--force' => true])->assertSuccessful();
+        $this->assertSame(CompanyProfile::CEO_ROLE, $leader->refresh()->name);
+        $leader->update(['name' => '', 'position' => null]);
+        $this->artisan('ecotech:apply-positioning')->assertSuccessful();
+        $this->assertSame('', $leader->refresh()->name);
+        $this->artisan('ecotech:apply-positioning', ['--force' => true])->assertSuccessful();
+        $this->assertSame(CompanyProfile::CEO_NAME, $leader->refresh()->name);
+        $this->assertSame(CompanyProfile::CEO_ROLE, $leader->position);
     }
 
     public function test_company_update_keeps_edited_facebook_and_attaches_existing_leader(): void

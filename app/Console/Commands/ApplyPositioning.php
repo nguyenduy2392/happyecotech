@@ -121,6 +121,16 @@ class ApplyPositioning extends Command
         }
 
         $leader = CompanyProfile::chiefExecutive($this->write);
+        if ($leader?->slug === CompanyProfile::CEO_SLUG) {
+            $this->updateFields($leader, 'team.tong-giam-doc', [
+                'name' => CompanyProfile::CEO_NAME,
+                'position' => CompanyProfile::CEO_ROLE,
+            ], []);
+        }
+        $portrait = MediaAsset::where('disk', 'assets')->wherePath(CompanyProfile::CEO_PHOTO)->lock($this->write ?: null)->first();
+        if ($portrait) {
+            $this->updateFields($portrait, 'team.tong-giam-doc.photo', ['alt' => CompanyProfile::CEO_ALT], ['alt' => CompanyProfile::PREVIOUS_CEO_ALT]);
+        }
         if ($leader?->photo_media_id === null) {
             $this->line('  team.tong-giam-doc.photo → '.CompanyProfile::CEO_FILE);
             if ($this->write) {

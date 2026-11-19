@@ -6,6 +6,8 @@ use App\Http\Middleware\NormalizePublicUrl;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\Service;
+use App\Models\TeamMember;
+use App\Support\CompanyProfile;
 use App\Support\RequestMedia;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -55,6 +57,9 @@ class HomeController extends Controller
             $hero->data = array_replace($hero->data, ['heading' => $hero->data['h1']]);
         }
         $this->resolveSolutionLinks($page);
+        $leader = $page->slug === 'gioi-thieu'
+            ? TeamMember::published()->whereSlug(CompanyProfile::CEO_SLUG)->with('photo')->first()
+            : null;
 
         return view('public.page', [
             'page' => $page,
@@ -69,6 +74,7 @@ class HomeController extends Controller
                 'canonical' => seo_url($isHome ? '/' : '/'.$page->slug),
                 'og_image' => $image?->url ?? ($page->slug === 'gioi-thieu' ? seo_url('/assets/img/v2/og-about-contact.webp') : null),
                 'image_alt' => $image?->alt ?: $page->title,
+                'people' => array_values(array_filter([CompanyProfile::person($leader)])),
                 'faq' => $page->blocks->where('block_type', 'faq')->flatMap(fn ($block) => $block->data['items'] ?? [])->all(),
             ]),
         ]);
