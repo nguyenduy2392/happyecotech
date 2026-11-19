@@ -1,24 +1,13 @@
-<section class="page-hero">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h1>{{ $title }}</h1>
-                @if (! empty($subtitle))
-                    <p>{{ $subtitle }}</p>
-                @endif
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb justify-content-center">
-                        <li class="breadcrumb-item"><a href="{{ route('home') }}">Trang chủ</a></li>
-                        @foreach ($breadcrumbs ?? [] as $crumb)
-                            @if (! empty($crumb['url']))
-                                <li class="breadcrumb-item"><a href="{{ $crumb['url'] }}">{{ $crumb['label'] }}</a></li>
-                            @else
-                                <li class="breadcrumb-item active" aria-current="page">{{ $crumb['label'] }}</li>
-                            @endif
-                        @endforeach
-                    </ol>
-                </nav>
-            </div>
-        </div>
+{{-- Đầu trang con: breadcrumb + H1 duy nhất của trang + đoạn dẫn. Biến: $title, $lead?, $crumbs? --}}
+<section class="section-brand border-b border-ink-100">
+    <div class="container-page py-10 md:py-14">
+        @isset($crumbs)
+            <x-breadcrumbs :items="$crumbs" />
+        @endisset
+        <h1 class="mt-4 max-w-3xl text-display">{{ $title }}</h1>
+        @if (! empty($lead))
+            <p class="mt-4 max-w-2xl text-lead text-ink-700">{{ $lead }}</p>
+        @endif
+        {{ $slot ?? '' }}
     </div>
 </section>

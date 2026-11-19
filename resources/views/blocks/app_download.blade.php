@@ -1,55 +1,43 @@
 @php
-    $iosUrl = $data['ios_url'] ?? null;
-    $androidUrl = $data['android_url'] ?? null;
+    $ios = $data['ios_url'] ?? setting('app_store_url');
+    $android = $data['android_url'] ?? setting('google_play_url');
+    $iosQr = filled($data['ios_qr_media_id'] ?? null) ? \App\Models\MediaAsset::find($data['ios_qr_media_id']) : null;
+    $androidQr = filled($data['android_qr_media_id'] ?? null) ? \App\Models\MediaAsset::find($data['android_qr_media_id']) : null;
 @endphp
-<section class="app-download-section" id="download-taskflow" aria-labelledby="app-download-heading">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <p class="app-download-kicker wow fadeInUp" data-wow-delay=".1s">{{ $data['kicker'] ?? '' }}</p>
-                <h2 id="app-download-heading" class="wow fadeInUp" data-wow-delay=".2s">{{ $data['heading'] ?? '' }}</h2>
-                <p class="app-download-lead wow fadeInUp" data-wow-delay=".3s">{{ $data['lead'] ?? '' }}</p>
+@if ($ios || $android)
+    <section class="section section-tint" aria-labelledby="app-title" id="ung-dung">
+        <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <div>
+                <h2 id="app-title" class="text-h2">{{ $data['heading'] ?? 'Ứng dụng TaskFlow trên điện thoại' }}</h2>
+                @if (! empty($data['lead']))
+                    <p class="mt-4 max-w-xl text-lead text-ink-700">{{ $data['lead'] }}</p>
+                @endif
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                    @if ($ios)
+                        <a href="{{ $ios }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+                            <x-glyph name="smartphone" /> Tải trên App Store
+                        </a>
+                    @endif
+                    @if ($android)
+                        <a href="{{ $android }}" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">
+                            <x-glyph name="smartphone" /> Tải trên Google Play
+                        </a>
+                    @endif
+                </div>
+            @if ($iosQr || $androidQr)
+                <ul class="mt-8 flex flex-wrap gap-6">
+                    @foreach ([['App Store', $iosQr], ['Google Play', $androidQr]] as [$label, $qr])
+                        @if ($qr)
+                            <li class="card items-center text-center">
+                                <x-media-img :media="$qr" :alt="'Mã QR tải ứng dụng trên '.$label" width="160" height="160" class="size-40" sizes="160px" />
+                                <span class="mt-3 font-semibold">{{ $label }}</span>
+                            </li>
+                        @endif
+                    @endforeach
+                </ul>
+            @endif
             </div>
+            <x-art name="app-taskflow" width="720" height="960" class="mx-auto w-full max-w-60 rounded-xl lg:order-last" sizes="240px" />
         </div>
-        <div class="row justify-content-center g-4 mt-2">
-            @if ($iosUrl)
-                <div class="col-lg-5 col-md-6">
-                    <div class="app-download-card wow fadeInUp" data-wow-delay=".25s">
-                        <div class="app-download-qr-wrap">
-                            <img src="{{ media_url($data['ios_qr_media_id'] ?? null, asset('assets/qr/ios.png')) }}"
-                                width="200" height="200" alt="Mã QR tải ứng dụng trên App Store" loading="lazy" />
-                        </div>
-                        <div class="app-download-body">
-                            <span class="app-download-badge"><i class="lni lni-apple" aria-hidden="true"></i> App Store</span>
-                            <p class="app-download-desc">Dành cho iPhone &amp; iPad</p>
-                            <a class="app-download-btn app-download-btn--ios" href="{{ $iosUrl }}" target="_blank"
-                                rel="noopener noreferrer">
-                                <span>Mở trên App Store</span>
-                                <i class="lni lni-arrow-right" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endif
-            @if ($androidUrl)
-                <div class="col-lg-5 col-md-6">
-                    <div class="app-download-card wow fadeInUp" data-wow-delay=".35s">
-                        <div class="app-download-qr-wrap">
-                            <img src="{{ media_url($data['android_qr_media_id'] ?? null, asset('assets/qr/google-play.png')) }}"
-                                width="200" height="200" alt="Mã QR tải ứng dụng trên Google Play" loading="lazy" />
-                        </div>
-                        <div class="app-download-body">
-                            <span class="app-download-badge"><i class="lni lni-play-store" aria-hidden="true"></i> Google Play</span>
-                            <p class="app-download-desc">Dành cho Android</p>
-                            <a class="app-download-btn app-download-btn--play" href="{{ $androidUrl }}" target="_blank"
-                                rel="noopener noreferrer">
-                                <span>Mở trên Google Play</span>
-                                <i class="lni lni-arrow-right" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        </div>
-    </div>
-</section>
+    </section>
+@endif

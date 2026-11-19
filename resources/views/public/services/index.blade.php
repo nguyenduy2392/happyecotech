@@ -2,38 +2,43 @@
 
 @section('content')
     @include('partials.page-hero', [
-        'title' => 'Dịch vụ',
-        'subtitle' => 'Hệ sinh thái công nghệ minh bạch dữ liệu của Happy Ecotech.',
-        'breadcrumbs' => [['label' => 'Dịch vụ']],
+        'title' => 'Giải pháp của Happy Ecotech',
+        'lead' => 'Tem điện tử và truy xuất nguồn gốc, quản trị vận hành, hành chính số: chọn giải pháp phù hợp với quy mô của bạn.',
+        'crumbs' => [['label' => 'Giải pháp']],
     ])
 
-    <section class="service-list-section pt-100 pb-100">
-        <div class="container">
-            <div class="row g-4">
-                @forelse ($services as $service)
-                    <div class="col-lg-3 col-md-6 d-flex">
-                        <a href="{{ route('services.show', $service) }}"
-                            class="single-service h-100 d-block text-decoration-none service-card-link">
-                            <div class="icon">
-                                <img src="{{ $service->icon?->url ?? asset('assets/img/project-icon/task-flow.png') }}"
-                                    alt="{{ $service->name }}"
-                                    onerror="this.src='{{ asset('assets/img/project-icon/task-flow.png') }}'">
-                            </div>
-                            <div class="content">
-                                <h3>{{ $service->name }}</h3>
-                                <p>{{ \Illuminate\Support\Str::limit($service->short_description, 130) }}</p>
-                                <span class="service-more">Xem chi tiết <i class="lni lni-arrow-right"></i></span>
-                            </div>
-                        </a>
-                    </div>
-                @empty
-                    <div class="col-12 text-center"><p>Dịch vụ đang được cập nhật.</p></div>
-                @endforelse
-            </div>
+    <section class="section">
+        <div class="container-page">
+            @if ($services->isEmpty())
+                <p class="text-lead text-ink-700">Danh sách giải pháp đang được cập nhật.</p>
+            @else
+                <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($services as $service)
+                        <li>
+                            <a href="{{ route('services.show', $service) }}" class="card h-full gap-4">
+                                @if ($service->icon)
+                                    <x-media-img :media="$service->icon" :alt="''" width="56" height="58" class="size-14 rounded-md object-contain" sizes="56px" />
+                                @endif
+                                <h2 class="text-h3">{{ $service->name }}</h2>
+                                <p class="text-ink-700">{{ $service->short_description }}</p>
+                                <span class="mt-auto inline-flex items-center gap-2 pt-2 font-semibold text-brand-700">
+                                    Xem chi tiết <x-glyph name="arrow-right" :size="18" />
+                                </span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+    </section>
 
-            <div class="text-center pt-50">
-                <a href="{{ route('contact') }}#contact-form" class="main-btn btn-hover">Liên hệ tư vấn</a>
+    <section class="section section-ink">
+        <div class="container-page flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+            <div>
+                <h2 class="text-h2">Chưa rõ giải pháp nào phù hợp?</h2>
+                <p class="mt-3 max-w-xl text-ink-300">Mô tả ngắn nhu cầu, chúng tôi sẽ đề xuất lộ trình triển khai gọn nhất cho bạn.</p>
             </div>
+            <a href="{{ route('contact') }}#contact-form" class="btn btn-light btn-lg">Nhận tư vấn</a>
         </div>
     </section>
 @endsection

@@ -1,36 +1,21 @@
-<section class="counter-up-section pt-150">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="counter-up-content mb-50">
-                    <div class="section-title mb-40">
-                        <h1 class="mb-20 wow fadeInUp" data-wow-delay=".2s">{{ $data['heading'] ?? '' }}</h1>
-                    </div>
-                    <div class="counter-up-wrapper">
-                        <div class="row">
-                            @foreach ($data['items'] ?? [] as $i => $item)
-                                <div class="col-lg-6 col-sm-6">
-                                    <div class="single-counter">
-                                        <div class="icon color-{{ ($i % 4) + 1 }}">
-                                            <i class="{{ $item['icon'] ?? 'lni lni-checkmark' }}"></i>
-                                        </div>
-                                        <div class="content">
-                                            <h1 class="countup" cup-end="{{ $item['value'] ?? 0 }}"
-                                                cup-append="{{ $item['suffix'] ?? ' ' }}">{{ $item['value'] ?? 0 }}</h1>
-                                            <span>{{ $item['label'] ?? '' }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+@php
+    // Số liệu chưa xác minh (unverified) không được hiển thị công khai.
+    $items = collect($data['items'] ?? [])->filter(fn ($i) => filled($i['value'] ?? null) && filled($i['label'] ?? null));
+@endphp
+@if (! ($data['unverified'] ?? false) && $items->isNotEmpty())
+    <section class="section section-ink" aria-labelledby="stats-title">
+        <div class="container-page">
+            <div class="section-head">
+                <h2 id="stats-title">{{ $data['heading'] ?? 'Con số nổi bật' }}</h2>
             </div>
-            <div class="col-xl-6 col-lg-6">
-                <div class="counter-up-img mb-50">
-                    <img src="{{ asset('assets/img/counter-up/counter-up-img.svg') }}" alt="">
-                </div>
-            </div>
+            <dl class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach ($items as $item)
+                    <div class="flex flex-col-reverse gap-1 border-t border-ink-700 pt-5">
+                        <dt class="text-ink-300">{{ $item['label'] }}</dt>
+                        <dd class="text-display text-white">{{ $item['value'] }}{{ $item['suffix'] ?? '' }}</dd>
+                    </div>
+                @endforeach
+            </dl>
         </div>
-    </div>
-</section>
+    </section>
+@endif

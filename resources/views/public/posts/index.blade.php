@@ -2,46 +2,43 @@
 
 @section('content')
     @include('partials.page-hero', [
-        'title' => $activeCategory->name ?? 'Tin tức',
-        'subtitle' => $activeCategory->description ?? 'Tin tức và kiến thức từ Happy Ecotech.',
-        'breadcrumbs' => isset($activeCategory)
+        'title' => isset($activeCategory) ? $activeCategory->name : 'Tin tức',
+        'lead' => isset($activeCategory) ? ($activeCategory->description ?: null) : 'Cập nhật mới về tem điện tử, truy xuất nguồn gốc, chuyển đổi số và hoạt động của Happy Ecotech.',
+        'crumbs' => isset($activeCategory)
             ? [['label' => 'Tin tức', 'url' => route('posts.index')], ['label' => $activeCategory->name]]
             : [['label' => 'Tin tức']],
     ])
 
-    <section class="blog-section pt-100 pb-70">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="row g-4">
-                        @forelse ($posts as $post)
-                            @include('partials.post-card', ['post' => $post])
-                        @empty
-                            <div class="col-12"><p>Chưa có bài viết nào.</p></div>
-                        @endforelse
-                    </div>
+    <section class="section">
+        <div class="container-page">
+            @if (($categories ?? collect())->isNotEmpty())
+                <nav aria-label="Danh mục tin tức" class="mb-10">
+                    <ul class="flex flex-wrap gap-2">
+                        <li>
+                            <a href="{{ route('posts.index') }}" class="btn {{ isset($activeCategory) ? 'btn-outline' : 'btn-primary' }}"
+                                @unless (isset($activeCategory)) aria-current="page" @endunless>Tất cả</a>
+                        </li>
+                        @foreach ($categories as $cat)
+                            @php $isActive = isset($activeCategory) && $activeCategory->id === $cat->id; @endphp
+                            <li>
+                                <a href="{{ route('posts.category', $cat) }}" class="btn {{ $isActive ? 'btn-primary' : 'btn-outline' }}"
+                                    @if ($isActive) aria-current="page" @endif>{{ $cat->name }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </nav>
+            @endif
 
-                    <div class="pt-40 d-flex justify-content-center">
-                        {{ $posts->onEachSide(1)->links() }}
-                    </div>
+            @if ($posts->isEmpty())
+                <p class="text-lead text-ink-700">Chưa có bài viết nào trong mục này.</p>
+            @else
+                <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($posts as $post)
+                        @include('partials.post-card', ['post' => $post, 'headingTag' => 'h2'])
+                    @endforeach
                 </div>
-
-                <div class="col-lg-4">
-                    <aside class="blog-sidebar">
-                        <h4>Danh mục</h4>
-                        <ul class="category-list">
-                            @foreach ($categories as $category)
-                                <li>
-                                    <a href="{{ route('posts.category', $category) }}"
-                                        class="{{ isset($activeCategory) && $activeCategory->id === $category->id ? 'active' : '' }}">
-                                        {{ $category->name }} <span>({{ $category->posts_count }})</span>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </aside>
-                </div>
-            </div>
+                {{ $posts->links('partials.pagination') }}
+            @endif
         </div>
     </section>
 @endsection

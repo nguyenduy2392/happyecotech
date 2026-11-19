@@ -1,16 +1,10 @@
-<section class="richtext-section pt-100 pb-50">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-9">
-                @if (! empty($data['title']))
-                    <div class="section-title mb-30">
-                        <h1>{{ $data['title'] }}</h1>
-                    </div>
-                @endif
-                <div class="richtext-content">
-                    {!! \Mews\Purifier\Facades\Purifier::clean($data['html'] ?? '') !!}
-                </div>
-            </div>
+<section class="section">
+    <div class="container-page">
+        @if (! empty($data['title']))
+            <h2 class="mb-8 max-w-3xl text-h2">{{ $data['title'] }}</h2>
+        @endif
+        <div class="prose-he">
+            {!! \Mews\Purifier\Facades\Purifier::clean($data['html'] ?? '') !!}
         </div>
     </div>
 </section>

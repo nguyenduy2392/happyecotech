@@ -1,6 +1,7 @@
 @php
     $footerLogo = setting('footer_logo_media_id') ?? setting('logo_media_id');
-    $footerLogoUrl = $footerLogo?->url ?? asset('assets/img/logo/logo-full.png');
+    $siteName = setting('site_name', 'Happy Ecotech');
+    $isDefaultLogo = ! $footerLogo || ($footerLogo->disk === 'assets' && $footerLogo->path === 'img/logo/logo-full.png');
     $phone = setting('contact_phone');
     $email = setting('contact_email');
     $address = setting('contact_address');
@@ -10,100 +11,91 @@
     $policyPages = \App\Models\Page::query()->where('status', 'published')
         ->whereIn('slug', ['chinh-sach-bao-mat', 'dieu-khoan-su-dung'])
         ->get();
+    $socialIcons = ['facebook' => 'facebook', 'youtube' => 'youtube', 'linkedin' => 'linkedin'];
 @endphp
-<footer class="footer">
-    <div class="container">
-        <div class="widget-wrapper">
-            <div class="row">
-                <div class="col-xl-3 col-md-6">
-                    <div class="footer-widget">
-                        <div class="logo mb-35">
-                            <a href="{{ route('home') }}"><img src="{{ $footerLogoUrl }}" alt="{{ setting('site_name', 'Happy Ecotech') }}"></a>
-                        </div>
-                        <p class="desc mb-35">{{ setting('footer_description') }}</p>
-                        @if ($showSocial && $socialLinks->isNotEmpty())
-                            <ul class="socials">
-                                @foreach ($socialLinks as $social)
-                                    @continue(blank($social->url))
-                                    <li>
-                                        <a href="{{ $social->url }}" target="_blank" rel="noopener noreferrer"
-                                            aria-label="{{ $social->label ?: $social->platform }}">
-                                            <i class="{{ $social->icon }}"></i>
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="col-xl-2 offset-xl-1 col-md-5 offset-md-1 col-sm-6">
-                    <div class="footer-widget">
-                        <h3>Liên kết</h3>
-                        <ul class="links">
-                            @forelse ($footerQuickMenu as $item)
-                                <li><a href="{{ $item->resolveUrl() }}">{{ $item->label }}</a></li>
-                            @empty
-                                <li><a href="{{ route('home') }}">Trang chủ</a></li>
-                            @endforelse
-                        </ul>
-                    </div>
-                </div>
-
-                @if ($showServices && $footerServices->isNotEmpty())
-                    <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="footer-widget">
-                            <h3>Dịch vụ</h3>
-                            <ul class="links">
-                                @foreach ($footerServices as $service)
-                                    <li><a href="{{ route('services.show', $service) }}">{{ $service->name }}</a></li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
+<footer class="section-ink">
+    <div class="container-page py-14 md:py-16">
+        <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
+            <div>
+                {{-- Logo xanh trên nền ink không đủ tương phản: đặt trong khối trắng. --}}
+                <a href="{{ route('home') }}" class="inline-block rounded-md bg-white px-3 py-2" aria-label="{{ $siteName }} - Trang chủ">
+                    @if ($isDefaultLogo)
+                        <img src="{{ asset('assets/img/logo/logo-full.webp') }}" alt="{{ $siteName }}" width="380" height="141"
+                            class="h-9 w-auto" loading="lazy" decoding="async" />
+                    @else
+                        <x-media-img :media="$footerLogo" :alt="$siteName" class="h-9 w-auto" sizes="140px" />
+                    @endif
+                </a>
+                @if (setting('footer_description'))
+                    <p class="mt-5 max-w-sm text-ink-300">{{ setting('footer_description') }}</p>
                 @endif
+                @if ($showSocial && $socialLinks->isNotEmpty())
+                    <ul class="mt-5 flex gap-2">
+                        @foreach ($socialLinks as $social)
+                            @continue(blank($social->url))
+                            <li>
+                                <a href="{{ $social->url }}" target="_blank" rel="noopener noreferrer"
+                                    class="flex size-11 items-center justify-center rounded-md border border-ink-700 text-white hover:bg-ink-700"
+                                    aria-label="{{ $social->label ?: $social->platform }}">
+                                    <x-glyph :name="$socialIcons[strtolower((string) $social->platform)] ?? 'link'" />
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
 
-                <div class="col-xl-3 col-md-6">
-                    <div class="footer-widget">
-                        <h3>Liên hệ</h3>
-                        <ul>
-                            @if ($phone)
-                                <li><a href="tel:{{ preg_replace('/\s+/', '', $phone) }}">{{ $phone }}</a></li>
-                            @endif
-                            @if ($email)
-                                <li><a href="mailto:{{ $email }}">{{ $email }}</a></li>
-                            @endif
-                            @if ($address)
-                                <li>{{ $address }}</li>
-                            @endif
-                        </ul>
-                        @if ($mapEmbed)
-                            <div class="contact_map" style="width: 100%; height: 150px; margin-top: 25px;">
-                                <div class="gmap_canvas">
-                                    <iframe src="{{ $mapEmbed }}" style="width: 100%;" title="Bản đồ" loading="lazy"></iframe>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
+            <nav aria-label="Liên kết nhanh">
+                <h2 class="text-lg text-white">Liên kết</h2>
+                <ul class="mt-4 space-y-1">
+                    @forelse ($footerQuickMenu as $item)
+                        <li><a href="{{ $item->resolveUrl() }}" class="inline-flex min-h-11 items-center text-ink-300 hover:text-white">{{ $item->label }}</a></li>
+                    @empty
+                        <li><a href="{{ route('home') }}" class="inline-flex min-h-11 items-center text-ink-300 hover:text-white">Trang chủ</a></li>
+                    @endforelse
+                </ul>
+            </nav>
+
+            @if ($showServices && $footerServices->isNotEmpty())
+                <nav aria-label="Giải pháp">
+                    <h2 class="text-lg text-white">Giải pháp</h2>
+                    <ul class="mt-4 space-y-1">
+                        @foreach ($footerServices as $service)
+                            <li><a href="{{ route('services.show', $service) }}" class="inline-flex min-h-11 items-center text-ink-300 hover:text-white">{{ $service->name }}</a></li>
+                        @endforeach
+                    </ul>
+                </nav>
+            @endif
+
+            <div>
+                <h2 class="text-lg text-white">Liên hệ</h2>
+                <ul class="mt-4 space-y-3 text-ink-300">
+                    @if ($phone)
+                        <li class="flex gap-3"><x-glyph name="phone" class="mt-1" /><a href="tel:{{ preg_replace('/[^\d+]/', '', $phone) }}" class="hover:text-white">{{ $phone }}</a></li>
+                    @endif
+                    @if ($email)
+                        <li class="flex gap-3"><x-glyph name="mail" class="mt-1" /><a href="mailto:{{ $email }}" class="break-all hover:text-white">{{ $email }}</a></li>
+                    @endif
+                    @if ($address)
+                        <li class="flex gap-3"><x-glyph name="map-pin" class="mt-1" /><span>{{ $address }}</span></li>
+                    @endif
+                </ul>
+                @if ($mapEmbed)
+                    <iframe src="{{ $mapEmbed }}" title="Bản đồ văn phòng {{ $siteName }}" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade" class="mt-5 h-36 w-full rounded-md border border-ink-700"></iframe>
+                @endif
             </div>
         </div>
 
-        <div class="footer-bottom">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="copyright">© {{ date('Y') }} {{ setting('footer_copyright', setting('site_name', 'Happy Ecotech')) }}. Bản quyền đã được bảo hộ.</p>
-                </div>
-                @if ($policyPages->isNotEmpty())
-                    <div class="col-md-6">
-                        <ul class="footer-bottom-links">
-                            @foreach ($policyPages as $page)
-                                <li><a href="{{ route('page.show', $page) }}">{{ $page->title }}</a></li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-            </div>
+        <div class="mt-12 flex flex-col gap-3 border-t border-ink-700 pt-6 text-sm text-ink-300 md:flex-row md:items-center md:justify-between">
+            <p>© {{ date('Y') }} {{ setting('footer_copyright', $siteName) }}. Bản quyền đã được bảo hộ.</p>
+            @if ($policyPages->isNotEmpty())
+                <ul class="flex flex-wrap gap-x-5">
+                    @foreach ($policyPages as $page)
+                        <li><a href="{{ route('page.show', $page) }}" class="inline-flex min-h-11 items-center underline underline-offset-2 hover:text-white">{{ $page->title }}</a></li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
     </div>
 </footer>

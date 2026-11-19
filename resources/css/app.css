@@ -1,9 +1,268 @@
-@import 'tailwindcss';
+/* Hallmark · shape: B2B trust page · genre: modern-minimal · posture: restrained · hero: split-text-left · nav: bar+CTA · footer: ink-band */
+/* critique: nền trắng/xanh nhạt, một màu nhấn xanh lá thương hiệu; thẻ phẳng viền mảnh, không gradient/emoji/eyebrow; mọi màu qua token @theme. */
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+@import "tailwindcss";
+@source "../views";
 
+/* ------------------------------------------------------------------ */
+/* Fonts: self-host, chỉ 2 weight (400/600), swap + fallback cùng metric */
+/* ------------------------------------------------------------------ */
+@font-face {
+    font-family: "Be Vietnam Pro";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("/assets/fonts/bvp-400-vietnamese.woff2") format("woff2");
+    unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+    font-family: "Be Vietnam Pro";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("/assets/fonts/bvp-400-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: "Be Vietnam Pro";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("/assets/fonts/bvp-600-vietnamese.woff2") format("woff2");
+    unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+    font-family: "Be Vietnam Pro";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("/assets/fonts/bvp-600-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: "Be Vietnam Pro Fallback";
+    src: local("Arial");
+    size-adjust: 104%;
+    ascent-override: 96%;
+    descent-override: 24%;
+    line-gap-override: 0%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tokens: màu, chữ, khoảng cách, bo góc, bóng. Nơi DUY NHẤT có hex.   */
+/* ------------------------------------------------------------------ */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-*: initial;
+    --color-white: #ffffff;
+    --color-transparent: transparent;
+    --color-current: currentColor;
+
+    /* Xanh thương hiệu (logo #378645 → 600 là bản đậm hơn nhẹ để đạt AA 5.3:1 trên trắng) */
+    --color-brand-50: #eef7ef;
+    --color-brand-100: #dcefdf;
+    --color-brand-200: #b9dfc0;
+    --color-brand-400: #1f9d55;
+    --color-brand-600: #2d7a3c;
+    --color-brand-700: #235f30;
+    --color-brand-900: #143a1d;
+
+    /* Ink (chữ + nền tối) */
+    --color-ink-50: #f4f7f8;
+    --color-ink-100: #e8eef0;
+    --color-ink-200: #d3dde1;
+    --color-ink-300: #b7c4ca;
+    --color-ink-500: #5b6b73;
+    --color-ink-700: #3a4a53;
+    --color-ink-900: #1d2a32;
+
+    /* Trạng thái + kênh liên hệ */
+    --color-danger-50: #fdf0ef;
+    --color-danger-600: #b42318;
+    --color-zalo: #0068ff;
+    --color-zalo-dark: #0052cc;
+
+    --font-sans: "Be Vietnam Pro", "Be Vietnam Pro Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    --text-display: clamp(2rem, 1.2rem + 3.4vw, 3.5rem);
+    --text-display--line-height: 1.12;
+    --text-h2: clamp(1.625rem, 1.2rem + 1.6vw, 2.375rem);
+    --text-h2--line-height: 1.2;
+    --text-h3: 1.25rem;
+    --text-h3--line-height: 1.35;
+    --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    --text-lead--line-height: 1.6;
+
+    --radius-sm: 0.375rem;
+    --radius-md: 0.625rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+
+    --shadow-card: 0 1px 2px rgb(29 42 50 / 0.06), 0 8px 24px -12px rgb(29 42 50 / 0.12);
+    --shadow-bar: 0 -6px 20px -8px rgb(29 42 50 / 0.25);
+
+    --spacing-gutter: 1rem;
+    --spacing-section: clamp(3.5rem, 2.5rem + 4vw, 6.5rem);
+    --container-page: 74rem;
+    --container-prose: 44rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+@layer base {
+    html {
+        overflow-x: clip;
+        scroll-behavior: smooth;
+        scroll-padding-top: 5.5rem;
+        -webkit-text-size-adjust: 100%;
+    }
+    body {
+        overflow-x: clip;
+        background: var(--color-white);
+        color: var(--color-ink-900);
+        font-family: var(--font-sans);
+        font-size: 1rem;
+        line-height: 1.65;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4 {
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        overflow-wrap: break-word;
+        min-width: 0;
+        text-wrap: balance;
+    }
+    p { text-wrap: pretty; }
+    img, svg, video { display: block; max-width: 100%; }
+    img { height: auto; }
+    a { color: inherit; }
+    :focus-visible {
+        outline: 3px solid var(--color-brand-600);
+        outline-offset: 3px;
+        border-radius: var(--radius-sm);
+    }
+    ::selection { background: var(--color-brand-200); }
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* Components                                                          */
+/* ------------------------------------------------------------------ */
+@layer components {
+    .container-page {
+        width: 100%;
+        max-width: calc(var(--container-page) + 2 * var(--spacing-gutter));
+        margin-inline: auto;
+        padding-inline: var(--spacing-gutter);
+    }
+    @media (min-width: 48rem) {
+        .container-page { padding-inline: 1.5rem; max-width: calc(var(--container-page) + 3rem); }
+    }
+
+    .skip-link {
+        @apply fixed left-3 top-3 z-[100] -translate-y-24 rounded-md bg-ink-900 px-4 py-2 text-white no-underline;
+    }
+    .skip-link:focus { @apply translate-y-0; }
+
+    /* Section */
+    .section { padding-block: var(--spacing-section); }
+    .section-tint { background: var(--color-ink-50); }
+    .section-brand { background: var(--color-brand-50); }
+    .section-ink { background: var(--color-ink-900); color: var(--color-white); }
+    .section-head { @apply mb-10 max-w-2xl md:mb-14; }
+    .section-head h2 { font-size: var(--text-h2); line-height: var(--text-h2--line-height); }
+    .section-head p { @apply mt-4 text-ink-700; font-size: var(--text-lead); line-height: var(--text-lead--line-height); }
+    .section-ink .section-head p { @apply text-ink-300; }
+
+    /* Button */
+    .btn {
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-transparent px-5 py-2.5 text-center font-semibold no-underline transition-colors duration-150;
+    }
+    .btn-lg { @apply min-h-12 px-6 py-3 text-lg; }
+    .btn-primary { @apply bg-brand-600 text-white; }
+    .btn-primary:hover { @apply bg-brand-700; }
+    .btn-outline { @apply border-ink-300 bg-white text-ink-900; }
+    .btn-outline:hover { @apply border-brand-600 text-brand-700; }
+    .btn-light { @apply bg-white text-brand-700; }
+    .btn-light:hover { @apply bg-brand-50; }
+    .btn-ghost { @apply px-2 text-brand-700; }
+    .btn-ghost:hover { @apply underline; }
+    .btn-zalo { @apply bg-zalo text-white; }
+    .btn-zalo:hover { @apply bg-zalo-dark; }
+
+    /* Card */
+    .card {
+        @apply flex flex-col rounded-lg border border-ink-100 bg-white p-6 shadow-card;
+    }
+    a.card, .card-link { @apply no-underline transition-colors duration-150; }
+    a.card:hover, .card-link:hover { @apply border-brand-400; }
+    .card h3 { font-size: var(--text-h3); line-height: var(--text-h3--line-height); }
+
+    /* Badge (chữ thường, không tracked caps) */
+    .badge {
+        @apply inline-flex items-center gap-1 rounded-full bg-brand-100 px-3 py-1 text-sm font-semibold text-brand-700;
+    }
+    .badge-ink { @apply bg-ink-100 text-ink-700; }
+
+    /* Form field */
+    .field { @apply flex flex-col gap-1.5; }
+    .field label { @apply text-sm font-semibold text-ink-900; }
+    .input {
+        @apply min-h-11 w-full rounded-md border border-ink-300 bg-white px-3.5 py-2.5 text-ink-900 placeholder:text-ink-500;
+    }
+    .input:hover { @apply border-ink-500; }
+    .input:focus-visible { @apply border-brand-600; outline-offset: 1px; }
+    .input[aria-invalid="true"] { @apply border-danger-600 bg-danger-50; }
+    .field-error { @apply text-sm font-semibold text-danger-600; }
+    .field-hint { @apply text-sm text-ink-500; }
+
+    /* Accordion (FAQ) – native <details>, nội dung vẫn nằm trong DOM */
+    .faq { @apply divide-y divide-ink-100 rounded-lg border border-ink-100 bg-white; }
+    .faq summary {
+        @apply flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-lg font-semibold;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary .chev { @apply shrink-0 text-brand-600 transition-transform duration-150; }
+    .faq details[open] summary .chev { @apply rotate-180; }
+    .faq .faq-a { @apply px-5 pb-5 text-ink-700; }
+
+    /* Nội dung rich-text (đã purify) */
+    .prose-he { max-width: var(--container-prose); font-size: 1.0625rem; }
+    .prose-he > * + * { margin-top: 1.1em; }
+    .prose-he h2 { font-size: var(--text-h2); line-height: var(--text-h2--line-height); margin-top: 2em; }
+    .prose-he h3 { font-size: var(--text-h3); margin-top: 1.6em; }
+    .prose-he a { @apply text-brand-700 underline underline-offset-2; }
+    .prose-he ul, .prose-he ol { @apply pl-6; }
+    .prose-he ul { list-style: disc; }
+    .prose-he ol { list-style: decimal; }
+    .prose-he li + li { margin-top: 0.4em; }
+    .prose-he img { @apply rounded-lg; height: auto; }
+    .prose-he blockquote { @apply border-l-4 border-brand-200 pl-4 text-ink-700; }
+    .prose-he table { @apply w-full border-collapse text-left; }
+    .prose-he th, .prose-he td { @apply border border-ink-200 px-3 py-2; }
+
+    /* Header */
+    .nav-link { @apply inline-flex min-h-11 items-center rounded-md px-3 font-semibold text-ink-700 no-underline; }
+    .nav-link:hover, .nav-link[aria-current="page"] { @apply text-brand-700; }
+    .nav-link[aria-current="page"] { @apply bg-brand-50; }
+
+    /* Thanh gọi/Zalo cố định mobile */
+    .contact-bar { box-shadow: var(--shadow-bar); }
+}
+
+/* Chống nhảy bố cục khi thanh liên hệ cố định chiếm đáy trên mobile */
+@media (max-width: 47.99rem) {
+    body { padding-bottom: 4.5rem; }
+}
+
+@media print {
+    .contact-bar, header[data-site-header] { display: none !important; }
 }

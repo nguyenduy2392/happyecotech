@@ -9,62 +9,34 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     @include('partials.seo', ['seo' => $seo])
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ $faviconUrl }}" />
+    <link rel="icon" href="{{ $faviconUrl }}" />
     @if ($zalo)
         <meta name="zalo-platform-site-verification" content="{{ $zalo }}" />
     @endif
 
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-5.0.0-beta2.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/LineIcons.2.0.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/tiny-slider.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/happyecotech.css') }}" />
+    <link rel="preload" href="{{ asset('assets/fonts/bvp-600-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="{{ asset('assets/fonts/bvp-400-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('head')
 </head>
 
 <body>
-    <div class="preloader">
-        <div class="loader">
-            <div class="spinner">
-                <div class="spinner-container">
-                    <div class="spinner-rotator">
-                        <div class="spinner-left">
-                            <div class="spinner-circle"></div>
-                        </div>
-                        <div class="spinner-right">
-                            <div class="spinner-circle"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <a href="#main" class="skip-link">Bỏ qua, đến nội dung chính</a>
 
     @include('partials.header')
 
-    <main>
+    <main id="main" tabindex="-1">
         @yield('content')
     </main>
 
     @include('partials.footer')
+    @include('partials.contact-bar')
 
-    <a href="#" class="scroll-top btn-hover" aria-label="Lên đầu trang">
-        <i class="lni lni-chevron-up"></i>
-    </a>
-
-    <script src="{{ asset('assets/js/bootstrap-5.0.0-beta2.min.js') }}"></script>
-    <script src="{{ asset('assets/js/count-up.min.js') }}"></script>
-    <script src="{{ asset('assets/js/tiny-slider.js') }}"></script>
-    <script src="{{ asset('assets/js/wow.min.js') }}"></script>
-    <script src="{{ asset('assets/js/polifill.js') }}"></script>
-    <script src="{{ asset('assets/js/main.js') }}"></script>
     @stack('scripts')
 </body>
 
