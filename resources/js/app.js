@@ -169,11 +169,11 @@ document.querySelectorAll('form[data-ajax-form]').forEach((form, i) => {
             } else if (res.status === 419) {
                 showStatus(form, 'error', 'Phiên làm việc đã hết hạn và chưa làm mới được. Dữ liệu của bạn vẫn được giữ.', { retry });
             } else if (res.ok && (data?.ok || !isJson)) {
-                // Đo lường: chỉ nhãn nguồn + tên giải pháp, KHÔNG đọc tên/SĐT/email.
+                // Đo lường: chỉ nhãn nguồn + slug giải pháp, KHÔNG đọc tên/SĐT/email.
                 const sel = form.querySelector('select[name="service_id"]');
                 document.dispatchEvent(new CustomEvent('he:lead', { detail: {
                     source: form.querySelector('input[name="source"]')?.value,
-                    solution: sel?.value ? sel.selectedOptions[0]?.textContent.trim() : '',
+                    solution: sel?.value ? (sel.selectedOptions[0]?.dataset.slug || 'other') : 'none', // slug ổn định, không dùng tên hiển thị
                 } }));
                 form.reset();
                 keyInput.value = uuid();

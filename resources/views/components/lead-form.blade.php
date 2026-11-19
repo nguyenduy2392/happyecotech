@@ -5,7 +5,7 @@
 ])
 {{-- Form lead ngắn: Họ tên, SĐT, Công ty, Giải pháp. POST về contact.submit với source=lead-form (không cần message). --}}
 @php
-    $services = \App\Models\Service::query()->published()->ordered()->get(['id', 'name']);
+    $services = \App\Models\Service::query()->published()->ordered()->get(['id', 'name', 'slug']);
     $selected = old('service_id', $serviceId);
     // Trang công khai được cache HTML: token CSRF không được nằm trong HTML cache -> lấy qua endpoint (luồng A) khi có.
     $tokenUrl = \Illuminate\Support\Facades\Route::has('csrf.token') ? route('csrf.token', [], false) : null;
@@ -50,7 +50,7 @@
         <select class="input" id="{{ $id }}-service" name="service_id">
             <option value="">Chưa chọn, cần tư vấn thêm</option>
             @foreach ($services as $svc)
-                <option value="{{ $svc->id }}" @selected((string) $selected === (string) $svc->id)>{{ $svc->name }}</option>
+                <option value="{{ $svc->id }}" data-slug="{{ $svc->slug }}" @selected((string) $selected === (string) $svc->id)>{{ $svc->name }}</option>
             @endforeach
         </select>
     </div>

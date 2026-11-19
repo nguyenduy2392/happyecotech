@@ -1,7 +1,11 @@
-@php($analytics = \App\Support\Analytics::config())
+@php
+    $analytics = \App\Support\Analytics::config();
+    $solutions = \App\Support\Analytics::SOLUTIONS;
+    $flagship = \App\Support\Analytics::FLAGSHIP;
+@endphp
 @if ($analytics)
     {{-- Đo lường: chỉ render khi có GTM/GA4 ID hợp lệ trong Cài đặt. Consent Mode v2 mặc định "denied". Không chứa PII. --}}
-    <script type="application/json" id="he-analytics">@json(['gtm' => $analytics['gtm'], 'ga4' => $analytics['ga4'], 'scroll' => $analytics['scroll']], JSON_HEX_TAG | JSON_HEX_AMP)</script>
+    <script type="application/json" id="he-analytics">{!! json_encode($analytics + ['solutions' => $solutions, 'flagship' => $flagship], JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES) !!}</script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }

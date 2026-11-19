@@ -75,7 +75,7 @@
                         <select class="input" id="c-service" name="service_id">
                             <option value="">Chưa chọn, cần tư vấn thêm</option>
                             @foreach ($services as $svc)
-                                <option value="{{ $svc->id }}" @selected((string) old('service_id', request('service')) === (string) $svc->id)>{{ $svc->name }}</option>
+                                <option value="{{ $svc->id }}" data-slug="{{ $svc->slug }}" @selected((string) old('service_id', request('service')) === (string) $svc->id)>{{ $svc->name }}</option>
                             @endforeach
                         </select>
                     </div>

@@ -22,6 +22,11 @@ if (cfg && (cfg.gtm || cfg.ga4)) {
     // GA4 thuần: cấu hình trước để sự kiện xếp hàng đúng thứ tự (script nạp sau).
     if (!cfg.gtm) { window.gtag('js', new Date()); window.gtag('config', cfg.ga4); }
 
+    // `solution` luôn là slug ổn định: giá trị lạ -> 'other', trống -> 'none'. product_tier theo danh sách chủ lực.
+    const solutionOf = (v) => (!v || v === 'none' ? 'none' : (cfg.solutions || []).includes(v) ? v : 'other');
+    const tierOf = (s) => ((cfg.flagship || []).includes(s) ? 'flagship' : 'other');
+    const product = (v) => { const solution = solutionOf(v); return { solution, product_tier: tierOf(solution) }; };
+
     // ---- Consent ----
     const saved = read();
     if (saved === 'granted' || saved === 'denied') {
@@ -72,18 +77,22 @@ if (cfg && (cfg.gtm || cfg.ga4)) {
         const href = a.getAttribute('href') || '';
         if (href.startsWith('tel:')) emit('click_phone', { position: where(a) });
         else if (/^https?:\/\/(www\.)?zalo\.me\//.test(href)) emit('click_zalo', { position: where(a) });
-        else if (a.dataset.cta) emit('cta_click', { position: a.dataset.cta, cta_text: (a.dataset.ctaLabel || '').slice(0, 60) });
+        else if (a.dataset.cta) emit('cta_click', {
+            position: a.dataset.cta,
+            cta_text: (a.dataset.ctaLabel || '').slice(0, 60),
+            ...product(a.dataset.solution || href.match(/\/dich-vu\/([a-z0-9-]+)/)?.[1] || a.closest('[data-view-service]')?.dataset.viewService),
+        });
     });
 
     // Form gửi thành công (app.js phát he:lead sau khi server trả ok:true).
     document.addEventListener('he:lead', (e) => {
         const { source, solution } = e.detail || {};
-        emit('lead_submit', { source: source === 'lead-form' ? 'lead-form' : 'contact-form', solution: solution || 'none' });
+        emit('lead_submit', { source: source === 'lead-form' ? 'lead-form' : 'contact-form', ...product(solution) });
     });
 
     // Xem trang giải pháp
     const svc = document.querySelector('[data-view-service]');
-    if (svc) emit('view_service', { solution: svc.dataset.viewService });
+    if (svc) emit('view_service', product(svc.dataset.viewService));
 
     // Cuộn 50% / 90% (tuỳ chọn trong Cài đặt)
     if (cfg.scroll) {

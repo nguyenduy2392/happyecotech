@@ -104,7 +104,7 @@ class AnalyticsTest extends TestCase
 
         $this->assertStringContainsString('data-view-service="'.$service->slug.'"', $html);
         preg_match('#<script type="application/json" id="he-analytics">(.*?)</script>#s', $html, $m);
-        $this->assertSame(['gtm', 'ga4', 'scroll'], array_keys(json_decode($m[1], true)));
+        $this->assertSame(['gtm', 'ga4', 'scroll', 'solutions', 'flagship'], array_keys(json_decode($m[1], true)));
         // Cấu hình đo lường không chứa SĐT/email công ty hay dữ liệu người dùng.
         $this->assertStringNotContainsString('0936685886', $m[1]);
         $this->assertStringNotContainsString('@', $m[1]);
@@ -119,5 +119,29 @@ class AnalyticsTest extends TestCase
         $this->assertSame('GTM-ABC1234', Analytics::clean(' gtm-abc1234 ', Analytics::GTM_PATTERN));
         $this->assertNull(Analytics::clean('GTM-<x>', Analytics::GTM_PATTERN));
         $this->assertNull(Analytics::clean(null, Analytics::GA4_PATTERN));
+    }
+
+    public function test_solution_values_are_stable_slugs_and_flagship_tier(): void
+    {
+        $this->assertSame(['taskflow', 'minicrm'], Analytics::FLAGSHIP);
+        $this->assertSame([], array_diff(Analytics::FLAGSHIP, Analytics::SOLUTIONS));
+
+        $this->set('analytics_gtm_id', 'GTM-ABC1234');
+        $html = $this->html('/lien-he');
+        foreach (Service::query()->published()->get() as $svc) {
+            $this->assertStringContainsString('value="'.$svc->id.'" data-slug="'.$svc->slug.'"', $html);
+        }
+        preg_match('#id="he-analytics">(.*?)</script>#s', $html, $m);
+        $cfg = json_decode($m[1], true);
+        $this->assertSame(Analytics::SOLUTIONS, $cfg['solutions']);
+        $this->assertSame(Analytics::FLAGSHIP, $cfg['flagship']);
+
+        // Mọi sự kiện đi qua product(): giá trị lạ -> other, trống -> none, tier suy ra từ slug.
+        $js = file_get_contents(resource_path('js/analytics.js'));
+        $this->assertStringContainsString("'other'", $js);
+        $this->assertSame(3, substr_count($js, 'product('), 'view_service, cta_click, lead_submit đều dùng product()');
+        $app = file_get_contents(resource_path('js/app.js'));
+        $this->assertStringContainsString('dataset.slug', $app);
+        $this->assertStringNotContainsString('selectedOptions[0]?.textContent', $app, 'lead_submit không dùng tên hiển thị');
     }
 }
