@@ -11,6 +11,7 @@ use App\Models\SiteSetting;
 use App\Models\TeamMember;
 use App\Models\User;
 use App\Support\CompanyProfile;
+use App\Support\EcosystemCopy;
 use App\Support\ProductPositioning;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\LandingCopy;
@@ -29,7 +30,7 @@ class ProductPositioningTest extends TestCase
         $this->seed(DatabaseSeeder::class);
         $this->assertSame(['taskflow', 'minicrm', 'smartlabel', 'farm2home'], Service::published()->ordered()->pluck('slug')->all());
         $this->assertDatabaseHas('menu_items', ['route_name' => 'services.index', 'label' => 'Sản phẩm']);
-        $home = $this->get('/')->assertOk()->assertSeeInOrder(['Sản phẩm chủ lực', 'Giải pháp khác'])->getContent();
+        $home = $this->get('/')->assertOk()->getContent();
         $document = $this->html($home);
         $this->assertSame(ProductPositioning::HERO['h1'], trim($document->evaluate('string(//h1)')));
         $this->assertSame(ProductPositioning::HOME_DESCRIPTION, $document->evaluate('string(//meta[@name="description"]/@content)'));
@@ -57,6 +58,42 @@ class ProductPositioningTest extends TestCase
             $this->assertCount(3, $service->features);
             $this->assertCount(4, $service->gallery);
         }
+    }
+
+    public function test_ecosystem_has_six_entries_and_solution_links_follow_publish_state(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        $home = Page::whereSlug('home')->firstOrFail();
+        $overview = $home->blocks()->where('block_type', 'ecosystem_overview')->firstOrFail();
+        $this->assertSame(array_keys(EcosystemCopy::LABELS), array_column($overview->data['items'], 'key'));
+        foreach (EcosystemCopy::LABELS as $slug => $copy) {
+            $service = Service::whereSlug($slug)->firstOrFail();
+            $this->assertSame($copy['category_label'], $service->category_label);
+            $this->assertLessThanOrEqual(70, mb_strlen($service->tagline));
+        }
+        $this->get('/')->assertOk()->assertViewHas('page', function (Page $page) {
+            $items = $page->blocks->firstWhere('block_type', 'other_solutions')->data['items'];
+
+            return array_column($items, 'url') === ['/dich-vu/smartlabel', '/dich-vu/farm2home', '/lien-he?solution=datahub', '/lien-he?solution=omc'];
+        });
+        Service::whereSlug('farm2home')->firstOrFail()->update(['status' => 'draft']);
+        $this->get('/')->assertOk()->assertViewHas('page', function (Page $page) {
+            return $page->blocks->firstWhere('block_type', 'other_solutions')->data['items'][1]['url'] === '/lien-he?solution=farm2home';
+        });
+        $overview->update(['data' => ['heading' => 'Nội dung đã biên tập', 'items' => []], 'is_enabled' => false]);
+        $home->blocks()->where('block_type', 'other_solutions')->delete();
+        $crm = Service::whereSlug('minicrm')->firstOrFail();
+        $crm->update(['category_label' => null, 'tagline' => 'Giữ câu đã biên tập']);
+        $this->artisan('ecotech:apply-positioning')->assertSuccessful();
+        $this->assertFalse($home->blocks()->where('block_type', 'other_solutions')->exists());
+        $this->assertNull($crm->refresh()->category_label);
+        $this->artisan('ecotech:apply-positioning', ['--force' => true])->assertSuccessful();
+        $this->assertTrue($home->blocks()->where('block_type', 'other_solutions')->exists());
+        $this->assertSame('Nội dung đã biên tập', $overview->refresh()->data['heading']);
+        $this->assertFalse($overview->is_enabled);
+        $this->assertSame(EcosystemCopy::LABELS['minicrm']['category_label'], $crm->refresh()->category_label);
+        $this->assertSame('Giữ câu đã biên tập', $crm->tagline);
+        $this->assertDatabaseHas('services', ['slug' => 'farm2home', 'status' => 'draft']);
     }
 
     public function test_positioning_is_opt_in_and_preserves_editor_fields(): void

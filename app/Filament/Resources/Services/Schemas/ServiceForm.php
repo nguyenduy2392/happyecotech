@@ -25,6 +25,8 @@ class ServiceForm
         return $schema
             ->components([
                 Section::make('Nội dung trang giải pháp')->collapsed()->schema([
+                    TextInput::make('category_label')->label('Nhãn giá trị')->maxLength(80),
+                    TextInput::make('tagline')->label('Câu lợi ích ngắn')->maxLength(70),
                     TextInput::make('h1')->label('H1 trang')->maxLength(255),
                     self::items('benefits', 'Lợi ích'),
                     self::items('steps', 'Các bước thực hiện'),

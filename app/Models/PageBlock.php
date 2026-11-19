@@ -17,6 +17,8 @@ class PageBlock extends Model
         'vision_mission' => 'Tầm nhìn / Sứ mệnh',
         'core_values' => 'Giá trị cốt lõi',
         'featured_services' => 'Dịch vụ nổi bật',
+        'ecosystem_overview' => 'Tổng quan hệ sinh thái',
+        'other_solutions' => 'Giải pháp theo nhu cầu',
         'stats' => 'Số liệu nổi bật',
         'why_choose' => 'Lý do lựa chọn',
         'cta' => 'CTA liên hệ',

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\MediaAsset;
 use App\Models\Page;
 use App\Models\PageBlock;
+use App\Support\EcosystemCopy;
 use App\Support\ProductPositioning;
 use Illuminate\Database\Seeder;
 
@@ -92,6 +93,8 @@ class PageSeeder extends Seeder
                 'ios_qr_media_id' => $qrIos,
                 'android_qr_media_id' => $qrAndroid,
             ]],
+            ['ecosystem_overview', 'Tổng quan hệ sinh thái', true, EcosystemCopy::OVERVIEW],
+            ['other_solutions', 'Giải pháp theo nhu cầu', true, EcosystemCopy::SOLUTIONS],
             ['faq', 'Câu hỏi thường gặp', true, LandingCopy::HOME['faq']],
             ['latest_news', 'Tin tức mới nhất', true, [
                 'heading' => 'Tin tức mới nhất',

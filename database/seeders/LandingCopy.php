@@ -7,7 +7,7 @@ final class LandingCopy
     public const HOME = [
         'faq' => [
             'heading' => 'Câu hỏi thường gặp',
-            'subheading' => 'Tìm hiểu TaskFlow, MiniCRM và các giải pháp khác của Happy Ecotech.',
+            'subheading' => 'Tìm hiểu TaskFlow, MiniCRM và hệ sinh thái Happy Ecotech.',
             'items' => [
                 [
                     'question' => 'TaskFlow là gì và dành cho ai?',

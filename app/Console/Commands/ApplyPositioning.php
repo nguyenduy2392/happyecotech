@@ -5,9 +5,11 @@ namespace App\Console\Commands;
 use App\Models\MediaAsset;
 use App\Models\MenuItem;
 use App\Models\Page;
+use App\Models\PageBlock;
 use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Support\CompanyProfile;
+use App\Support\EcosystemCopy;
 use App\Support\ProductPositioning;
 use Database\Seeders\LandingCopy;
 use Illuminate\Console\Command;
@@ -21,6 +23,10 @@ class ApplyPositioning extends Command
     protected $description = 'Preview or apply TaskFlow-first positioning to stock CMS fields';
 
     private const LEGACY_DESCRIPTION = 'Hệ sinh thái công nghệ minh bạch dữ liệu, tem điện tử, SmartLabel, truy xuất nguồn gốc, TaskFlow, MiniCRM và Farm2Home.';
+
+    private const PREVIOUS_HERO = 'TaskFlow giúp đội nhóm giao việc rõ ràng và theo dõi tiến độ đến khi hoàn tất';
+
+    private const PREVIOUS_GROUPS_HASH = 'ed7b684e99ea2c1a092ec0c086a0858edfd4a4c3201768dab2b68e6be76b22d7';
 
     private bool $write = false;
 
@@ -58,6 +64,7 @@ class ApplyPositioning extends Command
                 'seo_description' => self::LEGACY_DESCRIPTION,
             ]);
             $this->updateHomeBlocks($home);
+            $this->addEcosystemBlocks($home);
         }
         $this->updateServices();
 
@@ -69,6 +76,28 @@ class ApplyPositioning extends Command
             $this->updateFields($setting, 'seo_default_description', ['value' => ProductPositioning::HOME_DESCRIPTION], ['value' => self::LEGACY_DESCRIPTION]);
         }
         $this->updateCompanyProfile();
+    }
+
+    private function addEcosystemBlocks(Page $home): void
+    {
+        foreach ([
+            'ecosystem_overview' => EcosystemCopy::OVERVIEW,
+            'other_solutions' => EcosystemCopy::SOLUTIONS,
+        ] as $type => $data) {
+            if ($home->blocks()->where('block_type', $type)->exists()) {
+                continue;
+            }
+            $this->line("  home.{$type} → ".count($data['items']).' mục');
+            if ($this->write) {
+                $home->blocks()->create([
+                    'block_type' => $type,
+                    'title' => PageBlock::TYPES[$type],
+                    'data' => $data,
+                    'is_enabled' => true,
+                    'sort_order' => (int) $home->blocks()->max('sort_order') + 1,
+                ]);
+            }
+        }
     }
 
     private function updateCompanyProfile(): void
@@ -124,6 +153,19 @@ class ApplyPositioning extends Command
                 'cta_url' => '/lien-he#contact-form',
                 'art' => 'hero-smartlabel',
             ] : ['heading' => 'Dịch vụ', 'subheading' => self::LEGACY_DESCRIPTION];
+            if ($isHero) {
+                foreach (['h1', 'heading'] as $field) {
+                    if (($data[$field] ?? null) === self::PREVIOUS_HERO) {
+                        $before[$field] = self::PREVIOUS_HERO;
+                    }
+                }
+                $previousLead = 'Giao đầu việc cho từng người, đặt hạn xử lý và theo dõi trạng thái trong TaskFlow. Với MiniCRM, đội kinh doanh có một nơi lưu hồ sơ và lịch chăm sóc khách hàng.';
+                if (($data['subheading'] ?? null) === $previousLead) {
+                    $before['subheading'] = $previousLead;
+                }
+            } elseif (isset($data['groups']) && hash('sha256', json_encode($data['groups'], JSON_UNESCAPED_UNICODE)) === self::PREVIOUS_GROUPS_HASH) {
+                $before['groups'] = $data['groups'];
+            }
             $label = "home.{$block->block_type}.{$block->id}";
             $changes = $this->changes($data, $next, $before, $label);
             if ($isHero) {
@@ -154,10 +196,14 @@ class ApplyPositioning extends Command
             'taskflow' => 'TaskFlow là giải pháp quản lý dự án và công việc, giúp doanh nghiệp tối ưu hóa quy trình làm việc, giảm thiểu sai sót và nâng cao hiệu suất.',
             'minicrm' => 'MiniCRM là giải pháp quản lý khách hàng và mối quan hệ khách hàng.',
         ];
-        foreach (Service::whereIn('slug', array_keys($previousOrder))->lock($this->write ?: null)->get() as $service) {
+        foreach (Service::whereIn('slug', array_keys(EcosystemCopy::LABELS))->lock($this->write ?: null)->get() as $service) {
             $slug = $service->slug;
-            $next = ['sort_order' => ProductPositioning::ORDER[$slug]];
-            $before = ['sort_order' => $previousOrder[$slug]];
+            $next = EcosystemCopy::LABELS[$slug];
+            $before = [];
+            if (isset($previousOrder[$slug])) {
+                $next['sort_order'] = ProductPositioning::ORDER[$slug];
+                $before['sort_order'] = $previousOrder[$slug];
+            }
             if (isset(ProductPositioning::PRODUCTS[$slug])) {
                 $next += ProductPositioning::PRODUCTS[$slug];
                 $next['content'] = '<p>'.e($next['short_description']).'</p>';
