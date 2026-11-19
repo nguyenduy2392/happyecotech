@@ -1,9 +1,19 @@
 @include('partials.ui-ecosystem')
 @php
-    $items = app('ui.ecosystem');
-    $anchorFor = fn ($it) => in_array($it['slug'], ['taskflow', 'minicrm'], true) && $it['service']
+    $safe = fn ($u) => function_exists('safe_url') ? safe_url($u) : null;
+    $cms = collect($data['items'] ?? [])->filter(fn ($i) => filled($i['name'] ?? null) && filled($i['key'] ?? null));
+    $fallback = app('ui.ecosystem')->keyBy('slug');
+    $items = $cms->isNotEmpty()
+        ? $cms->map(fn ($i) => [
+            'slug' => $i['key'], 'name' => $i['name'], 'category' => $i['category'] ?? null, 'summary' => $i['summary'] ?? null,
+            'service' => $fallback->get($i['key'])['service'] ?? null,
+            'url' => ($u = $i['anchor_or_url'] ?? null) && ! str_starts_with($u, '#') ? $safe($u) : null,
+        ])->values()
+        : app('ui.ecosystem');
+    // Liên kết tới phần tương ứng trên trang (id do view này quản lý); URL ngoài/trang riêng chỉ dùng khi CMS cung cấp đường dẫn thật.
+    $anchorFor = fn ($it) => ! empty($it['url']) ? $it['url'] : (in_array($it['slug'], ['taskflow', 'minicrm'], true) && $it['service']
         ? '#san-pham-'.$it['slug']
-        : '#giai-phap-'.$it['slug'];
+        : '#giai-phap-'.$it['slug']);
 @endphp
 <section class="section" aria-labelledby="eco-title" id="he-sinh-thai">
     <div class="container-page">
