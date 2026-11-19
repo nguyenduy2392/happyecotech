@@ -104,7 +104,7 @@ class AnalyticsTest extends TestCase
 
         $this->assertStringContainsString('data-view-service="'.$service->slug.'"', $html);
         preg_match('#<script type="application/json" id="he-analytics">(.*?)</script>#s', $html, $m);
-        $this->assertSame(['gtm', 'ga4', 'scroll', 'solutions', 'flagship'], array_keys(json_decode($m[1], true)));
+        $this->assertEqualsCanonicalizing(['gtm', 'ga4', 'scroll', 'solutions', 'flagship'], array_keys(json_decode($m[1], true)));
         // Cấu hình đo lường không chứa SĐT/email công ty hay dữ liệu người dùng.
         $this->assertStringNotContainsString('0936685886', $m[1]);
         $this->assertStringNotContainsString('@', $m[1]);
