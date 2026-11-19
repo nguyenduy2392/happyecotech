@@ -14,6 +14,13 @@ class SeoSchema
             'description' => ProductPositioning::ORGANIZATION_DESCRIPTION,
             'url' => $home,
         ];
+        $sameAs = array_values(array_filter([
+            CompanyProfile::url('social_facebook'),
+            CompanyProfile::url('contact_zalo'),
+        ]));
+        if ($sameAs !== []) {
+            $organization['sameAs'] = $sameAs;
+        }
         $graph = [];
         if ($url === $home) {
             $parts = array_map('trim', explode(',', (string) setting('contact_address'), 2));
@@ -56,6 +63,11 @@ class SeoSchema
         }
         if ($questions !== []) {
             $graph[] = ['@type' => 'FAQPage', 'mainEntity' => $questions];
+        }
+
+        foreach ($data['people'] ?? [] as $person) {
+            $person['image'] = self::absoluteUrl($person['image'] ?? null);
+            $graph[] = array_filter(['@type' => 'Person'] + $person);
         }
 
         return ['@context' => 'https://schema.org', '@graph' => $graph];

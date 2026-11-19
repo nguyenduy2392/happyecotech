@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\MediaAsset;
+use App\Support\CompanyProfile;
 use Illuminate\Database\Seeder;
 
 /**
@@ -22,7 +23,7 @@ class MediaAssetSeeder extends Seeder
 
         $manifest = json_decode(file_get_contents(public_path('assets/img/v2/manifest.json')), true, flags: JSON_THROW_ON_ERROR);
         foreach ($manifest as $asset) {
-            if (in_array($asset['file'], ['hero.webp', 'hero-taskflow.webp'], true)
+            if (in_array($asset['file'], ['hero.webp', 'hero-taskflow.webp', CompanyProfile::CEO_FILE], true)
                 || preg_match('/^(?:service-.+-lg\.webp|screen-(?:taskflow|minicrm)-[1-4]\.webp|icon-(?!.*-48).*\.svg|og[^\/]*\.(?:png|webp))$/D', $asset['file'])) {
                 $items[] = ['img/v2/'.$asset['file'], str($asset['use'])->before('.')->toString(), $asset['alt']];
             }
