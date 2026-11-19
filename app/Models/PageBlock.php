@@ -23,6 +23,7 @@ class PageBlock extends Model
         'app_download' => 'Tải ứng dụng TaskFlow',
         'latest_news' => 'Tin tức mới nhất',
         'richtext' => 'Nội dung rich text',
+        'faq' => 'Câu hỏi thường gặp',
     ];
 
     protected $fillable = [
