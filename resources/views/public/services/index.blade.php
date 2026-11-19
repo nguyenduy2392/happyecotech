@@ -36,7 +36,7 @@
                 <h2 class="text-h2">Chưa rõ giải pháp nào phù hợp?</h2>
                 <p class="mt-3 max-w-xl text-ink-300">Mô tả ngắn nhu cầu, chúng tôi sẽ đề xuất lộ trình triển khai gọn nhất cho bạn.</p>
             </div>
-            <a href="{{ route('contact') }}#contact-form" class="btn btn-light btn-lg">Nhận tư vấn</a>
+            <a href="{{ route('contact') }}#contact-form" data-cta="services-index" class="btn btn-light btn-lg">Nhận tư vấn</a>
         </div>
     </section>
 @endsection

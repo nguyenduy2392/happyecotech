@@ -39,6 +39,11 @@ class SiteSettingSeeder extends Seeder
             ['seo', 'seo_robots', 'index,follow', 'string'],
             ['seo', 'zalo_site_verification', 'Fz-kBBpPAIrbyBfscFKTR1hmd6RsXaanDJ0o', 'string'],
 
+            // Đo lường: để trống tới khi chủ website cung cấp ID thật.
+            ['analytics', 'analytics_gtm_id', '', 'string'],
+            ['analytics', 'analytics_ga4_id', '', 'string'],
+            ['analytics', 'analytics_scroll_depth', '1', 'boolean'],
+
             // Footer
             ['footer', 'footer_description', 'Chúng tôi là đơn vị phát triển phần mềm chuyên nghiệp, có đội ngũ nhân sự giỏi, kinh nghiệm, tận tâm và chuyên nghiệp.', 'text'],
             ['footer', 'footer_copyright', 'Happy Ecotech', 'string'],

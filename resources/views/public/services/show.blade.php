@@ -34,7 +34,7 @@
 @endphp
 
 @section('content')
-    <section class="section-brand border-b border-ink-100">
+    <section class="section-brand border-b border-ink-100" data-view-service="{{ $service->slug }}">
         <div class="container-page grid items-center gap-10 py-10 md:py-14 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]">
             <div>
                 <x-breadcrumbs :items="[['label' => 'Giải pháp', 'url' => route('services.index')], ['label' => $service->name]]" />
@@ -43,7 +43,7 @@
                     <p class="mt-5 max-w-2xl text-lead text-ink-700">{{ $service->short_description }}</p>
                 @endif
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                    <a href="{{ $ctaUrl }}" class="btn btn-primary btn-lg">{{ $ctaText }} <x-glyph name="arrow-right" /></a>
+                    <a href="{{ $ctaUrl }}" data-cta="service-hero" class="btn btn-primary btn-lg">{{ $ctaText }} <x-glyph name="arrow-right" /></a>
                     @if ($externalUrl)
                         <a href="{{ $externalUrl }}" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">Truy cập {{ $service->name }}</a>
                     @endif

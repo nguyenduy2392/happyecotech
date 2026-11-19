@@ -17,7 +17,7 @@
                 <p class="mt-5 max-w-xl text-lead text-ink-700">{{ $sub }}</p>
             @endif
             <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a href="{{ $ctaUrl }}" class="btn btn-primary btn-lg">{{ $ctaText }} <x-glyph name="arrow-right" /></a>
+                <a href="{{ $ctaUrl }}" data-cta="hero" class="btn btn-primary btn-lg">{{ $ctaText }} <x-glyph name="arrow-right" /></a>
                 <a href="{{ $cta2Url }}" class="btn btn-outline btn-lg">{{ $cta2Text }}</a>
             </div>
         </div>

@@ -1,4 +1,6 @@
 // Chỉ JS cần thiết. FAQ, dropdown là HTML/CSS thuần.
+import './analytics.js'; // đo lường (no-op khi chưa cấu hình GTM/GA4)
+
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 // ---- Menu mobile ----
@@ -167,6 +169,12 @@ document.querySelectorAll('form[data-ajax-form]').forEach((form, i) => {
             } else if (res.status === 419) {
                 showStatus(form, 'error', 'Phiên làm việc đã hết hạn và chưa làm mới được. Dữ liệu của bạn vẫn được giữ.', { retry });
             } else if (res.ok && (data?.ok || !isJson)) {
+                // Đo lường: chỉ nhãn nguồn + tên giải pháp, KHÔNG đọc tên/SĐT/email.
+                const sel = form.querySelector('select[name="service_id"]');
+                document.dispatchEvent(new CustomEvent('he:lead', { detail: {
+                    source: form.querySelector('input[name="source"]')?.value,
+                    solution: sel?.value ? sel.selectedOptions[0]?.textContent.trim() : '',
+                } }));
                 form.reset();
                 keyInput.value = uuid();
                 showStatus(form, 'ok', data?.message || 'Cảm ơn bạn. Chúng tôi đã nhận được thông tin và sẽ liên hệ lại sớm.', { focus: true });

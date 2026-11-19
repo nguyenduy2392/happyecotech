@@ -38,7 +38,7 @@
         </nav>
 
         <div class="flex items-center gap-2">
-            <a href="{{ route('contact') }}#contact-form" class="btn btn-primary hidden sm:inline-flex">Nhận tư vấn</a>
+            <a href="{{ route('contact') }}#contact-form" data-cta="header" class="btn btn-primary hidden sm:inline-flex">Nhận tư vấn</a>
             <button type="button" class="btn btn-outline px-3 lg:hidden" data-nav-toggle aria-expanded="false"
                 aria-controls="mobile-nav" aria-label="Mở menu">
                 <x-glyph name="menu" :size="22" />
@@ -59,7 +59,7 @@
                         @if ($child->target_blank) target="_blank" rel="noopener noreferrer" @endif>{{ $child->label }}</a>
                 @endforeach
             @endforeach
-            <a href="{{ route('contact') }}#contact-form" class="btn btn-primary btn-lg mt-3">Nhận tư vấn</a>
+            <a href="{{ route('contact') }}#contact-form" data-cta="header-mobile" class="btn btn-primary btn-lg mt-3">Nhận tư vấn</a>
         </nav>
     </div>
 </header>

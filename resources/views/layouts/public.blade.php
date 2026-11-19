@@ -43,6 +43,8 @@
         <x-glyph name="arrow-right" :size="22" class="-rotate-90" />
     </button>
 
+    @include('partials.analytics')
+
     @stack('scripts')
 </body>
 

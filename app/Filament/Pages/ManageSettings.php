@@ -7,6 +7,7 @@ use App\Models\MediaAsset;
 use App\Models\SiteSetting;
 use App\Models\SocialLink;
 use App\Rules\SafeUrl;
+use App\Support\Analytics;
 use BackedEnum;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -94,6 +95,19 @@ class ManageSettings extends Page
                         Textarea::make('seo_default_description')->label('Mô tả mặc định')->rows(2)->columnSpanFull(),
                         $this->mediaSelect('seo_default_og_image_media_id', 'Ảnh OG mặc định'),
                         TextInput::make('zalo_site_verification')->label('Zalo verification'),
+                    ])->columns(2),
+
+                    Tab::make('Đo lường')->schema([
+                        TextInput::make('analytics_gtm_id')->label('GTM container ID')
+                            ->placeholder('GTM-XXXXXXX')->regex(Analytics::GTM_PATTERN)
+                            ->helperText('Để trống = không nạp GTM. Nếu nhập cả GTM và GA4, chỉ GTM được nạp (cấu hình GA4 bên trong container).'),
+                        TextInput::make('analytics_ga4_id')->label('GA4 Measurement ID')
+                            ->placeholder('G-XXXXXXXXXX')->regex(Analytics::GA4_PATTERN)
+                            ->helperText('Để trống = không nạp GA4. Chỉ dùng khi không có GTM.'),
+                        Toggle::make('analytics_scroll_depth')->label('Ghi sự kiện cuộn trang 50% / 90%')->default(true),
+                        Textarea::make('_analytics_note')->label('Ghi chú')
+                            ->default('Script chỉ nạp sau khi người dùng tương tác hoặc trình duyệt rảnh, và mặc định bị từ chối cookie (Consent Mode v2) cho tới khi khách bấm Đồng ý. Không gửi họ tên/SĐT/email vào dataLayer.')
+                            ->disabled()->dehydrated(false)->rows(2)->columnSpanFull(),
                     ])->columns(2),
 
                     Tab::make('Footer')->schema([

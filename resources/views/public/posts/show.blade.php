@@ -59,7 +59,7 @@
                 <h2 id="post-cta-title" class="text-h2">Cần tư vấn giải pháp phù hợp?</h2>
                 <p class="mt-3 max-w-xl text-ink-300">Để lại thông tin, đội ngũ Happy Ecotech sẽ liên hệ lại với bạn.</p>
             </div>
-            <a href="{{ route('contact') }}#contact-form" class="btn btn-light btn-lg">Nhận tư vấn</a>
+            <a href="{{ route('contact') }}#contact-form" data-cta="post-end" class="btn btn-light btn-lg">Nhận tư vấn</a>
         </div>
     </section>
 @endsection

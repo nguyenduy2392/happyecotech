@@ -8,7 +8,7 @@
     $ctaText = $data['cta_text'] ?? null;
     $hasButton = filled($ctaUrl) || filled($ctaText); // cta_url không an toàn -> về form liên hệ
 @endphp
-<section class="section section-ink" aria-labelledby="cta-title" id="lien-he-nhanh">
+<section class="section section-ink" data-cta-pos="cta-block" aria-labelledby="cta-title" id="lien-he-nhanh">
     <div class="container-page grid items-start gap-10 {{ $showForm ? 'lg:grid-cols-2' : '' }} lg:gap-16">
         <div>
             <h2 id="cta-title" class="text-h2">{{ $data['heading'] ?? 'Nhận tư vấn giải pháp phù hợp' }}</h2>
@@ -17,7 +17,7 @@
             @endif
             <div class="mt-8 flex flex-col gap-3 sm:flex-row">
                 @if ($hasButton)
-                    <a href="{{ $ctaUrl ?: route('contact').'#contact-form' }}" class="btn btn-light btn-lg">{{ $ctaText ?: 'Liên hệ với chúng tôi' }}</a>
+                    <a href="{{ $ctaUrl ?: route('contact').'#contact-form' }}" data-cta="cta-block" class="btn btn-light btn-lg">{{ $ctaText ?: 'Liên hệ với chúng tôi' }}</a>
                 @endif
                 @if ($tel)
                     <a href="tel:{{ $tel }}" class="btn btn-light btn-lg"><x-glyph name="phone" /> {{ $phone }}</a>
