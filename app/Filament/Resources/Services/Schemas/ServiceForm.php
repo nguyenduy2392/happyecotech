@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Services\Schemas;
 use App\Filament\Support\Forms;
 use App\Filament\Support\PageBlockFields;
 use App\Models\Service;
+use App\Rules\SafeUrl;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -62,11 +63,11 @@ class ServiceForm
                 Section::make('Liên kết & CTA')
                     ->columns(2)
                     ->schema([
-                        TextInput::make('external_url')->label('Website sản phẩm')->url(),
-                        TextInput::make('app_store_url')->label('App Store URL')->url(),
-                        TextInput::make('google_play_url')->label('Google Play URL')->url(),
+                        TextInput::make('external_url')->label('Website sản phẩm')->rules([new SafeUrl(absolute: true)]),
+                        TextInput::make('app_store_url')->label('App Store URL')->rules([new SafeUrl(absolute: true)]),
+                        TextInput::make('google_play_url')->label('Google Play URL')->rules([new SafeUrl(absolute: true)]),
                         TextInput::make('cta_text')->label('Nội dung nút CTA'),
-                        TextInput::make('cta_url')->label('URL nút CTA'),
+                        TextInput::make('cta_url')->label('URL nút CTA')->rules([new SafeUrl]),
                     ]),
 
                 Section::make('Xuất bản')

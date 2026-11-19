@@ -6,6 +6,7 @@ use App\Models\AuditLog;
 use App\Models\MediaAsset;
 use App\Models\SiteSetting;
 use App\Models\SocialLink;
+use App\Rules\SafeUrl;
 use BackedEnum;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -68,7 +69,7 @@ class ManageSettings extends Page
                         TextInput::make('contact_email')->label('Email')->email(),
                         TextInput::make('contact_address')->label('Địa chỉ'),
                         TextInput::make('working_hours')->label('Giờ làm việc'),
-                        Textarea::make('map_embed_url')->label('URL nhúng Google Maps')->rows(2)->columnSpanFull(),
+                        Textarea::make('map_embed_url')->label('URL nhúng Google Maps')->rules([new SafeUrl(absolute: true)])->rows(2)->columnSpanFull(),
                     ])->columns(2),
 
                     Tab::make('Mạng xã hội')->schema([
@@ -79,7 +80,7 @@ class ManageSettings extends Page
                                     ->options(collect(SocialLink::PLATFORMS)->keys()->mapWithKeys(fn ($k) => [$k => ucfirst($k)])->all())
                                     ->required(),
                                 TextInput::make('label')->label('Nhãn'),
-                                TextInput::make('url')->label('URL')->url(),
+                                TextInput::make('url')->label('URL')->rules([new SafeUrl(absolute: true)]),
                                 Toggle::make('is_enabled')->label('Hiển thị')->default(true),
                             ])
                             ->columns(2)
@@ -104,8 +105,8 @@ class ManageSettings extends Page
                     ])->columns(2),
 
                     Tab::make('Tải ứng dụng')->schema([
-                        TextInput::make('app_store_url')->label('App Store URL')->url(),
-                        TextInput::make('google_play_url')->label('Google Play URL')->url(),
+                        TextInput::make('app_store_url')->label('App Store URL')->rules([new SafeUrl(absolute: true)]),
+                        TextInput::make('google_play_url')->label('Google Play URL')->rules([new SafeUrl(absolute: true)]),
                         $this->mediaSelect('app_qr_ios_media_id', 'QR iOS'),
                         $this->mediaSelect('app_qr_android_media_id', 'QR Android'),
                     ])->columns(2),

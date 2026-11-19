@@ -76,7 +76,15 @@ class BlocksRelationManager extends RelationManager
                 CreateAction::make(),
             ])
             ->recordActions([
-                EditAction::make()->mutateDataUsing(function (array $data, PageBlock $record): array {
+                EditAction::make()->mutateRecordDataUsing(function (array $data): array {
+                    if ($data['block_type'] === 'partners') {
+                        $data['data']['logos'] = array_map(fn ($logo) => is_array($logo)
+                            ? ['media_id' => $logo['media_id'] ?? $logo['logo_media_id'] ?? null] + $logo
+                            : ['media_id' => $logo], $data['data']['logos'] ?? []);
+                    }
+
+                    return $data;
+                })->mutateDataUsing(function (array $data, PageBlock $record): array {
                     // Existing keys outside the typed fields, such as seed notes, survive edits.
                     $data['data'] = array_replace($record->data ?? [], $data['data'] ?? []);
 

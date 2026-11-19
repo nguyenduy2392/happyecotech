@@ -49,7 +49,7 @@ class MenuItem extends Model
      */
     public function resolveUrl(): string
     {
-        return match ($this->link_type) {
+        $url = match ($this->link_type) {
             'route' => $this->route_name && Route::has($this->route_name)
                 ? route($this->route_name)
                 : ($this->url ?: '#'),
@@ -67,5 +67,7 @@ class MenuItem extends Model
                 : ($this->url ?: '#'),
             default => $this->url ?: '#',
         };
+
+        return safe_url($url) ?? '#';
     }
 }

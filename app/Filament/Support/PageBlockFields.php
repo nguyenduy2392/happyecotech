@@ -3,6 +3,7 @@
 namespace App\Filament\Support;
 
 use App\Models\MediaAsset;
+use App\Rules\SafeUrl;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -17,14 +18,23 @@ class PageBlockFields
         $subheading = Textarea::make('subheading')->label('Tiêu đề phụ');
         $cta = [
             TextInput::make('cta_text')->label('Nhãn nút'),
-            TextInput::make('cta_url')->label('Đường dẫn nút')->regex('~^(?:/(?![/\\\\])|https?://)[^\\s]*$~iD'),
+            TextInput::make('cta_url')->label('Đường dẫn nút')->rules([new SafeUrl]),
         ];
         $limit = TextInput::make('limit')->label('Số mục')->integer()->minValue(1)->maxValue(24);
 
         return match ($type) {
-            'hero' => [TextInput::make('h1')->label('H1 trang')->maxLength(255), $heading, $subheading, ...$cta, self::image('image_media_id', 'Ảnh')],
-            'cta' => [$heading, $subheading, ...$cta],
-            'partners' => [$heading, self::image('logos', 'Logo')->multiple()],
+            'hero' => [
+                TextInput::make('h1')->label('H1 trang')->maxLength(255), $heading, $subheading, ...$cta,
+                TextInput::make('secondary_cta_text')->label('Nhãn nút phụ'),
+                TextInput::make('secondary_cta_url')->label('URL nút phụ')->rules([new SafeUrl]),
+                self::image('image_media_id', 'Ảnh'),
+            ],
+            'cta' => [$heading, $subheading, ...$cta, Toggle::make('show_form')->label('Hiện biểu mẫu tư vấn')->default(false)],
+            'partners' => [$heading, Repeater::make('logos')->label('Logo')->schema([
+                self::image('media_id', 'Logo')->required(),
+                TextInput::make('name')->label('Tên đối tác')->maxLength(255),
+                TextInput::make('url')->label('URL đối tác')->rules([new SafeUrl(absolute: true)]),
+            ])->defaultItems(0)],
             'about', 'why_choose' => [$heading, Textarea::make('description')->label('Mô tả')],
             'vision_mission' => [
                 $heading, Textarea::make('vision')->label('Tầm nhìn'), Textarea::make('mission')->label('Sứ mệnh'),
@@ -42,8 +52,8 @@ class PageBlockFields
             ],
             'app_download' => [
                 TextInput::make('kicker')->label('Nhãn'), $heading, Textarea::make('lead')->label('Mô tả'),
-                TextInput::make('ios_url')->label('App Store')->rules(['url:http,https']),
-                TextInput::make('android_url')->label('Google Play')->rules(['url:http,https']),
+                TextInput::make('ios_url')->label('App Store')->rules([new SafeUrl(absolute: true)]),
+                TextInput::make('android_url')->label('Google Play')->rules([new SafeUrl(absolute: true)]),
                 self::image('ios_qr_media_id', 'QR iOS'), self::image('android_qr_media_id', 'QR Android'),
             ],
             'featured_services' => [$heading, $subheading, $limit],
