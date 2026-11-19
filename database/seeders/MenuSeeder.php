@@ -14,7 +14,7 @@ class MenuSeeder extends Seeder
         $items = [
             ['Trang chủ', 'home'],
             ['Giới thiệu', 'about'],
-            ['Dịch vụ', 'services.index'],
+            ['Sản phẩm', 'services.index'],
             ['Đội ngũ', 'team'],
             ['Tin tức', 'posts.index'],
             ['Liên hệ', 'contact'],
@@ -26,10 +26,10 @@ class MenuSeeder extends Seeder
         foreach ([$header, $footerQuick] as $menu) {
             foreach ($items as $i => [$label, $route]) {
                 MenuItem::firstOrCreate(
-                    ['menu_id' => $menu->id, 'label' => $label],
+                    ['menu_id' => $menu->id, 'route_name' => $route],
                     [
                         'link_type' => 'route',
-                        'route_name' => $route,
+                        'label' => $label,
                         'sort_order' => $i,
                         'is_enabled' => true,
                     ],

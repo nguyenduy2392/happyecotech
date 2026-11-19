@@ -11,6 +11,7 @@ class SeoSchema
             '@type' => 'Organization',
             '@id' => $home.'#organization',
             'name' => setting('company_name') ?: $siteName,
+            'description' => ProductPositioning::ORGANIZATION_DESCRIPTION,
             'url' => $home,
         ];
         $graph = [];

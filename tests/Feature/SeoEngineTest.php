@@ -246,7 +246,7 @@ class SeoEngineTest extends TestCase
         }
         $hero = Page::whereSlug('home')->firstOrFail()->blocks()->where('block_type', 'hero')->firstOrFail();
         $media = MediaAsset::findOrFail($hero->data['image_media_id']);
-        $this->assertStringEndsWith('/hero-md.webp', media_url($media, 'md'));
+        $this->assertStringEndsWith('/hero-taskflow-md.webp', media_url($media, 'md'));
         $this->assertSame(media_url($media, 'sm'), media_url($media->id, 'sm'));
         $this->assertDatabaseHas('services', ['slug' => 'datahub', 'status' => 'draft']);
         $this->assertDatabaseHas('services', ['slug' => 'omc', 'status' => 'draft']);
