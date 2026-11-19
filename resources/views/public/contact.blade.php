@@ -25,14 +25,14 @@
                 <h2 class="text-h2">Gửi yêu cầu tư vấn</h2>
 
                 @if (session('contact_success'))
-                    <div role="status" class="mt-6 rounded-lg border border-brand-200 bg-brand-50 p-5 text-brand-900">
+                    <div role="status" class="mt-6 rounded-2xl border border-brand-200 bg-brand-50 p-5 text-brand-900">
                         <p class="font-semibold">Cảm ơn bạn. Chúng tôi đã nhận được yêu cầu.</p>
                         <p class="mt-1">Đội ngũ Happy Ecotech sẽ liên hệ lại với bạn sớm nhất có thể.</p>
                     </div>
                 @endif
 
                 @if ($errors->any())
-                    <div role="alert" class="mt-6 rounded-lg border border-danger-600 bg-danger-50 p-5 text-danger-600">
+                    <div role="alert" class="mt-6 rounded-2xl border border-danger-600 bg-danger-50 p-5 text-danger-600">
                         <p class="font-semibold">Vui lòng kiểm tra lại {{ $errors->count() }} trường chưa hợp lệ.</p>
                     </div>
                 @endif
@@ -78,7 +78,7 @@
                     @endphp
                     @if ($solSlug && ! $solHasService)
                         <input type="hidden" name="solution" value="{{ $solSlug }}" data-solution />
-                        <p class="rounded-lg bg-brand-50 p-3 text-sm" data-solution-note>Giải pháp quan tâm: <strong>{{ $solMeta['name'] ?? $solSlug }}</strong></p>
+                        <p class="rounded-2xl bg-brand-50 p-3 text-sm" data-solution-note>Giải pháp quan tâm: <strong>{{ $solMeta['name'] ?? $solSlug }}</strong></p>
                     @endif
                     <div class="field">
                         <label for="c-service">Giải pháp quan tâm <span class="font-normal text-ink-500">(không bắt buộc)</span></label>
@@ -142,7 +142,7 @@
                 </ul>
                 @if ($mapEmbed)
                     <iframe src="{{ $mapEmbed }}" title="Bản đồ văn phòng" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                        class="mt-8 h-72 w-full rounded-lg border border-ink-100"></iframe>
+                        class="mt-8 h-72 w-full rounded-2xl border border-ink-100"></iframe>
                 @endif
             </aside>
         </div>

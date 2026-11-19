@@ -39,7 +39,7 @@
                 </ul>
             @endif
             </div>
-            <x-art name="app-taskflow" width="720" height="960" class="mx-auto w-full max-w-60 rounded-xl lg:order-last" sizes="240px" />
+            <x-art name="app-taskflow" width="720" height="960" class="mx-auto w-full max-w-60 rounded-2xl lg:order-last" sizes="240px" />
         </div>
     </section>
 @endif

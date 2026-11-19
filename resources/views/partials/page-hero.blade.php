@@ -4,9 +4,9 @@
         @isset($crumbs)
             <x-breadcrumbs :items="$crumbs" />
         @endisset
-        <h1 class="mt-4 max-w-3xl text-display">{{ $title }}</h1>
+        <h1 class="hero-title mt-4">{{ $title }}</h1>
         @if (! empty($lead))
-            <p class="mt-4 max-w-2xl text-lead text-ink-700">{{ $lead }}</p>
+            <p class="hero-lead mt-4">{{ $lead }}</p>
         @endif
         {{ $slot ?? '' }}
     </div>

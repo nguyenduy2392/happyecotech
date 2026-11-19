@@ -57,10 +57,10 @@
             </div>
             @if ($service->cover)
                 <x-media-img :media="$service->cover" :alt="$service->cover->alt ?: $service->name" :priority="true"
-                    class="h-auto w-full rounded-xl" sizes="(min-width: 1024px) 400px, 100vw" />
+                    class="h-auto w-full rounded-2xl" sizes="(min-width: 1024px) 400px, 100vw" />
             @else
                 <x-art :name="'service-'.$service->slug" width="800" height="600" :priority="true" :alt="$service->name"
-                    class="w-full rounded-xl" sizes="(min-width: 1024px) 400px, 100vw" />
+                    class="w-full rounded-2xl" sizes="(min-width: 1024px) 400px, 100vw" />
             @endif
         </div>
     </section>
@@ -191,7 +191,7 @@
                 <h2 id="service-cta-title" class="text-h2">Bắt đầu với {{ $service->name }}</h2>
                 <p class="mt-4 max-w-xl text-lead text-ink-300">Để lại thông tin, đội ngũ Happy Ecotech sẽ liên hệ tư vấn và sắp xếp demo phù hợp.</p>
             </div>
-            <div class="rounded-xl bg-white p-6 text-ink-900 md:p-8">
+            <div class="rounded-2xl bg-white p-6 text-ink-900 md:p-8">
                 <x-lead-form id="svc-form" :service-id="$service->id" />
             </div>
         </div>

@@ -21,7 +21,7 @@
         <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
             <div>
                 {{-- Logo xanh trên nền ink không đủ tương phản: đặt trong khối trắng. --}}
-                <a href="{{ route('home') }}" class="inline-block rounded-md bg-white px-3 py-2" aria-label="{{ $siteName }} - Trang chủ">
+                <a href="{{ route('home') }}" class="inline-block rounded-lg bg-white px-3 py-2" aria-label="{{ $siteName }} - Trang chủ">
                     @if ($isDefaultLogo)
                         <img src="{{ asset('assets/img/logo/logo-full.webp') }}" alt="{{ $siteName }}" width="380" height="141"
                             class="h-9 w-auto" loading="lazy" decoding="async" />
@@ -39,14 +39,14 @@
                             @if ($url)
                                 <li>
                                     <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ $label }}"
-                                        class="flex size-11 items-center justify-center rounded-md border border-ink-700 text-white hover:bg-ink-700"><x-glyph :name="$icon" /></a>
+                                        class="flex size-11 items-center justify-center rounded-lg border border-ink-700 text-white hover:bg-ink-700"><x-glyph :name="$icon" /></a>
                                 </li>
                             @endif
                         @endforeach
                         @foreach ($ch['others'] as $social)
                             <li>
                                 <a href="{{ $safe($social->url) }}" target="_blank" rel="noopener noreferrer"
-                                    class="flex size-11 items-center justify-center rounded-md border border-ink-700 text-white hover:bg-ink-700"
+                                    class="flex size-11 items-center justify-center rounded-lg border border-ink-700 text-white hover:bg-ink-700"
                                     aria-label="{{ $social->label ?: $social->platform }} Happy Ecotech">
                                     <x-glyph :name="$socialIcons[strtolower((string) $social->platform)] ?? 'link'" />
                                 </a>
@@ -93,7 +93,7 @@
                 </ul>
                 @if ($mapEmbed)
                     <iframe src="{{ $mapEmbed }}" title="Bản đồ văn phòng {{ $siteName }}" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade" class="mt-5 h-36 w-full rounded-md border border-ink-700"></iframe>
+                        referrerpolicy="no-referrer-when-downgrade" class="mt-5 h-36 w-full rounded-lg border border-ink-700"></iframe>
                 @endif
             </div>
         </div>

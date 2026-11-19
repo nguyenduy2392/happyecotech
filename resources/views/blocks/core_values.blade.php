@@ -15,7 +15,7 @@
                         @if ($icon && is_file(public_path("assets/img/v2/{$icon}.svg")))
                             <x-art :name="$icon" width="128" height="128" class="size-14" sizes="56px" />
                         @else
-                            <span class="flex size-11 items-center justify-center rounded-md bg-brand-100 font-semibold text-brand-700" aria-hidden="true">{{ $i + 1 }}</span>
+                            <span class="flex size-11 items-center justify-center rounded-lg bg-brand-100 font-semibold text-brand-700" aria-hidden="true">{{ $i + 1 }}</span>
                         @endif
                         <h3 class="mt-4">{{ $value['title'] }}</h3>
                         @if (! empty($value['description']))

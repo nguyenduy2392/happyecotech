@@ -10,7 +10,7 @@
         <div class="grid gap-6 md:grid-cols-2">
             @foreach ([['Tầm nhìn', $data['vision'] ?? null], ['Sứ mệnh', $data['mission'] ?? null]] as [$label, $text])
                 @if ($text)
-                    <div class="rounded-xl bg-brand-50 p-8 md:p-10">
+                    <div class="rounded-2xl bg-brand-50 p-8 md:p-10">
                         <h3 class="text-brand-700">{{ $label }}</h3>
                         <p class="mt-4 text-h3 font-semibold leading-snug text-ink-900 md:text-2xl">{{ $text }}</p>
                     </div>
@@ -22,7 +22,7 @@
             <h3 class="mt-16 text-h2">Giá trị cốt lõi</h3>
             <ul class="mt-8 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-5">
                 @foreach ($values as $i => $value)
-                    <li class="border-t-2 border-brand-600 pt-5">
+                    <li class="card !p-5">
                         @php $icon = ['value-transparency', 'value-integrity', 'value-people', 'value-responsibility', 'value-sustainability'][$i] ?? null; @endphp
                         @if ($icon && is_file(public_path("assets/img/v2/{$icon}.svg")))
                             <x-art :name="$icon" width="128" height="128" class="size-12" sizes="48px" />

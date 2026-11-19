@@ -12,7 +12,7 @@
         gtag('consent', 'default', { ad_storage: 'denied', analytics_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', wait_for_update: 500 });
     </script>
     {{-- Banner cố định (không đẩy nội dung -> không CLS). Ẩn mặc định; JS chỉ hiện khi chưa có lựa chọn. --}}
-    <div class="consent-banner fixed inset-x-2 bottom-20 z-50 rounded-lg border border-ink-200 bg-white p-4 shadow-lg md:inset-x-auto md:bottom-4 md:left-4 md:max-w-md"
+    <div class="consent-banner fixed inset-x-2 bottom-20 z-50 rounded-2xl border border-ink-200 bg-white p-4 shadow-lg md:inset-x-auto md:bottom-4 md:left-4 md:max-w-md"
         data-consent-banner role="region" aria-labelledby="consent-title" hidden>
         <p id="consent-title" class="font-semibold">Cookie và đo lường</p>
         <p class="mt-1 text-sm text-ink-700">Chúng tôi dùng cookie phân tích để hiểu cách website được sử dụng và cải thiện nội dung. Bạn có thể từ chối; website vẫn hoạt động bình thường.</p>

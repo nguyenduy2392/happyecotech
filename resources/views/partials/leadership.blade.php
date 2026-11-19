@@ -21,7 +21,7 @@
     <section class="section {{ $withBg ?? false ? 'section-tint' : '' }}" aria-labelledby="leadership-title">
         <div class="container-page">
             <div class="section-head"><h2 id="leadership-title">Ban lãnh đạo</h2></div>
-            <div class="grid max-w-4xl items-center gap-8 rounded-xl bg-brand-50 p-6 sm:grid-cols-[auto_1fr] md:gap-12 md:p-10">
+            <div class="grid max-w-4xl items-center gap-8 rounded-2xl bg-brand-50 p-6 sm:grid-cols-[auto_1fr] md:gap-12 md:p-10">
                 <div class="mx-auto w-full max-w-60 sm:mx-0 sm:w-60">
                     @if ($ceo?->photo)
                         @php
@@ -42,14 +42,14 @@
                         @if ($portraitSet)
                             <img src="{{ preg_replace('/-(lg|md|sm)(\.\w+)$/', '-lg$2', $photo->url) }}" srcset="{{ $portraitSet }}" sizes="240px"
                                 alt="{{ $altText }}" width="{{ $pw }}" height="{{ $ph }}" loading="lazy" decoding="async"
-                                class="aspect-[360/450] w-full rounded-lg object-cover" />
+                                class="aspect-[360/450] w-full rounded-2xl object-cover" />
                         @else
                             <x-media-img :media="$photo" :alt="$altText" :width="$pw" :height="$ph"
-                                class="aspect-[360/450] w-full rounded-lg object-cover" sizes="240px" />
+                                class="aspect-[360/450] w-full rounded-2xl object-cover" sizes="240px" />
                         @endif
                     @else
                         <img src="{{ asset('assets/img/v2/team/'.basename($file)) }}" alt="Tổng giám đốc Happy Ecotech" width="{{ $dim[0] }}" height="{{ $dim[1] }}"
-                            loading="lazy" decoding="async" class="aspect-[360/450] w-full rounded-lg object-cover" />
+                            loading="lazy" decoding="async" class="aspect-[360/450] w-full rounded-2xl object-cover" />
                     @endif
                 </div>
                 <div>

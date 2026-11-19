@@ -13,6 +13,7 @@ if (toggle && panel) {
         panel.classList.toggle('is-open', open);
     };
 
+    panel.querySelectorAll('a').forEach((a, i) => a.style.setProperty('--i', i));
     toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
@@ -218,3 +219,41 @@ document.querySelectorAll('select[data-solution-select]').forEach((sel) => {
         sel.form.querySelectorAll('[data-solution], [data-solution-note]').forEach((el) => el.remove());
     });
 });
+
+// ---- Hiện dần khi cuộn + tagline từng từ: IntersectionObserver (không lắng nghe scroll), 1 lần/phần tử ----
+const motionOk = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if ('IntersectionObserver' in window && motionOk) {
+    const sections = [...document.querySelectorAll('main > section')].slice(1); // bỏ phần đầu (hero) để không trễ LCP
+    sections.forEach((el) => el.setAttribute('data-reveal', ''));
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+            if (e.isIntersecting) {
+                e.target.classList.add('is-in');
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+    sections.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight) el.classList.add('is-in'); else io.observe(el);
+    });
+
+    const words = [...document.querySelectorAll('.tagline-text .tw')];
+    if (words.length) {
+        let batch = 0;
+        const wio = new IntersectionObserver((entries) => {
+            const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left);
+            hit.forEach((e, i) => {
+                e.target.style.transitionDelay = `${Math.min(i * 40, 400)}ms`;
+                e.target.classList.add('on');
+                wio.unobserve(e.target);
+            });
+            batch += 1;
+        }, { rootMargin: '0px 0px -35% 0px', threshold: 0 });
+        words.forEach((w) => {
+            const r = w.getBoundingClientRect();
+            if (r.top < window.innerHeight * 0.65 && r.bottom > 0) w.classList.add('on'); else wio.observe(w);
+        });
+    }
+    document.documentElement.classList.add('reveal-ready');
+}

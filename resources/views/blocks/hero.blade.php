@@ -15,9 +15,9 @@
 <section class="section-brand overflow-hidden border-b border-ink-100">
     <div class="container-page grid items-center gap-10 py-12 md:py-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14 lg:py-20">
         <div>
-            <{{ $tag }} class="text-display text-ink-900">{{ $heading }}</{{ $tag }}>
+            <{{ $tag }} class="hero-title">{{ $heading }}</{{ $tag }}>
             @if ($sub)
-                <p class="mt-5 max-w-xl text-lead text-ink-700">{{ $sub }}</p>
+                <p class="hero-lead mt-5">{{ $sub }}</p>
             @endif
             <div class="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a href="{{ $ctaUrl }}" data-cta="hero" class="btn btn-primary btn-lg">{{ $ctaText }} <x-glyph name="arrow-right" /></a>
@@ -26,14 +26,14 @@
         </div>
         @if ($image)
             <x-media-img :media="$image" :alt="$data['image_alt'] ?? null" :priority="true"
-                sizes="(min-width: 1024px) 560px, 100vw" class="h-auto w-full rounded-xl" />
+                sizes="(min-width: 1024px) 560px, 100vw" class="h-auto w-full rounded-2xl" />
         @else
             @if ($fallbackArt === 'hero-taskflow')
                 <x-art name="hero-taskflow" width="1600" height="1000" :priority="true" :alt="$data['image_alt'] ?? null"
-                    sizes="(min-width: 1024px) 560px, 100vw" class="w-full rounded-xl" />
+                    sizes="(min-width: 1024px) 560px, 100vw" class="w-full rounded-2xl" />
             @else
                 <x-art name="service-taskflow" width="800" height="600" :priority="true" :alt="$data['image_alt'] ?? 'Ứng dụng TaskFlow'"
-                    sizes="(min-width: 1024px) 560px, 100vw" class="w-full rounded-xl" />
+                    sizes="(min-width: 1024px) 560px, 100vw" class="w-full rounded-2xl" />
             @endif
         @endif
     </div>

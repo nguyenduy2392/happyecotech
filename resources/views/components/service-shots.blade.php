@@ -29,7 +29,7 @@
 @if ($items->isNotEmpty())
     <ul {{ $attributes->class(['grid gap-4', $portrait ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2']) }}>
         @foreach ($items as $item)
-            <li class="overflow-hidden rounded-lg border border-ink-100 bg-white">
+            <li class="overflow-hidden rounded-2xl border border-ink-100 bg-white">
                 <a href="{{ $item['full'] }}" data-lightbox class="group relative block" aria-label="Phóng to: {{ $item['alt'] }}">
                     <img src="{{ $item['src'] }}" alt="{{ $item['alt'] }}" width="{{ $item['w'] }}" height="{{ $item['h'] }}" loading="lazy" decoding="async" class="h-auto w-full" />
                 </a>

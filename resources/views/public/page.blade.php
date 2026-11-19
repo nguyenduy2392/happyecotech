@@ -13,11 +13,13 @@
         $has = fn (string $t) => $blocks->contains('block_type', $t);
         $blocks = $blocks->reject(fn ($b) => $b->block_type === 'featured_services')->values();
         // Block ảo chỉ được thêm khi CMS chưa có block cùng loại (tránh render đôi).
+        $vm = $blocks->firstWhere('block_type', 'vision_mission');
+        if (! $has('tagline_reveal')) { $blocks->push($virtual('tagline_reveal', ['text' => is_array($vm?->data) ? ($vm->data['mission'] ?? null) : null])); }
         foreach (['benefit_strip', 'ecosystem_overview', 'product_taskflow', 'product_minicrm'] as $t) {
             if (! $has($t) && ($fs || $has('hero'))) { $blocks->push($virtual($t)); }
         }
         if (! $has('other_solutions') && ($fs || $has('hero'))) { $blocks->push($virtual('other_solutions', $fs?->data ?? [])); }
-        $order = array_flip(['hero', 'benefit_strip', 'ecosystem_overview', 'partners', 'product_taskflow', 'app_download', 'product_minicrm', 'other_solutions', 'stats', 'why_choose', 'vision_mission', 'core_values', 'latest_news', 'richtext', 'faq', 'cta']);
+        $order = array_flip(['hero', 'benefit_strip', 'ecosystem_overview', 'partners', 'product_taskflow', 'app_download', 'product_minicrm', 'tagline_reveal', 'other_solutions', 'stats', 'why_choose', 'vision_mission', 'core_values', 'latest_news', 'richtext', 'faq', 'cta']);
         $blocks = $blocks->sortBy(fn ($b) => $order[$b->block_type] ?? 50)->values();
     }
 

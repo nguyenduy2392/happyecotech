@@ -45,7 +45,7 @@
                     $consultUrl = $it['consult'] ?: route('contact', ['solution' => $it['slug']]).'#contact-form';
                     $flip = $i % 2 === 1;
                 @endphp
-                <article id="giai-phap-{{ $it['slug'] }}" class="grid items-center gap-6 overflow-hidden rounded-xl border border-ink-100 bg-white md:grid-cols-2 md:gap-0">
+                <article id="giai-phap-{{ $it['slug'] }}" class="grid items-center gap-6 overflow-hidden rounded-2xl border border-ink-100 bg-white md:grid-cols-2 md:gap-0">
                     <div class="{{ $flip ? 'md:order-2' : '' }}">
                         @if ($svc?->cover)
                             <x-media-img :media="$svc->cover" :alt="$svc->cover->alt ?: $svc->name" class="h-auto w-full" sizes="(min-width: 768px) 560px, 100vw" />

@@ -11,7 +11,7 @@
     $tokenUrl = \Illuminate\Support\Facades\Route::has('csrf.token') ? route('csrf.token', [], false) : null;
 @endphp
 @if ($tokenUrl)
-    <noscript><p class="rounded-lg border border-ink-200 p-4">Biểu mẫu nhanh cần JavaScript. Vui lòng dùng <a class="font-semibold underline" href="{{ route('contact') }}#contact-form">trang Liên hệ</a> hoặc gọi hotline.</p></noscript>
+    <noscript><p class="rounded-2xl border border-ink-200 p-4">Biểu mẫu nhanh cần JavaScript. Vui lòng dùng <a class="font-semibold underline" href="{{ route('contact') }}#contact-form">trang Liên hệ</a> hoặc gọi hotline.</p></noscript>
 @endif
 <form method="POST" action="{{ route('contact.submit') }}" class="grid gap-4" novalidate data-lead-form data-ajax-form @if ($tokenUrl) data-csrf-deferred data-csrf-endpoint="{{ $tokenUrl }}" @endif>
     <div data-form-status tabindex="-1" class="hidden" aria-live="polite"></div>

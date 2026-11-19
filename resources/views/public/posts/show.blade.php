@@ -24,7 +24,7 @@
             <div class="container-page">
                 @if ($post->featuredMedia)
                     <x-media-img :media="$post->featuredMedia" :alt="$post->title" :priority="true"
-                        sizes="(min-width: 1200px) 1100px, 100vw" class="mb-10 w-full max-w-4xl rounded-xl" />
+                        sizes="(min-width: 1200px) 1100px, 100vw" class="mb-10 w-full max-w-4xl rounded-2xl" />
                 @endif
                 <div class="prose-he">{!! $post->content !!}</div>
 
