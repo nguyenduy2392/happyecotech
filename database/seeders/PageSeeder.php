@@ -82,6 +82,7 @@ class PageSeeder extends Seeder
                 'description' => 'Chúng tôi là đơn vị phát triển phần mềm chuyên nghiệp, có đội ngũ nhân sự giỏi, kinh nghiệm, tận tâm và chuyên nghiệp.',
             ]],
             ['cta', 'CTA liên hệ', true, [
+                'show_form' => true,
                 'heading' => 'Bạn có ý tưởng gì? Bạn có thể liên hệ chúng tôi để được hỗ trợ.',
                 'subheading' => 'Chúng tôi sẽ giúp bạn tạo ra ý tưởng đó thành hiện thực.',
                 'cta_text' => 'LIÊN HỆ VỚI CHÚNG TÔI',
@@ -149,6 +150,7 @@ class PageSeeder extends Seeder
                 ],
             ]],
             ['cta', 'CTA liên hệ', true, [
+                'show_form' => true,
                 'heading' => 'Cùng Happy Ecotech kiến tạo giải pháp minh bạch',
                 'subheading' => 'Liên hệ để được tư vấn về hệ sinh thái sản phẩm của chúng tôi.',
                 'cta_text' => 'Liên hệ với chúng tôi',
