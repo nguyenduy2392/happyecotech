@@ -10,9 +10,9 @@
                 <h2 id="news-title" class="text-h2">{{ $data['heading'] ?? 'Tin tức mới' }}</h2>
                 <a href="{{ route('posts.index') }}" class="btn btn-ghost">Xem tất cả tin tức <x-glyph name="arrow-right" :size="18" /></a>
             </div>
-            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div class="grid gap-6 {{ $posts->count() >= 3 ? 'md:grid-cols-2 lg:grid-cols-3' : ($posts->count() === 2 ? 'md:grid-cols-2' : '') }}">
                 @foreach ($posts as $post)
-                    @include('partials.post-card', ['post' => $post])
+                    @include('partials.post-card', ['post' => $post, 'horizontal' => $posts->count() === 1])
                 @endforeach
             </div>
         </div>

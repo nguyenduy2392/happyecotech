@@ -254,6 +254,17 @@
     .nav-link:hover, .nav-link[aria-current="page"] { @apply text-brand-700; }
     .nav-link[aria-current="page"] { @apply bg-brand-50; }
 
+    /* Nút lên đầu trang: fixed (không gây CLS), nằm trên thanh Gọi/Zalo ở mobile */
+    .back-to-top {
+        @apply fixed bottom-20 right-4 z-30 flex size-12 items-center justify-center rounded-full bg-ink-900 text-white shadow-card md:bottom-6 md:right-6;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(0.5rem);
+        transition: opacity 150ms, transform 150ms, visibility 150ms;
+    }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: none; }
+    .back-to-top:hover { @apply bg-brand-700; }
+
     /* Thanh gọi/Zalo cố định mobile */
     .contact-bar { box-shadow: var(--shadow-bar); }
 }

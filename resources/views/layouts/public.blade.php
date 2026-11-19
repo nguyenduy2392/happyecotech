@@ -38,6 +38,10 @@
     @include('partials.footer')
     @include('partials.contact-bar')
 
+    <button type="button" class="back-to-top" data-back-to-top aria-label="Lên đầu trang" aria-hidden="true" tabindex="-1">
+        <x-glyph name="arrow-right" :size="22" class="-rotate-90" />
+    </button>
+
     @stack('scripts')
 </body>
 

@@ -34,7 +34,8 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('contact.submit') }}" class="mt-8 grid gap-5" novalidate>
+                <form method="POST" action="{{ route('contact.submit') }}" class="mt-8 grid gap-5" novalidate data-ajax-form>
+                    <div data-form-status tabindex="-1" class="hidden" aria-live="polite"></div>
                     @csrf
                     <div class="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
                         <label for="c-website">Không điền vào ô này</label>

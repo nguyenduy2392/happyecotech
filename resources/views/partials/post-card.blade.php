@@ -1,13 +1,13 @@
 {{-- Thẻ bài viết. Biến: $post (cần featuredMedia, categories). --}}
 @php $category = $post->categories->first(); @endphp
-<article class="card group h-full overflow-hidden !p-0">
+<article class="card group h-full overflow-hidden !p-0 {{ ($horizontal ?? false) ? 'md:flex-row' : '' }}">
     @if ($post->featuredMedia)
-        <a href="{{ route('posts.show', $post) }}" class="block aspect-[16/9] overflow-hidden bg-ink-100" tabindex="-1" aria-hidden="true">
+        <a href="{{ route('posts.show', $post) }}" class="block aspect-[16/9] overflow-hidden bg-ink-100 {{ ($horizontal ?? false) ? 'md:w-1/2 md:shrink-0' : '' }}" tabindex="-1" aria-hidden="true">
             <x-media-img :media="$post->featuredMedia" :alt="''" width="640" height="360" sizes="(min-width: 1024px) 380px, 100vw"
                 class="size-full object-cover" />
         </a>
     @elseif (is_file(public_path('assets/img/v2/post-fallback.webp')))
-        <x-art name="post-fallback" width="1280" height="720" :alt="''" class="w-full" sizes="(min-width: 1024px) 380px, 100vw" />
+        <x-art name="post-fallback" width="1280" height="720" :alt="''" class="w-full {{ ($horizontal ?? false) ? 'md:w-1/2 md:shrink-0' : '' }}" sizes="(min-width: 1024px) 380px, 100vw" />
     @endif
     <div class="flex flex-1 flex-col gap-3 p-6">
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-500">
