@@ -32,6 +32,9 @@ Route::post('/lien-he', [ContactController::class, 'submit'])
     ->name('contact.submit');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/csrf-token', fn () => response()->json(
+    ['token' => csrf_token()], 200, ['Cache-Control' => 'private, no-store'],
+))->name('csrf.token');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])
     ->withoutMiddleware([
         StartSession::class,

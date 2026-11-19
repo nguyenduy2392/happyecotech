@@ -14,6 +14,7 @@ use DOMDocument;
 use DOMXPath;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -162,6 +163,29 @@ class SeoEngineTest extends TestCase
         $this->assertSame(media_url($media, 'sm'), media_url($media->id, 'sm'));
         $this->assertDatabaseHas('services', ['slug' => 'datahub', 'status' => 'draft']);
         $this->assertDatabaseHas('services', ['slug' => 'omc', 'status' => 'draft']);
+    }
+
+    public function test_only_token_free_lead_forms_are_cached_and_token_endpoint_uses_current_session(): void
+    {
+        $renders = 0;
+        $markup = '<form data-lead-form><input type="hidden" name="_token" value="" data-csrf-from="/csrf-token"></form>';
+        Route::middleware('web')->get('/cache-fixture/lead', function () use (&$renders, $markup) {
+            $renders++;
+
+            return response($markup);
+        })->name('services.cached-lead');
+        Route::middleware('web')->get('/cache-fixture/plain', fn () => response('<form><input name="query"></form>'))
+            ->name('services.uncached-form');
+        Route::middleware('web')->get('/cache-fixture/embedded-token', fn () => response(str_replace('value=""', 'value="already-filled"', $markup)))
+            ->name('services.embedded-token');
+
+        $this->withSession(['_token' => 'session-token-one'])->get('/cache-fixture/lead')->assertOk()->assertDontSee('session-token-one');
+        $this->withSession(['_token' => 'session-token-two'])->get('/cache-fixture/lead')->assertOk()->assertDontSee('session-token-two');
+        $this->assertSame(1, $renders);
+        $this->get('/cache-fixture/plain')->assertHeader('Cache-Control', 'no-store, private');
+        $this->get('/cache-fixture/embedded-token')->assertHeader('Cache-Control', 'no-store, private');
+        $this->getJson('/csrf-token')->assertOk()->assertHeader('Cache-Control', 'no-store, private')
+            ->assertExactJson(['token' => 'session-token-two']);
     }
 
     private function graph(DOMXPath $document): array
