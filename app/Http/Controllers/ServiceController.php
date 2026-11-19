@@ -23,6 +23,12 @@ class ServiceController extends Controller
         abort_unless($service->isPublished(), 404);
 
         $service->load(['features', 'gallery', 'icon', 'cover', 'ogImage']);
+        // Suppress the exact placeholder shipped by the earlier seeder without rewriting database content.
+        $faq = array_values(array_filter($service->faq ?? [], fn ($item) => ! (
+            ($item['question'] ?? null) === 'Tìm hiểu '.$service->name.' ở đâu?'
+            && ($item['answer'] ?? null) === 'Bạn có thể liên hệ Happy Ecotech để trao đổi nhu cầu và phạm vi triển khai phù hợp.'
+        )));
+        $service->faq = $faq;
 
         $related = Service::query()->published()->with(['icon', 'cover'])
             ->where('id', '!=', $service->id)
@@ -38,7 +44,7 @@ class ServiceController extends Controller
                 'og_image' => $this->socialImage($service),
                 'image_alt' => $service->ogImage?->alt ?: $service->name,
                 'breadcrumbs' => [['Dịch vụ', seo_url('/dich-vu')]],
-                'faq' => $service->faq ?? [],
+                'faq' => $faq,
                 'entity' => [
                     '@type' => 'Service',
                     'name' => $service->name,

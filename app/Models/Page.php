@@ -19,7 +19,8 @@ class Page extends Model
         'published' => 'Đã đăng',
     ];
 
-    public const FIXED_ROUTES = ['home', 'gioi-thieu', 'dich-vu', 'tin-tuc', 'doi-ngu', 'lien-he', 'up'];
+    public const FIXED_ROUTES = ['home', 'gioi-thieu', 'dich-vu', 'tin-tuc', 'doi-ngu', 'lien-he', 'up',
+        'csrf-token', 'admin', 'robots.txt', 'sitemap.xml', 'index.php'];
 
     public const PUBLIC_SLUG_PATTERN = '(?!(?:admin|livewire|storage|assets|api|sitemap)(?:-|$))[a-z0-9]+(?:-[a-z0-9]+)*';
 

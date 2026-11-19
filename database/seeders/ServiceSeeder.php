@@ -63,11 +63,7 @@ class ServiceSeeder extends Seeder
             $iconId = $this->assetId("icon-{$slug}.svg");
             $coverId = $this->assetId("service-{$slug}-lg.webp");
             $copy = LandingCopy::SERVICES[$slug] ?? [];
-            $copy['faq'] = $draft ? [] : [
-                ['question' => 'Tìm hiểu '.$data['name'].' ở đâu?', 'answer' => 'Bạn có thể liên hệ Happy Ecotech để trao đổi nhu cầu và phạm vi triển khai phù hợp.'],
-            ];
-
-            $service = Service::firstOrCreate(
+            Service::firstOrCreate(
                 ['slug' => $slug],
                 [
                     'name' => $data['name'],
@@ -84,22 +80,13 @@ class ServiceSeeder extends Seeder
                     'is_featured' => ! $draft,
                     'sort_order' => $i + 1,
                     'published_at' => $draft ? null : now(),
-                ] + $copy,
+                ] + $copy + ($slug === 'taskflow' ? [
+                    'faq' => [[
+                        'question' => 'TaskFlow có ứng dụng trên điện thoại không?',
+                        'answer' => 'Có. TaskFlow có ứng dụng trên App Store và Google Play. Bạn có thể mở liên kết tải ứng dụng ở đầu trang.',
+                    ]],
+                ] : []),
             );
-            if (! $service->wasRecentlyCreated) {
-                foreach ($copy as $field => $value) {
-                    if ($service->{$field} === null) {
-                        $service->{$field} = $value;
-                    }
-                }
-                foreach (['icon_media_id' => $iconId, 'cover_media_id' => $coverId] as $field => $value) {
-                    $media = MediaAsset::find($service->{$field});
-                    if (! $media || ($media->disk === 'assets' && ! is_file(public_path('assets/'.$media->path)))) {
-                        $service->{$field} = $value;
-                    }
-                }
-                $service->save();
-            }
         }
     }
 

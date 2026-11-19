@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\CachePublicHtml;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\PostCategory;
@@ -9,11 +10,19 @@ use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Models\TeamMember;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use XMLWriter;
 
 class SitemapController extends Controller
 {
     public function index(): Response
+    {
+        $xml = Cache::remember(CachePublicHtml::key('/sitemap.xml'), 180, fn () => $this->xml());
+
+        return response($xml, 200, ['Content-Type' => 'application/xml']);
+    }
+
+    private function xml(): string
     {
         $xml = new XMLWriter;
         $xml->openMemory();
@@ -32,7 +41,7 @@ class SitemapController extends Controller
         }
         $xml->endElement();
 
-        return response($xml->outputMemory(), 200, ['Content-Type' => 'application/xml']);
+        return $xml->outputMemory();
     }
 
     public function robots(): Response
@@ -43,12 +52,12 @@ class SitemapController extends Controller
 
     private function entries(): iterable
     {
-        $services = Service::published()->get();
-        $posts = Post::published()->get();
+        $services = Service::published()->get(['slug', 'updated_at']);
+        $posts = Post::published()->get(['slug', 'updated_at']);
         yield ['/dich-vu', $services->max('updated_at')];
         yield ['/tin-tuc', $posts->max('updated_at')];
-        yield ['/doi-ngu', TeamMember::published()->latest('updated_at')->first()?->updated_at];
-        yield ['/lien-he', max($services->max('updated_at'), SiteSetting::where('group', 'contact')->latest('updated_at')->first()?->updated_at)];
+        yield ['/doi-ngu', TeamMember::published()->latest('updated_at')->first(['updated_at'])?->updated_at];
+        yield ['/lien-he', max($services->max('updated_at'), SiteSetting::where('group', 'contact')->latest('updated_at')->first(['updated_at'])?->updated_at)];
 
         foreach ($services as $service) {
             yield [route('services.show', $service, false), $service->updated_at];
@@ -56,11 +65,11 @@ class SitemapController extends Controller
         foreach ($posts as $post) {
             yield [route('posts.show', $post, false), $post->updated_at];
         }
-        foreach (PostCategory::withMax(['posts as posts_updated_at' => fn ($query) => $query->published()], 'posts.updated_at')
+        foreach (PostCategory::select(['slug', 'updated_at'])->withMax(['posts as posts_updated_at' => fn ($query) => $query->published()], 'posts.updated_at')
             ->withCasts(['posts_updated_at' => 'datetime'])->get() as $category) {
             yield [route('posts.category', $category, false), max($category->updated_at, $category->posts_updated_at)];
         }
-        foreach (Page::where('status', 'published')->withMax('enabledBlocks', 'updated_at')
+        foreach (Page::where('status', 'published')->select(['slug', 'updated_at'])->withMax('enabledBlocks', 'updated_at')
             ->withCasts(['enabled_blocks_max_updated_at' => 'datetime'])->get() as $page) {
             $path = match ($page->slug) {
                 'home' => '/',
