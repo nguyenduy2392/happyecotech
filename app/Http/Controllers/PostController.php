@@ -17,7 +17,7 @@ class PostController extends Controller
             'categories' => $this->categories(),
             'seo' => he_seo([
                 'title' => 'Tin tức',
-                'description' => 'Tin tức mới nhất từ '.setting('site_name', config('app.name')).'.',
+                'description_page' => $posts->currentPage(),
                 'og_image' => seo_url('/assets/img/v2/og-news.webp'),
                 'canonical' => $this->paginatedCanonical('posts.index', $posts->currentPage()),
             ]),
@@ -35,7 +35,8 @@ class PostController extends Controller
             'activeCategory' => $category,
             'seo' => he_seo([
                 'title' => $category->name,
-                'description' => $category->description ?: ('Bài viết thuộc danh mục '.$category->name),
+                'description' => $category->description,
+                'description_page' => $posts->currentPage(),
                 'og_image' => seo_url('/assets/img/v2/og-news.webp'),
                 'canonical' => $this->paginatedCanonical('posts.category', $posts->currentPage(), ['category' => $category]),
                 'breadcrumbs' => [['Tin tức', seo_url('/tin-tuc')]],

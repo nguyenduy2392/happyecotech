@@ -35,11 +35,17 @@ class SeoEngineTest extends TestCase
         $this->assertNotFalse($xml);
         $this->assertGreaterThan(10, count($xml->url));
 
+        $descriptions = [];
         foreach ($xml->url as $entry) {
             $url = (string) $entry->loc;
             $this->assertFalse(isset($entry->priority));
             $document = $this->html($this->get($url)->assertOk()->getContent());
             $this->assertSame($url, $document->evaluate('string(//link[@rel="canonical"]/@href)'));
+            $description = $document->evaluate('string(//meta[@name="description"]/@content)');
+            $this->assertGreaterThanOrEqual(120, mb_strlen($description), $url);
+            $this->assertLessThanOrEqual(155, mb_strlen($description), $url);
+            $this->assertNotContains($description, $descriptions, $url);
+            $descriptions[] = $description;
         }
         $response->assertSee('/tin-tuc/danh-muc/', false)->assertSee('<lastmod>', false);
     }
@@ -51,8 +57,9 @@ class SeoEngineTest extends TestCase
         $url = route('posts.show', $post);
         $this->get($url)->assertOk()->assertSee('href="'.$url.'"', false);
         $url = route('posts.index', ['page' => 2]);
-        $this->assertSame($url, $this->html($this->get($url)->assertOk()->getContent())
-            ->evaluate('string(//link[@rel="canonical"]/@href)'));
+        $document = $this->html($this->get($url)->assertOk()->getContent());
+        $this->assertSame($url, $document->evaluate('string(//link[@rel="canonical"]/@href)'));
+        $this->assertStringEndsWith('Trang 2.', $document->evaluate('string(//meta[@name="description"]/@content)'));
     }
 
     public function test_robots_and_redirects(): void

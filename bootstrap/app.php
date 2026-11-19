@@ -24,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if (! $request->is('admin', 'admin/*', 'api/*') && ! $request->expectsJson()) {
                 return response()->view('errors.404', ['seo' => he_seo([
                     'title' => 'Không tìm thấy trang',
-                    'description' => 'Trang bạn tìm không tồn tại hoặc đã được di chuyển.',
+                    'not_found' => true,
                     'robots' => 'noindex,follow',
                 ])], 404)->header('Cache-Control', 'private, no-store');
             }
