@@ -27,42 +27,6 @@
     "notes": "Mockup minh họa. Ký hiệu quét cách điệu dùng để minh họa; không phải mã dẫn đến hồ sơ thật."
   },
   {
-    "file": "hero.webp",
-    "w": 1200,
-    "h": 900,
-    "use": "home.hero.4x3",
-    "alt": "Thùng cam dán tem SmartLabel, màn hình quản lý tem và điện thoại hiển thị hồ sơ nguồn gốc.",
-    "source": "render",
-    "notes": "Bản cắt 4:3 dành cho layout B. Ký hiệu quét cách điệu dùng để minh họa; không phải mã dẫn đến hồ sơ thật."
-  },
-  {
-    "file": "hero-sm.webp",
-    "w": 480,
-    "h": 360,
-    "use": "home.hero.4x3",
-    "alt": "Thùng cam dán tem SmartLabel, màn hình quản lý tem và điện thoại hiển thị hồ sơ nguồn gốc.",
-    "source": "render",
-    "notes": "Bản cắt 4:3 dành cho layout B. Ký hiệu quét cách điệu dùng để minh họa; không phải mã dẫn đến hồ sơ thật."
-  },
-  {
-    "file": "hero-md.webp",
-    "w": 960,
-    "h": 720,
-    "use": "home.hero.4x3",
-    "alt": "Thùng cam dán tem SmartLabel, màn hình quản lý tem và điện thoại hiển thị hồ sơ nguồn gốc.",
-    "source": "render",
-    "notes": "Bản cắt 4:3 dành cho layout B. Ký hiệu quét cách điệu dùng để minh họa; không phải mã dẫn đến hồ sơ thật."
-  },
-  {
-    "file": "og.png",
-    "w": 1200,
-    "h": 630,
-    "use": "og.default",
-    "alt": "Ảnh chia sẻ Happy Ecotech với tiêu đề “Minh bạch từ gốc”.",
-    "source": "render",
-    "notes": "Logo từ tài sản chính thức của Happy Ecotech."
-  },
-  {
     "file": "og-service.webp",
     "w": 1200,
     "h": 630,
@@ -772,5 +736,86 @@
     "alt": "Ba bước truy xuất: khai báo hồ sơ, gắn tem lên sản phẩm và quét mã để xem nguồn gốc.",
     "source": "render",
     "notes": "Sơ đồ gọn, không lặp tiêu đề của trang."
+  },
+  {
+    "file": "hero-taskflow-lg.webp",
+    "w": 1600,
+    "h": 1000,
+    "use": "home.hero",
+    "alt": "Hai màn hình TaskFlow minh họa danh sách công việc và chi tiết đầu việc có người thực hiện, hạn xử lý và danh sách kiểm tra.",
+    "source": "render",
+    "notes": "Mockup vector render từ cấu trúc màn hình trong repo; tên và dữ liệu minh họa."
+  },
+  {
+    "file": "hero-taskflow-sm.webp",
+    "w": 480,
+    "h": 300,
+    "use": "home.hero",
+    "alt": "Hai màn hình TaskFlow minh họa danh sách công việc và chi tiết đầu việc có người thực hiện, hạn xử lý và danh sách kiểm tra.",
+    "source": "render",
+    "notes": "Mockup vector render từ cấu trúc màn hình trong repo; tên và dữ liệu minh họa."
+  },
+  {
+    "file": "hero-taskflow-md.webp",
+    "w": 960,
+    "h": 600,
+    "use": "home.hero",
+    "alt": "Hai màn hình TaskFlow minh họa danh sách công việc và chi tiết đầu việc có người thực hiện, hạn xử lý và danh sách kiểm tra.",
+    "source": "render",
+    "notes": "Mockup vector render từ cấu trúc màn hình trong repo; tên và dữ liệu minh họa."
+  },
+  {
+    "file": "hero.webp",
+    "w": 1200,
+    "h": 900,
+    "use": "home.hero.4x3",
+    "alt": "Hai màn hình TaskFlow minh họa danh sách công việc và chi tiết đầu việc có người thực hiện, hạn xử lý và danh sách kiểm tra.",
+    "source": "render",
+    "notes": "Mockup vector render từ cấu trúc màn hình trong repo; tên và dữ liệu minh họa."
+  },
+  {
+    "file": "hero-sm.webp",
+    "w": 480,
+    "h": 360,
+    "use": "home.hero.4x3",
+    "alt": "Hai màn hình TaskFlow minh họa danh sách công việc và chi tiết đầu việc có người thực hiện, hạn xử lý và danh sách kiểm tra.",
+    "source": "render",
+    "notes": "Mockup vector render từ cấu trúc màn hình trong repo; tên và dữ liệu minh họa."
+  },
+  {
+    "file": "hero-md.webp",
+    "w": 960,
+    "h": 720,
+    "use": "home.hero.4x3",
+    "alt": "Hai màn hình TaskFlow minh họa danh sách công việc và chi tiết đầu việc có người thực hiện, hạn xử lý và danh sách kiểm tra.",
+    "source": "render",
+    "notes": "Mockup vector render từ cấu trúc màn hình trong repo; tên và dữ liệu minh họa."
+  },
+  {
+    "file": "hero-lg.webp",
+    "w": 1600,
+    "h": 1000,
+    "use": "home.hero",
+    "alt": "Hai màn hình TaskFlow minh họa danh sách công việc và chi tiết đầu việc có người thực hiện, hạn xử lý và danh sách kiểm tra.",
+    "source": "render",
+    "notes": "Mockup vector render từ cấu trúc màn hình trong repo; tên và dữ liệu minh họa."
+  },
+  {
+    "file": "og.png",
+    "w": 1200,
+    "h": 630,
+    "use": "og.default",
+    "alt": "Ảnh chia sẻ giới thiệu TaskFlow và MiniCRM của Happy Ecotech.",
+    "source": "render",
+    "notes": "Logo từ tài sản chính thức của Happy Ecotech."
+  },
+  {
+    "file": "hero-taskflow.webp",
+    "w": 1600,
+    "h": 1000,
+    "use": "home.hero",
+    "alt": "Hai màn hình TaskFlow minh họa danh sách công việc và chi tiết đầu việc có người thực hiện, hạn xử lý và danh sách kiểm tra.",
+    "source": "render",
+    "notes": "Mockup vector render từ cấu trúc màn hình trong repo; tên và dữ liệu minh họa."
   }
 ]
