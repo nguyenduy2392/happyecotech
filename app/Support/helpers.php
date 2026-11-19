@@ -109,7 +109,7 @@ function seo_url(string $path): string
 
 function safe_url(?string $url): ?string
 {
-    $url = trim($url ?? '', ' ');
+    $url = trim(html_entity_decode($url ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'), ' ');
     if ($url === '' || str_contains($url, '\\') || preg_match('/[\x00-\x20\x7f]|\p{Z}/u', $url) !== 0) {
         return null;
     }
