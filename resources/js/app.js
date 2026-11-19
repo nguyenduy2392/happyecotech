@@ -211,3 +211,10 @@ if (lightbox && lightbox.showModal) {
     lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.close(); });
     lightbox.addEventListener('close', () => { big.removeAttribute('src'); });
 }
+
+// ---- /lien-he?solution=<slug>: khi người dùng đổi lựa chọn giải pháp thì bỏ `solution` cũ để không lấn service_id ----
+document.querySelectorAll('select[data-solution-select]').forEach((sel) => {
+    sel.addEventListener('change', () => {
+        sel.form.querySelectorAll('[data-solution], [data-solution-note]').forEach((el) => el.remove());
+    });
+});
