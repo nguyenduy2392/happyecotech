@@ -49,7 +49,11 @@ class HomeController extends Controller
         });
         $media = app(RequestMedia::class);
         $media->preload($ids);
-        $image = $page->ogImage ?? $media->find($hero?->data['image_media_id'] ?? null);
+        $image = $page->ogImage;
+        if ($hero && filled($hero->data['h1'] ?? null)) {
+            // Existing views continue to consume the effective heading.
+            $hero->data = array_replace($hero->data, ['heading' => $hero->data['h1']]);
+        }
 
         return view('public.page', [
             'page' => $page,
@@ -62,7 +66,7 @@ class HomeController extends Controller
                 'standalone_title' => $isHome && filled($page->seo_title),
                 'description' => $page->seo_description ?: ($hero?->data['subheading'] ?? null),
                 'canonical' => seo_url($isHome ? '/' : '/'.$page->slug),
-                'og_image' => $image?->url,
+                'og_image' => $image?->url ?? ($page->slug === 'gioi-thieu' ? seo_url('/assets/img/v2/og-about-contact.webp') : null),
                 'image_alt' => $image?->alt ?: $page->title,
                 'faq' => $page->blocks->where('block_type', 'faq')->flatMap(fn ($block) => $block->data['items'] ?? [])->all(),
             ]),

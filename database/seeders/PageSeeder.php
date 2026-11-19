@@ -29,12 +29,13 @@ class PageSeeder extends Seeder
             ],
         );
 
-        $heroId = MediaAsset::where('disk', 'assets')->where('path', 'img/hero/hero-1.png')->value('id');
+        $heroId = MediaAsset::where('disk', 'assets')->where('path', 'img/v2/hero.webp')->value('id');
         $qrIos = MediaAsset::where('disk', 'assets')->where('path', 'qr/ios.png')->value('id');
         $qrAndroid = MediaAsset::where('disk', 'assets')->where('path', 'qr/google-play.png')->value('id');
 
         $blocks = [
             ['hero', 'Hero', true, [
+                'h1' => 'Giải pháp truy xuất nguồn gốc và vận hành số cho doanh nghiệp',
                 'heading' => 'Minh bạch từ gốc – Hạnh phúc từ công nghệ',
                 'subheading' => 'Hệ sinh thái công nghệ minh bạch dữ liệu, tem điện tử, SmartLabel, truy xuất nguồn gốc, TaskFlow, MiniCRM và Farm2Home.',
                 'cta_text' => 'Liên hệ hợp tác',
@@ -95,6 +96,7 @@ class PageSeeder extends Seeder
                 'ios_qr_media_id' => $qrIos,
                 'android_qr_media_id' => $qrAndroid,
             ]],
+            ['faq', 'Câu hỏi thường gặp', true, LandingCopy::HOME['faq']],
             ['latest_news', 'Tin tức mới nhất', true, [
                 'heading' => 'Tin tức mới nhất',
                 'limit' => 3,
@@ -102,10 +104,21 @@ class PageSeeder extends Seeder
         ];
 
         foreach ($blocks as $i => [$type, $title, $enabled, $data]) {
-            PageBlock::firstOrCreate(
+            $block = PageBlock::firstOrCreate(
                 ['page_id' => $page->id, 'block_type' => $type],
                 ['title' => $title, 'is_enabled' => $enabled, 'sort_order' => $i, 'data' => $data],
             );
+            if ($type === 'hero' && ! $block->wasRecentlyCreated) {
+                $current = $block->data ?? [];
+                if (($current['heading'] ?? null) === $data['heading'] && ! array_key_exists('h1', $current)) {
+                    $current['h1'] = $data['h1'];
+                }
+                $media = MediaAsset::find($current['image_media_id'] ?? null);
+                if (! $media || ($media->disk === 'assets' && ! is_file(public_path('assets/'.$media->path)))) {
+                    $current['image_media_id'] = $heroId;
+                }
+                $block->update(['data' => $current]);
+            }
         }
     }
 

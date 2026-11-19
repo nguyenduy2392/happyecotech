@@ -22,7 +22,7 @@ class PageBlockFields
         $limit = TextInput::make('limit')->label('Số mục')->integer()->minValue(1)->maxValue(24);
 
         return match ($type) {
-            'hero' => [$heading, $subheading, ...$cta, self::image('image_media_id', 'Ảnh')],
+            'hero' => [TextInput::make('h1')->label('H1 trang')->maxLength(255), $heading, $subheading, ...$cta, self::image('image_media_id', 'Ảnh')],
             'cta' => [$heading, $subheading, ...$cta],
             'partners' => [$heading, self::image('logos', 'Logo')->multiple()],
             'about', 'why_choose' => [$heading, Textarea::make('description')->label('Mô tả')],
@@ -49,12 +49,17 @@ class PageBlockFields
             'featured_services' => [$heading, $subheading, $limit],
             'latest_news' => [$heading, $limit],
             'richtext' => [TextInput::make('title')->label('Tiêu đề'), Textarea::make('html')->label('Nội dung HTML')],
-            'faq' => [$heading, Repeater::make('items')->label('Câu hỏi')->schema([
-                TextInput::make('question')->label('Câu hỏi')->required(),
-                Textarea::make('answer')->label('Trả lời')->required(),
-            ])->defaultItems(0)],
+            'faq' => [$heading, $subheading, self::faq('items')],
             default => [],
         };
+    }
+
+    public static function faq(string $key): Repeater
+    {
+        return Repeater::make($key)->label('Câu hỏi thường gặp')->schema([
+            TextInput::make('question')->label('Câu hỏi')->required(),
+            Textarea::make('answer')->label('Trả lời')->required(),
+        ])->defaultItems(0);
     }
 
     private static function image(string $key, string $label): Select

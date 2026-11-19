@@ -33,6 +33,9 @@ class ContactSubmissionForm
                         TextInput::make('service_interest')
                             ->label('Dịch vụ quan tâm')
                             ->disabled(),
+                        TextInput::make('source')
+                            ->label('Nguồn biểu mẫu')
+                            ->disabled(),
                         Textarea::make('message')
                             ->label('Nội dung')
                             ->disabled()

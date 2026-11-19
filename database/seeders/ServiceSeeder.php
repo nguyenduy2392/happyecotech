@@ -14,7 +14,6 @@ class ServiceSeeder extends Seeder
             [
                 'name' => 'SmartLabel',
                 'slug' => 'smartlabel',
-                'icon' => 'img/project-icon/smart-tray.png',
                 'short_description' => 'SmartLabel là giải pháp điện tử hóa kiểm định và quản lý chất lượng sản phẩm, giúp doanh nghiệp đánh dấu và xác thực nguồn gốc, chất lượng và an toàn.',
                 'external_url' => null,
                 'app_store_url' => null,
@@ -23,7 +22,6 @@ class ServiceSeeder extends Seeder
             [
                 'name' => 'TaskFlow',
                 'slug' => 'taskflow',
-                'icon' => 'img/project-icon/task-flow.png',
                 'short_description' => 'TaskFlow là giải pháp quản lý dự án và công việc, giúp doanh nghiệp tối ưu hóa quy trình làm việc, giảm thiểu sai sót và nâng cao hiệu suất.',
                 'external_url' => null,
                 'app_store_url' => 'https://apps.apple.com/us/app/taskflow/id6758305963',
@@ -32,7 +30,6 @@ class ServiceSeeder extends Seeder
             [
                 'name' => 'MiniCRM',
                 'slug' => 'minicrm',
-                'icon' => 'img/project-icon/mini-crm.png',
                 'short_description' => 'MiniCRM là giải pháp quản lý khách hàng và mối quan hệ khách hàng.',
                 'external_url' => null,
                 'app_store_url' => null,
@@ -41,35 +38,73 @@ class ServiceSeeder extends Seeder
             [
                 'name' => 'Farm2Home',
                 'slug' => 'farm2home',
-                'icon' => 'img/project-icon/farm2home.png',
                 'short_description' => 'Farm2Home là giải pháp kết nối trực tiếp giữa nông dân và người tiêu dùng.',
                 'external_url' => null,
                 'app_store_url' => null,
                 'google_play_url' => null,
             ],
+            [
+                'name' => 'DataHub Văn thư số AI',
+                'slug' => 'datahub',
+                'short_description' => 'Giải pháp văn thư số dành cho đơn vị hành chính cấp xã, phường.',
+                'draft' => true,
+            ],
+            [
+                'name' => 'OMC',
+                'slug' => 'omc',
+                'short_description' => 'Giải pháp thuộc nhóm hành chính số cấp xã, phường.',
+                'draft' => true,
+            ],
         ];
 
         foreach ($services as $i => $data) {
-            $iconId = MediaAsset::where('disk', 'assets')->where('path', $data['icon'])->value('id');
+            $slug = $data['slug'];
+            $draft = $data['draft'] ?? false;
+            $iconId = $this->assetId("icon-{$slug}.svg");
+            $coverId = $this->assetId("service-{$slug}-lg.webp");
+            $copy = LandingCopy::SERVICES[$slug] ?? [];
+            $copy['faq'] = $draft ? [] : [
+                ['question' => 'Tìm hiểu '.$data['name'].' ở đâu?', 'answer' => 'Bạn có thể liên hệ Happy Ecotech để trao đổi nhu cầu và phạm vi triển khai phù hợp.'],
+            ];
 
-            Service::firstOrCreate(
-                ['slug' => $data['slug']],
+            $service = Service::firstOrCreate(
+                ['slug' => $slug],
                 [
                     'name' => $data['name'],
                     'short_description' => $data['short_description'],
                     'content' => '<p>'.e($data['short_description']).'</p>',
                     'icon_media_id' => $iconId,
-                    'external_url' => $data['external_url'],
-                    'app_store_url' => $data['app_store_url'],
-                    'google_play_url' => $data['google_play_url'],
+                    'cover_media_id' => $coverId,
+                    'external_url' => $data['external_url'] ?? null,
+                    'app_store_url' => $data['app_store_url'] ?? null,
+                    'google_play_url' => $data['google_play_url'] ?? null,
                     'cta_text' => 'Liên hệ tư vấn',
                     'cta_url' => '/lien-he#contact-form',
-                    'status' => 'published',
-                    'is_featured' => true,
+                    'status' => $draft ? 'draft' : 'published',
+                    'is_featured' => ! $draft,
                     'sort_order' => $i + 1,
-                    'published_at' => now(),
-                ],
+                    'published_at' => $draft ? null : now(),
+                ] + $copy,
             );
+            if (! $service->wasRecentlyCreated) {
+                foreach ($copy as $field => $value) {
+                    if ($service->{$field} === null) {
+                        $service->{$field} = $value;
+                    }
+                }
+                foreach (['icon_media_id' => $iconId, 'cover_media_id' => $coverId] as $field => $value) {
+                    $media = MediaAsset::find($service->{$field});
+                    if (! $media || ($media->disk === 'assets' && ! is_file(public_path('assets/'.$media->path)))) {
+                        $service->{$field} = $value;
+                    }
+                }
+                $service->save();
+            }
         }
+    }
+
+    private function assetId(string $file): int
+    {
+        return MediaAsset::where('disk', 'assets')->wherePath('img/v2/'.$file)->firstOrFail()->id;
     }
 }

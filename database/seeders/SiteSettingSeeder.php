@@ -12,7 +12,7 @@ class SiteSettingSeeder extends Seeder
     public function run(): void
     {
         $logo = $this->mediaId('img/logo/logo-full.png');
-        $favicon = $this->mediaId('img/favicon.svg');
+        $favicon = $this->mediaId('img/v2/favicon.svg');
         $qrIos = $this->mediaId('qr/ios.png');
         $qrAndroid = $this->mediaId('qr/google-play.png');
 
@@ -35,7 +35,7 @@ class SiteSettingSeeder extends Seeder
             // SEO
             ['seo', 'seo_title_template', '%s | Happy Ecotech', 'string'],
             ['seo', 'seo_default_description', 'Hệ sinh thái công nghệ minh bạch dữ liệu, tem điện tử, SmartLabel, truy xuất nguồn gốc, TaskFlow, MiniCRM và Farm2Home.', 'text'],
-            ['seo', 'seo_default_og_image_media_id', null, 'media'],
+            ['seo', 'seo_default_og_image_media_id', $this->mediaId('img/v2/og.png'), 'media'],
             ['seo', 'seo_robots', 'index,follow', 'string'],
             ['seo', 'zalo_site_verification', 'Fz-kBBpPAIrbyBfscFKTR1hmd6RsXaanDJ0o', 'string'],
 

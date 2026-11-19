@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Filament\Resources\Pages\Pages\EditPage;
 use App\Filament\Resources\Pages\RelationManagers\BlocksRelationManager;
+use App\Models\MediaAsset;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\SiteSetting;
@@ -13,6 +14,7 @@ use DOMDocument;
 use DOMXPath;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -110,7 +112,7 @@ class SeoEngineTest extends TestCase
     {
         $home = Page::whereSlug('home')->firstOrFail();
         $home->update(['seo_title' => 'Tiêu đề SEO trang chủ']);
-        $home->blocks()->create(['block_type' => 'faq', 'is_enabled' => true, 'data' => [
+        $home->blocks()->where('block_type', 'faq')->firstOrFail()->update(['data' => [
             'items' => [['question' => 'Câu hỏi?', 'answer' => 'Đáp án </script>']],
         ]]);
         SiteSetting::put('company_name', 'Tên công ty thử nghiệm');
@@ -126,24 +128,64 @@ class SeoEngineTest extends TestCase
 
         foreach (['/dich-vu/smartlabel' => 'Service', route('posts.show', Post::published()->firstOrFail()) => 'BlogPosting'] as $url => $type) {
             $graph = $this->graph($this->html($this->get($url)->assertOk()->getContent()));
-            $this->assertSame(['BreadcrumbList', $type], array_column($graph, '@type'));
+            $this->assertSame($type === 'Service' ? ['BreadcrumbList', 'Service', 'FAQPage'] : ['BreadcrumbList', $type], array_column($graph, '@type'));
         }
         $this->get('/nonexistent')->assertNotFound()->assertSee('noindex,follow');
     }
 
     public function test_guest_html_cache_is_invalidated_on_save_and_contact_keeps_session(): void
     {
-        $this->get('/')->assertOk();
+        $page = Page::create(['title' => 'Trang kiểm tra cache', 'slug' => 'kiem-tra-cache', 'status' => 'published']);
+        $this->get('/kiem-tra-cache')->assertOk();
         DB::enableQueryLog();
-        $this->get('/')->assertOk()->assertSee('Minh bạch từ gốc');
+        $this->get('/kiem-tra-cache')->assertOk()->assertSee('Trang kiểm tra cache');
         $queries = collect(DB::getQueryLog())->pluck('query');
         DB::disableQueryLog();
         $this->assertCount(0, $queries->filter(fn ($sql) => str_contains($sql, '"page_blocks"')));
 
-        Page::whereSlug('home')->firstOrFail()->update(['seo_title' => 'Tiêu đề đã xuất bản']);
-        $this->get('/')->assertOk()->assertSee('Tiêu đề đã xuất bản');
+        $page->update(['seo_title' => 'Tiêu đề đã xuất bản']);
+        $this->get('/kiem-tra-cache')->assertOk()->assertSee('Tiêu đề đã xuất bản');
         $this->withSession(['contact_success' => true])->get('/lien-he')
             ->assertOk()->assertHeader('Cache-Control', 'no-store, private')->assertSee('name="_token"', false);
+    }
+
+    public function test_seeded_assets_exist_and_hero_media_accepts_model_or_id(): void
+    {
+        foreach (MediaAsset::whereDisk('assets')->cursor() as $media) {
+            $this->assertFileExists(public_path('assets/'.$media->path));
+        }
+        foreach (json_decode(file_get_contents(public_path('assets/img/v2/manifest.json')), true, flags: JSON_THROW_ON_ERROR) as $asset) {
+            $this->assertFileExists(public_path('assets/img/v2/'.$asset['file']));
+        }
+        $hero = Page::whereSlug('home')->firstOrFail()->blocks()->where('block_type', 'hero')->firstOrFail();
+        $media = MediaAsset::findOrFail($hero->data['image_media_id']);
+        $this->assertStringEndsWith('/hero-md.webp', media_url($media, 'md'));
+        $this->assertSame(media_url($media, 'sm'), media_url($media->id, 'sm'));
+        $this->assertDatabaseHas('services', ['slug' => 'datahub', 'status' => 'draft']);
+        $this->assertDatabaseHas('services', ['slug' => 'omc', 'status' => 'draft']);
+    }
+
+    public function test_only_token_free_lead_forms_are_cached_and_token_endpoint_uses_current_session(): void
+    {
+        $renders = 0;
+        $markup = '<form data-lead-form><input type="hidden" name="_token" value="" data-csrf-from="/csrf-token"></form>';
+        Route::middleware('web')->get('/cache-fixture/lead', function () use (&$renders, $markup) {
+            $renders++;
+
+            return response($markup);
+        })->name('services.cached-lead');
+        Route::middleware('web')->get('/cache-fixture/plain', fn () => response('<form><input name="query"></form>'))
+            ->name('services.uncached-form');
+        Route::middleware('web')->get('/cache-fixture/embedded-token', fn () => response(str_replace('value=""', 'value="already-filled"', $markup)))
+            ->name('services.embedded-token');
+
+        $this->withSession(['_token' => 'session-token-one'])->get('/cache-fixture/lead')->assertOk()->assertDontSee('session-token-one');
+        $this->withSession(['_token' => 'session-token-two'])->get('/cache-fixture/lead')->assertOk()->assertDontSee('session-token-two');
+        $this->assertSame(1, $renders);
+        $this->get('/cache-fixture/plain')->assertHeader('Cache-Control', 'no-store, private');
+        $this->get('/cache-fixture/embedded-token')->assertHeader('Cache-Control', 'no-store, private');
+        $this->getJson('/csrf-token')->assertOk()->assertHeader('Cache-Control', 'no-store, private')
+            ->assertExactJson(['token' => 'session-token-two']);
     }
 
     private function graph(DOMXPath $document): array

@@ -72,6 +72,18 @@ class PublicSiteTest extends TestCase
         $this->assertSame(0, ContactSubmission::count());
     }
 
+    public function test_lead_can_omit_message_and_stores_company_solution_and_source(): void
+    {
+        $service = Service::whereSlug('smartlabel')->firstOrFail();
+        $this->post('/lien-he', [
+            'name' => 'Người gửi thử', 'phone' => '0900000000', 'company' => 'Công ty Demo',
+            'service_id' => $service->id, 'source' => 'lead-form', 'consent' => '1',
+        ])->assertRedirect()->assertSessionHas('contact_success');
+        $this->assertDatabaseHas('contact_submissions', [
+            'company' => 'Công ty Demo', 'service_interest' => 'SmartLabel', 'source' => 'lead-form', 'message' => null,
+        ]);
+    }
+
     public function test_contact_validation_errors(): void
     {
         $this->from('/lien-he')

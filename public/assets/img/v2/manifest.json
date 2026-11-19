@@ -135,42 +135,6 @@
     "notes": "Logo từ tài sản chính thức của Happy Ecotech."
   },
   {
-    "file": "service-smartlabel-lg.webp",
-    "w": 1200,
-    "h": 800,
-    "use": "service.smartlabel",
-    "alt": "Màn hình minh họa quản lý hồ sơ lô, phát hành tem và kiểm tra truy xuất SmartLabel.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-smartlabel-sm.webp",
-    "w": 480,
-    "h": 320,
-    "use": "service.smartlabel",
-    "alt": "Màn hình minh họa quản lý hồ sơ lô, phát hành tem và kiểm tra truy xuất SmartLabel.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-smartlabel-md.webp",
-    "w": 960,
-    "h": 640,
-    "use": "service.smartlabel",
-    "alt": "Màn hình minh họa quản lý hồ sơ lô, phát hành tem và kiểm tra truy xuất SmartLabel.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-smartlabel.webp",
-    "w": 800,
-    "h": 600,
-    "use": "service.smartlabel.4x3",
-    "alt": "Màn hình minh họa quản lý hồ sơ lô, phát hành tem và kiểm tra truy xuất SmartLabel.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
     "file": "icon-smartlabel.svg",
     "w": 64,
     "h": 64,
@@ -196,42 +160,6 @@
     "alt": "Ảnh chia sẻ giải pháp SmartLabel của Happy Ecotech.",
     "source": "render",
     "notes": "Logo từ tài sản chính thức của Happy Ecotech."
-  },
-  {
-    "file": "service-taskflow-lg.webp",
-    "w": 1200,
-    "h": 800,
-    "use": "service.taskflow",
-    "alt": "Bảng công việc TaskFlow với các cột cần làm, đang làm và hoàn tất.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-taskflow-sm.webp",
-    "w": 480,
-    "h": 320,
-    "use": "service.taskflow",
-    "alt": "Bảng công việc TaskFlow với các cột cần làm, đang làm và hoàn tất.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-taskflow-md.webp",
-    "w": 960,
-    "h": 640,
-    "use": "service.taskflow",
-    "alt": "Bảng công việc TaskFlow với các cột cần làm, đang làm và hoàn tất.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-taskflow.webp",
-    "w": 800,
-    "h": 600,
-    "use": "service.taskflow.4x3",
-    "alt": "Bảng công việc TaskFlow với các cột cần làm, đang làm và hoàn tất.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
   },
   {
     "file": "icon-taskflow.svg",
@@ -261,42 +189,6 @@
     "notes": "Logo từ tài sản chính thức của Happy Ecotech."
   },
   {
-    "file": "service-minicrm-lg.webp",
-    "w": 1200,
-    "h": 800,
-    "use": "service.minicrm",
-    "alt": "Màn hình minh họa hồ sơ khách hàng, lịch chăm sóc và cơ hội trong MiniCRM.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-minicrm-sm.webp",
-    "w": 480,
-    "h": 320,
-    "use": "service.minicrm",
-    "alt": "Màn hình minh họa hồ sơ khách hàng, lịch chăm sóc và cơ hội trong MiniCRM.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-minicrm-md.webp",
-    "w": 960,
-    "h": 640,
-    "use": "service.minicrm",
-    "alt": "Màn hình minh họa hồ sơ khách hàng, lịch chăm sóc và cơ hội trong MiniCRM.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-minicrm.webp",
-    "w": 800,
-    "h": 600,
-    "use": "service.minicrm.4x3",
-    "alt": "Màn hình minh họa hồ sơ khách hàng, lịch chăm sóc và cơ hội trong MiniCRM.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
     "file": "icon-minicrm.svg",
     "w": 64,
     "h": 64,
@@ -322,42 +214,6 @@
     "alt": "Ảnh chia sẻ giải pháp MiniCRM của Happy Ecotech.",
     "source": "render",
     "notes": "Logo từ tài sản chính thức của Happy Ecotech."
-  },
-  {
-    "file": "service-farm2home-lg.webp",
-    "w": 1200,
-    "h": 800,
-    "use": "service.farm2home",
-    "alt": "Màn hình minh họa quản lý nông trại, đóng gói sản phẩm và giao nhận Farm2Home.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-farm2home-sm.webp",
-    "w": 480,
-    "h": 320,
-    "use": "service.farm2home",
-    "alt": "Màn hình minh họa quản lý nông trại, đóng gói sản phẩm và giao nhận Farm2Home.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-farm2home-md.webp",
-    "w": 960,
-    "h": 640,
-    "use": "service.farm2home",
-    "alt": "Màn hình minh họa quản lý nông trại, đóng gói sản phẩm và giao nhận Farm2Home.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-farm2home.webp",
-    "w": 800,
-    "h": 600,
-    "use": "service.farm2home.4x3",
-    "alt": "Màn hình minh họa quản lý nông trại, đóng gói sản phẩm và giao nhận Farm2Home.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
   },
   {
     "file": "icon-farm2home.svg",
@@ -387,42 +243,6 @@
     "notes": "Logo từ tài sản chính thức của Happy Ecotech."
   },
   {
-    "file": "service-datahub-lg.webp",
-    "w": 1200,
-    "h": 800,
-    "use": "service.datahub",
-    "alt": "Màn hình minh họa tiếp nhận, luân chuyển và tra cứu văn bản trong DataHub.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-datahub-sm.webp",
-    "w": 480,
-    "h": 320,
-    "use": "service.datahub",
-    "alt": "Màn hình minh họa tiếp nhận, luân chuyển và tra cứu văn bản trong DataHub.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-datahub-md.webp",
-    "w": 960,
-    "h": 640,
-    "use": "service.datahub",
-    "alt": "Màn hình minh họa tiếp nhận, luân chuyển và tra cứu văn bản trong DataHub.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-datahub.webp",
-    "w": 800,
-    "h": 600,
-    "use": "service.datahub.4x3",
-    "alt": "Màn hình minh họa tiếp nhận, luân chuyển và tra cứu văn bản trong DataHub.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
     "file": "icon-datahub.svg",
     "w": 64,
     "h": 64,
@@ -448,42 +268,6 @@
     "alt": "Ảnh chia sẻ giải pháp DataHub Văn thư số AI của Happy Ecotech.",
     "source": "render",
     "notes": "Logo từ tài sản chính thức của Happy Ecotech."
-  },
-  {
-    "file": "service-omc-lg.webp",
-    "w": 1200,
-    "h": 800,
-    "use": "service.omc",
-    "alt": "Màn hình minh họa OMC với tổng quan quy trình, điều phối và theo dõi vận hành.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-omc-sm.webp",
-    "w": 480,
-    "h": 320,
-    "use": "service.omc",
-    "alt": "Màn hình minh họa OMC với tổng quan quy trình, điều phối và theo dõi vận hành.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-omc-md.webp",
-    "w": 960,
-    "h": 640,
-    "use": "service.omc",
-    "alt": "Màn hình minh họa OMC với tổng quan quy trình, điều phối và theo dõi vận hành.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
-  },
-  {
-    "file": "service-omc.webp",
-    "w": 800,
-    "h": 600,
-    "use": "service.omc.4x3",
-    "alt": "Màn hình minh họa OMC với tổng quan quy trình, điều phối và theo dõi vận hành.",
-    "source": "render",
-    "notes": "Mockup minh họa với dữ liệu giả. Không phải ảnh chụp ứng dụng."
   },
   {
     "file": "icon-omc.svg",
@@ -592,33 +376,6 @@
     "alt": "Trụ sở hành chính kết nối hồ sơ văn thư và công cụ theo dõi xử lý.",
     "source": "render",
     "notes": "Minh họa nhóm giải pháp."
-  },
-  {
-    "file": "process-traceability.webp",
-    "w": 1280,
-    "h": 720,
-    "use": "home.process.16x9",
-    "alt": "Ba bước truy xuất: khai báo hồ sơ, gắn tem lên sản phẩm và quét mã để xem nguồn gốc.",
-    "source": "render",
-    "notes": "Sơ đồ ba bước dành cho layout B."
-  },
-  {
-    "file": "process-traceability-sm.webp",
-    "w": 480,
-    "h": 270,
-    "use": "home.process.16x9",
-    "alt": "Ba bước truy xuất: khai báo hồ sơ, gắn tem lên sản phẩm và quét mã để xem nguồn gốc.",
-    "source": "render",
-    "notes": "Sơ đồ ba bước dành cho layout B."
-  },
-  {
-    "file": "process-traceability-md.webp",
-    "w": 960,
-    "h": 540,
-    "use": "home.process.16x9",
-    "alt": "Ba bước truy xuất: khai báo hồ sơ, gắn tem lên sản phẩm và quét mã để xem nguồn gốc.",
-    "source": "render",
-    "notes": "Sơ đồ ba bước dành cho layout B."
   },
   {
     "file": "process-print-to-origin.svg",
@@ -772,5 +529,248 @@
     "alt": "Trụ sở cấp xã kết nối hồ sơ hành chính và người dân.",
     "source": "vector",
     "notes": ""
+  },
+  {
+    "file": "service-smartlabel-lg.webp",
+    "w": 1200,
+    "h": 900,
+    "use": "service.smartlabel",
+    "alt": "Màn hình minh họa quản lý hồ sơ lô, phát hành tem và kiểm tra truy xuất SmartLabel.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-smartlabel-sm.webp",
+    "w": 480,
+    "h": 360,
+    "use": "service.smartlabel",
+    "alt": "Màn hình minh họa quản lý hồ sơ lô, phát hành tem và kiểm tra truy xuất SmartLabel.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-smartlabel-md.webp",
+    "w": 960,
+    "h": 720,
+    "use": "service.smartlabel",
+    "alt": "Màn hình minh họa quản lý hồ sơ lô, phát hành tem và kiểm tra truy xuất SmartLabel.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-smartlabel.webp",
+    "w": 800,
+    "h": 600,
+    "use": "service.smartlabel.4x3",
+    "alt": "Màn hình minh họa quản lý hồ sơ lô, phát hành tem và kiểm tra truy xuất SmartLabel.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-taskflow-lg.webp",
+    "w": 1200,
+    "h": 900,
+    "use": "service.taskflow",
+    "alt": "Bảng công việc TaskFlow với các cột cần làm, đang làm và hoàn tất.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-taskflow-sm.webp",
+    "w": 480,
+    "h": 360,
+    "use": "service.taskflow",
+    "alt": "Bảng công việc TaskFlow với các cột cần làm, đang làm và hoàn tất.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-taskflow-md.webp",
+    "w": 960,
+    "h": 720,
+    "use": "service.taskflow",
+    "alt": "Bảng công việc TaskFlow với các cột cần làm, đang làm và hoàn tất.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-taskflow.webp",
+    "w": 800,
+    "h": 600,
+    "use": "service.taskflow.4x3",
+    "alt": "Bảng công việc TaskFlow với các cột cần làm, đang làm và hoàn tất.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-minicrm-lg.webp",
+    "w": 1200,
+    "h": 900,
+    "use": "service.minicrm",
+    "alt": "Màn hình minh họa hồ sơ khách hàng, lịch chăm sóc và cơ hội trong MiniCRM.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-minicrm-sm.webp",
+    "w": 480,
+    "h": 360,
+    "use": "service.minicrm",
+    "alt": "Màn hình minh họa hồ sơ khách hàng, lịch chăm sóc và cơ hội trong MiniCRM.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-minicrm-md.webp",
+    "w": 960,
+    "h": 720,
+    "use": "service.minicrm",
+    "alt": "Màn hình minh họa hồ sơ khách hàng, lịch chăm sóc và cơ hội trong MiniCRM.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-minicrm.webp",
+    "w": 800,
+    "h": 600,
+    "use": "service.minicrm.4x3",
+    "alt": "Màn hình minh họa hồ sơ khách hàng, lịch chăm sóc và cơ hội trong MiniCRM.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-farm2home-lg.webp",
+    "w": 1200,
+    "h": 900,
+    "use": "service.farm2home",
+    "alt": "Màn hình minh họa quản lý nông trại, đóng gói sản phẩm và giao nhận Farm2Home.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-farm2home-sm.webp",
+    "w": 480,
+    "h": 360,
+    "use": "service.farm2home",
+    "alt": "Màn hình minh họa quản lý nông trại, đóng gói sản phẩm và giao nhận Farm2Home.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-farm2home-md.webp",
+    "w": 960,
+    "h": 720,
+    "use": "service.farm2home",
+    "alt": "Màn hình minh họa quản lý nông trại, đóng gói sản phẩm và giao nhận Farm2Home.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-farm2home.webp",
+    "w": 800,
+    "h": 600,
+    "use": "service.farm2home.4x3",
+    "alt": "Màn hình minh họa quản lý nông trại, đóng gói sản phẩm và giao nhận Farm2Home.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-datahub-lg.webp",
+    "w": 1200,
+    "h": 900,
+    "use": "service.datahub",
+    "alt": "Màn hình minh họa tiếp nhận, luân chuyển và tra cứu văn bản trong DataHub.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-datahub-sm.webp",
+    "w": 480,
+    "h": 360,
+    "use": "service.datahub",
+    "alt": "Màn hình minh họa tiếp nhận, luân chuyển và tra cứu văn bản trong DataHub.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-datahub-md.webp",
+    "w": 960,
+    "h": 720,
+    "use": "service.datahub",
+    "alt": "Màn hình minh họa tiếp nhận, luân chuyển và tra cứu văn bản trong DataHub.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-datahub.webp",
+    "w": 800,
+    "h": 600,
+    "use": "service.datahub.4x3",
+    "alt": "Màn hình minh họa tiếp nhận, luân chuyển và tra cứu văn bản trong DataHub.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-omc-lg.webp",
+    "w": 1200,
+    "h": 900,
+    "use": "service.omc",
+    "alt": "Màn hình minh họa OMC với tổng quan quy trình, điều phối và theo dõi vận hành.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-omc-sm.webp",
+    "w": 480,
+    "h": 360,
+    "use": "service.omc",
+    "alt": "Màn hình minh họa OMC với tổng quan quy trình, điều phối và theo dõi vận hành.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-omc-md.webp",
+    "w": 960,
+    "h": 720,
+    "use": "service.omc",
+    "alt": "Màn hình minh họa OMC với tổng quan quy trình, điều phối và theo dõi vận hành.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "service-omc.webp",
+    "w": 800,
+    "h": 600,
+    "use": "service.omc.4x3",
+    "alt": "Màn hình minh họa OMC với tổng quan quy trình, điều phối và theo dõi vận hành.",
+    "source": "render",
+    "notes": "Mockup minh họa với dữ liệu giả. Tất cả biến thể có tỷ lệ 4:3."
+  },
+  {
+    "file": "process-traceability.webp",
+    "w": 1280,
+    "h": 480,
+    "use": "home.process.8x3",
+    "alt": "Ba bước truy xuất: khai báo hồ sơ, gắn tem lên sản phẩm và quét mã để xem nguồn gốc.",
+    "source": "render",
+    "notes": "Sơ đồ gọn, không lặp tiêu đề của trang."
+  },
+  {
+    "file": "process-traceability-sm.webp",
+    "w": 480,
+    "h": 180,
+    "use": "home.process.8x3",
+    "alt": "Ba bước truy xuất: khai báo hồ sơ, gắn tem lên sản phẩm và quét mã để xem nguồn gốc.",
+    "source": "render",
+    "notes": "Sơ đồ gọn, không lặp tiêu đề của trang."
+  },
+  {
+    "file": "process-traceability-md.webp",
+    "w": 960,
+    "h": 360,
+    "use": "home.process.8x3",
+    "alt": "Ba bước truy xuất: khai báo hồ sơ, gắn tem lên sản phẩm và quét mã để xem nguồn gốc.",
+    "source": "render",
+    "notes": "Sơ đồ gọn, không lặp tiêu đề của trang."
   }
 ]

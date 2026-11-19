@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use DOMDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -43,7 +44,9 @@ class CachePublicHtml
         if ($response->getStatusCode() !== 200 || ! is_string($html)
             || ! str_starts_with((string) $response->headers->get('Content-Type'), 'text/html')
             || $response->headers->getCookies() !== []
-            || preg_match('/<form\b|\bwire:id\s*=/i', $html) || ($token && str_contains($html, $token))) {
+            || preg_match('/\bwire:id\s*=/i', $html)
+            || ($token && str_contains($html, $token))
+            || ! $this->hasOnlyDeferredLeadForms($html)) {
             $response->headers->set('Cache-Control', 'private, no-store');
 
             return $response;
@@ -53,6 +56,43 @@ class CachePublicHtml
         $response->headers->set('Cache-Control', 'private, no-cache');
 
         return $response;
+    }
+
+    private function hasOnlyDeferredLeadForms(string $html): bool
+    {
+        if (! preg_match('/<form\b/i', $html)) {
+            return true;
+        }
+
+        $document = new DOMDocument;
+        if (! $document->loadHTML($html, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING)) {
+            return false;
+        }
+        $forms = $document->getElementsByTagName('form');
+        if ($forms->length === 0) {
+            return false;
+        }
+        foreach ($forms as $form) {
+            if (! $form->hasAttribute('data-lead-form')) {
+                return false;
+            }
+            $tokens = 0;
+            foreach ($form->getElementsByTagName('input') as $input) {
+                if ($input->getAttribute('name') !== '_token') {
+                    continue;
+                }
+                if ($input->getAttribute('type') !== 'hidden' || $input->getAttribute('value') !== ''
+                    || $input->getAttribute('data-csrf-from') !== route('csrf.token', [], false)) {
+                    return false;
+                }
+                $tokens++;
+            }
+            if ($tokens !== 1) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function cacheableRequest(Request $request): bool

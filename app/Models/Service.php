@@ -26,6 +26,7 @@ class Service extends Model
     ];
 
     protected $fillable = [
+        'h1', 'benefits', 'steps', 'faq',
         'name', 'slug', 'short_description', 'content',
         'icon_media_id', 'cover_media_id', 'og_image_media_id',
         'external_url', 'app_store_url', 'google_play_url',
@@ -35,6 +36,9 @@ class Service extends Model
     ];
 
     protected $casts = [
+        'benefits' => 'array',
+        'steps' => 'array',
+        'faq' => 'array',
         'is_featured' => 'boolean',
         'sort_order' => 'integer',
         'published_at' => 'datetime',

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Console\LocalServeCommand;
 use App\Http\Middleware\CachePublicHtml;
 use App\Models\AuditLog;
 use App\Models\MediaAsset;
@@ -26,6 +27,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Console\ServeCommand;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -39,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->scoped(RequestMedia::class);
+        $this->app->extend(ServeCommand::class, fn () => $this->app->make(LocalServeCommand::class));
     }
 
     public function boot(): void
