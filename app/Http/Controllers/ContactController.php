@@ -16,6 +16,7 @@ class ContactController extends Controller
             'seo' => he_seo([
                 'title' => 'Liên hệ',
                 'description' => 'Liên hệ với '.setting('site_name', config('app.name')).'.',
+                'og_image' => seo_url('/assets/img/v2/og-about-contact.webp'),
             ]),
         ]);
     }
@@ -27,13 +28,17 @@ class ContactController extends Controller
             return redirect()->route('contact')->with('contact_success', true)->withFragment('contact-form');
         }
 
+        $data = $request->validated();
+        $service = isset($data['service_id']) ? Service::published()->find($data['service_id']) : null;
         $submission = ContactSubmission::create([
             'name' => $request->string('name'),
             'phone' => $request->string('phone'),
             'email' => $request->input('email'),
             'company' => $request->input('company'),
-            'service_id' => $request->input('service_id'),
-            'message' => $request->string('message'),
+            'service_id' => $service?->id,
+            'service_interest' => $service?->name ?? ($data['solution'] ?? null),
+            'source' => $data['source'] ?? 'contact-form',
+            'message' => $data['message'] ?? null,
             'consent' => $request->boolean('consent'),
             'status' => 'new',
             'ip_address' => $request->ip(),
@@ -64,7 +69,7 @@ class ContactController extends Controller
                 ."Điện thoại: {$submission->phone}\n"
                 ."Email: {$submission->email}\n"
                 ."Công ty: {$submission->company}\n"
-                .'Dịch vụ quan tâm: '.(optional($submission->service)->name ?? '—')."\n"
+                .'Dịch vụ quan tâm: '.($submission->service_interest ?? '—')."\n"
                 ."Nội dung:\n{$submission->message}\n";
 
             Mail::raw($body, function ($mail) use ($to) {

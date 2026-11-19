@@ -16,16 +16,22 @@ class ContactSubmissionRequest extends FormRequest
      */
     public function rules(): array
     {
+        if (filled($this->input('website'))) {
+            return ['website' => ['required', 'string', 'max:255']];
+        }
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:30'],
             'email' => ['nullable', 'email', 'max:255'],
             'company' => ['nullable', 'string', 'max:255'],
             'service_id' => ['nullable', 'integer', 'exists:services,id'],
-            'message' => ['required', 'string', 'max:5000'],
+            'solution' => ['nullable', 'string', 'max:255'],
+            'source' => ['nullable', 'in:contact-form,lead-form'],
+            'message' => ['required_unless:source,lead-form', 'nullable', 'string', 'max:5000'],
             'consent' => ['nullable', 'accepted'],
             // Honeypot: bot thường điền, người dùng thật để trống.
-            'website' => ['nullable', 'size:0'],
+            'website' => ['nullable', 'string'],
         ];
     }
 
@@ -54,7 +60,7 @@ class ContactSubmissionRequest extends FormRequest
             'required' => 'Vui lòng nhập :attribute.',
             'email' => 'Email không hợp lệ.',
             'consent.accepted' => 'Bạn cần đồng ý với chính sách dữ liệu.',
-            'website.size' => 'Yêu cầu không hợp lệ.',
+            'message.required_unless' => 'Vui lòng nhập nội dung.',
         ];
     }
 }
