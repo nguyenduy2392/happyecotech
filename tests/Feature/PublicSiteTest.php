@@ -114,6 +114,17 @@ class PublicSiteTest extends TestCase
         $this->assertDatabaseCount('contact_submissions', 1);
     }
 
+    public function test_lead_requires_consent_and_vietnamese_phone_format(): void
+    {
+        $lead = ['name' => 'Người gửi thử', 'phone' => '12345', 'source' => 'lead-form'];
+        $this->postJson('/lien-he', $lead)->assertUnprocessable()->assertJsonValidationErrors(['phone', 'consent']);
+        $this->postJson('/lien-he', array_replace($lead, ['phone' => '+84 936.685.886', 'consent' => '1']))
+            ->assertOk()->assertJsonPath('ok', true);
+        $this->post('/lien-he', ['name' => 'Người gửi thử', 'phone' => '024 1234.5678', 'message' => 'Tư vấn'])
+            ->assertRedirect()->assertSessionHas('contact_success');
+        $this->assertDatabaseHas('contact_submissions', ['phone' => '024 1234.5678', 'consent' => false]);
+    }
+
     public function test_sitemap_lists_published_service(): void
     {
         $this->get('/sitemap.xml')

@@ -7,4 +7,6 @@ return [
     */
     'contact_notify_to' => env('CONTACT_NOTIFY_TO'),
     'admin_password' => env('HE_ADMIN_PASSWORD'),
+    'admin_email' => env('HE_ADMIN_EMAIL', 'admin@happyecotech.com'),
+    'admin_name' => env('HE_ADMIN_NAME', 'Super Admin'),
 ];

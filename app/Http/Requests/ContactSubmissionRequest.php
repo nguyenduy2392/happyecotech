@@ -41,14 +41,14 @@ class ContactSubmissionRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:30'],
+            'phone' => ['required', 'string', 'max:30', 'regex:/\A(?:0|\+84)[ .]*[1-9](?:[ .]*[0-9]){8,9}\z/'],
             'email' => ['nullable', 'email', 'max:255'],
             'company' => ['nullable', 'string', 'max:255'],
             'service_id' => ['nullable', 'integer', 'exists:services,id'],
             'solution' => ['nullable', 'string', 'max:255'],
             'source' => ['nullable', 'in:contact-form,lead-form'],
             'message' => ['required_unless:source,lead-form', 'nullable', 'string', 'max:5000'],
-            'consent' => ['nullable', 'accepted'],
+            'consent' => $this->input('source') === 'lead-form' ? ['required', 'accepted'] : ['sometimes', 'accepted'],
             // Honeypot: bot thường điền, người dùng thật để trống.
             'website' => ['nullable', 'string'],
         ];
@@ -79,6 +79,8 @@ class ContactSubmissionRequest extends FormRequest
             'required' => 'Vui lòng nhập :attribute.',
             'email' => 'Email không hợp lệ.',
             'consent.accepted' => 'Bạn cần đồng ý với chính sách dữ liệu.',
+            'consent.required' => 'Bạn cần đồng ý với chính sách dữ liệu.',
+            'phone.regex' => 'Nhập số điện thoại Việt Nam bắt đầu bằng 0 hoặc +84.',
             'message.required_unless' => 'Vui lòng nhập nội dung.',
         ];
     }

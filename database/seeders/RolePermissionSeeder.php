@@ -45,12 +45,12 @@ class RolePermissionSeeder extends Seeder
             return;
         }
 
-        $email = env('HE_ADMIN_EMAIL', 'admin@happyecotech.com');
+        $email = config('happyecotech.admin_email');
 
         $user = User::firstOrCreate(
             ['email' => $email],
             [
-                'name' => env('HE_ADMIN_NAME', 'Super Admin'),
+                'name' => config('happyecotech.admin_name'),
                 'password' => Hash::make($password),
                 'is_active' => true,
                 'email_verified_at' => now(),
