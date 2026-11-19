@@ -16,7 +16,7 @@ class SeoSchema
         $graph = [];
         if ($url === $home) {
             $parts = array_map('trim', explode(',', (string) setting('contact_address'), 2));
-            if (filled($parts[0] ?? null) && filled($parts[1] ?? null)) {
+            if (preg_match('/\d/', $parts[0]) && filled($parts[1] ?? null)) {
                 $organization['@type'] = ['Organization', 'LocalBusiness'];
                 $organization['address'] = ['@type' => 'PostalAddress', 'streetAddress' => $parts[0], 'addressLocality' => $parts[1]];
             }

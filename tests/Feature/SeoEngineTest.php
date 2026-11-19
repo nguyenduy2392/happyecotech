@@ -143,7 +143,7 @@ class SeoEngineTest extends TestCase
             $this->assertSame($graph[1]['@id'], $graph[2][$type === 'Service' ? 'provider' : 'publisher']['@id']);
             $this->assertStringStartsWith(seo_url('/'), $graph[2]['image']);
         }
-        SiteSetting::put('contact_address', 'Hải Phòng');
+        SiteSetting::put('contact_address', 'Hải Phòng, Việt Nam');
         $graph = $this->graph($this->html($this->get('/')->assertOk()->getContent()));
         $this->assertSame('Organization', $graph[0]['@type']);
         $this->get('/nonexistent')->assertNotFound()->assertSee('noindex,follow');

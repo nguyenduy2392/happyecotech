@@ -25,7 +25,7 @@ class ServiceController extends Controller
         $service->load(['features', 'gallery', 'icon', 'cover', 'ogImage']);
         // Suppress the exact placeholder shipped by the earlier seeder without rewriting database content.
         $faq = array_values(array_filter($service->faq ?? [], fn ($item) => ! (
-            ($item['question'] ?? null) === 'Tìm hiểu '.$service->name.' ở đâu?'
+            preg_match('/\ATìm hiểu .+ ở đâu\?\z/u', (string) ($item['question'] ?? ''))
             && ($item['answer'] ?? null) === 'Bạn có thể liên hệ Happy Ecotech để trao đổi nhu cầu và phạm vi triển khai phù hợp.'
         )));
         $service->faq = $faq;
