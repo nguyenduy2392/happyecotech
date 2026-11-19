@@ -74,18 +74,16 @@
         <section class="section section-tint" aria-labelledby="how-title">
             <div class="container-page">
                 <div class="section-head"><h2 id="how-title">{{ $service->name }} hoạt động thế nào</h2></div>
-                <ol class="grid gap-6 md:grid-cols-3">
+                <ol class="steps" style="--steps: {{ min($steps->count(), 4) }}">
                     @foreach ($steps as $i => $step)
-                        <li class="card">
-                            <span class="flex size-11 items-center justify-center rounded-full bg-brand-600 font-semibold text-white" aria-hidden="true">{{ $i + 1 }}</span>
-                            <h3 class="mt-4">{{ $step['title'] ?? '' }}</h3>
-                            <p class="mt-2 text-ink-700">{{ $step['text'] ?? $step['description'] ?? '' }}</p>
+                        <li class="step">
+                            <span class="step-num" aria-hidden="true">{{ $i + 1 }}</span>
+                            <h3>{{ $step['title'] ?? '' }}</h3>
+                            <p>{{ $step['text'] ?? $step['description'] ?? '' }}</p>
+                            @unless ($loop->last)<x-glyph name="arrow-right" :size="20" class="step-arrow" />@endunless
                         </li>
                     @endforeach
                 </ol>
-                @if ($service->slug === 'smartlabel')
-                    <x-art name="process-traceability" width="1280" height="720" class="mx-auto mt-10 w-full max-w-4xl rounded-xl" sizes="(min-width: 960px) 896px, 100vw" />
-                @endif
             </div>
         </section>
     @endif

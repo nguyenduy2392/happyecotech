@@ -254,6 +254,39 @@
     .nav-link:hover, .nav-link[aria-current="page"] { @apply text-brand-700; }
     .nav-link[aria-current="page"] { @apply bg-brand-50; }
 
+    /* Quy trình các bước: <ol> chữ thật; dọc ở mobile, ngang ≥768px, nối bằng đường nét đứt + mũi tên */
+    .steps { display: grid; gap: 2rem; counter-reset: step; }
+    .step { position: relative; padding-left: 4rem; min-height: 2.75rem; }
+    .step-num {
+        @apply absolute left-0 top-0 flex size-11 items-center justify-center rounded-full bg-brand-600 font-semibold text-white;
+    }
+    .step:not(:last-child)::before {
+        content: "";
+        position: absolute;
+        left: 1.3125rem;
+        top: 3rem;
+        bottom: -1.75rem;
+        border-left: 2px dashed var(--color-brand-200);
+    }
+    .step-arrow { display: none; }
+    .step h3 { font-size: var(--text-h3); line-height: var(--text-h3--line-height); padding-top: 0.5rem; }
+    .step p { @apply mt-2 text-ink-700; }
+    @media (min-width: 48rem) {
+        .steps { grid-template-columns: repeat(var(--steps, 3), minmax(0, 1fr)); gap: 2.5rem; }
+        .step { padding-left: 0; padding-top: 3.75rem; }
+        .step-num { top: 0; }
+        .step h3 { padding-top: 0; }
+        .step:not(:last-child)::before {
+            left: 3.5rem;
+            right: -1.5rem;
+            top: 1.3125rem;
+            bottom: auto;
+            border-left: 0;
+            border-top: 2px dashed var(--color-brand-200);
+        }
+        .step-arrow { display: block; position: absolute; top: 0.6875rem; right: -2.25rem; @apply text-brand-600; }
+    }
+
     /* Nút lên đầu trang: fixed (không gây CLS), nằm trên thanh Gọi/Zalo ở mobile */
     .back-to-top {
         @apply fixed bottom-20 right-4 z-30 flex size-12 items-center justify-center rounded-full bg-ink-900 text-white shadow-card md:bottom-6 md:right-6;
