@@ -1,11 +1,12 @@
 @php
+    $safe = fn ($u) => function_exists('safe_url') ? safe_url($u) : null; // R2-01: mọi URL từ CMS đi qua safe_url()
     $footerLogo = setting('footer_logo_media_id') ?? setting('logo_media_id');
     $siteName = setting('site_name', 'Happy Ecotech');
     $isDefaultLogo = ! $footerLogo || ($footerLogo->disk === 'assets' && $footerLogo->path === 'img/logo/logo-full.png');
     $phone = setting('contact_phone');
     $email = setting('contact_email');
     $address = setting('contact_address');
-    $mapEmbed = setting('map_embed_url');
+    $mapEmbed = $safe(setting('map_embed_url'));
     $showSocial = setting('footer_show_social', true);
     $showServices = setting('footer_show_services', true);
     $policyPages = \App\Models\Page::query()->where('status', 'published')
@@ -32,9 +33,9 @@
                 @if ($showSocial && $socialLinks->isNotEmpty())
                     <ul class="mt-5 flex gap-2">
                         @foreach ($socialLinks as $social)
-                            @continue(blank($social->url))
+                            @continue(blank($safe($social->url)))
                             <li>
-                                <a href="{{ $social->url }}" target="_blank" rel="noopener noreferrer"
+                                <a href="{{ $safe($social->url) }}" target="_blank" rel="noopener noreferrer"
                                     class="flex size-11 items-center justify-center rounded-md border border-ink-700 text-white hover:bg-ink-700"
                                     aria-label="{{ $social->label ?: $social->platform }}">
                                     <x-glyph :name="$socialIcons[strtolower((string) $social->platform)] ?? 'link'" />

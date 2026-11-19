@@ -1,10 +1,11 @@
 @php
+    $safe = fn ($u) => function_exists('safe_url') ? safe_url($u) : null; // R2-01: mọi URL từ CMS đi qua safe_url()
     // Chỉ hiển thị khi có logo thật (không bịa logo khách hàng).
-    $logos = collect($data['logos'] ?? [])->map(function ($l) {
+    $logos = collect($data['logos'] ?? [])->map(function ($l) use ($safe) {
         $id = is_array($l) ? ($l['media_id'] ?? $l['logo_media_id'] ?? null) : null;
         return [
             'name' => is_array($l) ? ($l['name'] ?? '') : '',
-            'url' => is_array($l) ? ($l['url'] ?? null) : null,
+            'url' => is_array($l) ? $safe($l['url'] ?? null) : null,
             'media' => filled($id) ? \App\Models\MediaAsset::find($id) : null,
         ];
     })->filter(fn ($l) => $l['media'])->values();

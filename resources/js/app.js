@@ -8,7 +8,7 @@ const panel = document.querySelector('[data-nav-panel]');
 if (toggle && panel) {
     const setOpen = (open) => {
         toggle.setAttribute('aria-expanded', String(open));
-        panel.classList.toggle('hidden', !open);
+        panel.classList.toggle('is-open', open);
     };
 
     toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
@@ -47,17 +47,27 @@ if (topBtn) {
     });
 }
 
-// ---- Form gửi tại chỗ (lead-form + trang liên hệ). Lỗi JS/không có JSON -> submit thường. ----
+// ---- Form gửi tại chỗ (lead-form + trang liên hệ) ----
+// Không bao giờ submit() thường sau khi đã gửi fetch (tránh lead trùng): lỗi mạng/5xx -> giữ dữ liệu + nút "Thử lại" dùng CÙNG idempotency_key.
+// Chỉ để trình duyệt submit thường khi fetch/FormData không khả dụng.
+const uuid = () => (crypto.randomUUID ? crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    }));
+
 const clearErrors = (form) => {
     form.querySelectorAll('[data-js-error]').forEach((el) => el.remove());
-    form.querySelectorAll('[aria-invalid="true"]').forEach((el) => {
+    form.querySelectorAll('[data-js-invalid]').forEach((el) => {
         el.removeAttribute('aria-invalid');
-        const id = el.getAttribute('aria-describedby');
-        if (id && id.endsWith('-js-err')) el.removeAttribute('aria-describedby');
+        el.removeAttribute('data-js-invalid');
+        const prev = el.dataset.prevDescribedby;
+        if (prev) el.setAttribute('aria-describedby', prev); else el.removeAttribute('aria-describedby');
+        delete el.dataset.prevDescribedby;
     });
 };
 
-const showStatus = (form, kind, text) => {
+const showStatus = (form, kind, text, { focus = false, retry = null } = {}) => {
     const box = form.querySelector('[data-form-status]');
     if (!box) return;
     box.textContent = text;
@@ -65,95 +75,114 @@ const showStatus = (form, kind, text) => {
         ? 'rounded-lg border border-brand-200 bg-brand-50 p-4 font-semibold text-brand-900'
         : 'rounded-lg border border-danger-600 bg-danger-50 p-4 font-semibold text-danger-600';
     box.setAttribute('role', kind === 'ok' ? 'status' : 'alert');
-    box.focus();
+    let btn = null;
+    if (retry) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-outline mt-3 block';
+        btn.textContent = 'Thử lại';
+        btn.addEventListener('click', retry);
+        box.appendChild(btn);
+    }
+    if (btn) btn.focus(); else if (focus) box.focus();
 };
 
 const showFieldErrors = (form, errors) => {
     Object.entries(errors).forEach(([name, messages]) => {
         const field = form.querySelector(`[name="${name}"]`);
         if (!field) return;
-        const id = `${form.dataset.formId || 'f'}-${name}-js-err`;
+        const id = `${form.dataset.formId}-${name}-js-err`;
         const p = document.createElement('p');
         p.id = id;
         p.className = 'field-error';
         p.dataset.jsError = '';
         p.textContent = [].concat(messages)[0];
         (field.closest('.field') || field.parentElement).appendChild(p);
+        const prev = field.getAttribute('aria-describedby');
+        if (prev) field.dataset.prevDescribedby = prev;
         field.setAttribute('aria-invalid', 'true');
-        field.setAttribute('aria-describedby', id);
+        field.dataset.jsInvalid = '';
+        field.setAttribute('aria-describedby', prev ? `${prev} ${id}` : id);
     });
 };
 
-const ensureToken = (form) => {
-    const input = form.querySelector('input[data-csrf-from]');
-    if (!input || input.value) return Promise.resolve();
-    return fetch(input.dataset.csrfFrom, { credentials: 'same-origin', headers: { Accept: 'application/json' } })
-        .then((r) => r.json())
-        .then((d) => { input.value = d.token || ''; });
+// Token CSRF: 1 promise dùng chung cho focusin + submit; force=true để làm mới (khi 419 / session đổi).
+const tokenFor = (form, force = false) => {
+    const input = form.querySelector('input[name="_token"]');
+    const endpoint = form.dataset.csrfEndpoint || input?.dataset.csrfFrom;
+    if (!input || !endpoint) return Promise.resolve();
+    if (!force && input.value) return Promise.resolve();
+    if (!force && form._tokenPromise) return form._tokenPromise;
+    form._tokenPromise = fetch(endpoint, { credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' } })
+        .then((r) => { if (!r.ok) throw new Error('token'); return r.json(); })
+        .then((d) => { input.value = d.token || ''; })
+        .finally(() => { form._tokenPromise = null; });
+    return form._tokenPromise;
 };
 
 document.querySelectorAll('form[data-ajax-form]').forEach((form, i) => {
     form.dataset.formId = form.dataset.formId || `ajax${i}`;
-    form.addEventListener('focusin', () => { ensureToken(form).catch(() => {}); }, { once: true });
+    let keyInput = form.querySelector('input[name="idempotency_key"]');
+    if (!keyInput) {
+        keyInput = document.createElement('input');
+        keyInput.type = 'hidden';
+        keyInput.name = 'idempotency_key';
+        form.appendChild(keyInput);
+    }
+    // 1 key cho mỗi lần điền form; giữ nguyên khi thử lại, đổi mới sau khi gửi thành công.
+    keyInput.value = keyInput.value || uuid();
 
-    form.addEventListener('submit', async (e) => {
-        if (!window.fetch || !window.FormData) return;
-        e.preventDefault();
+    form.addEventListener('focusin', () => { tokenFor(form).catch(() => {}); }, { once: true });
+
+    const post = () => fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+    });
+
+    const send = async () => {
         const btn = form.querySelector('button[type="submit"]');
-        const label = btn?.textContent;
+        const label = btn?.dataset.label || btn?.textContent;
+        if (btn) { btn.dataset.label = label; btn.disabled = true; btn.textContent = 'Đang gửi...'; }
         clearErrors(form);
-        if (btn) { btn.disabled = true; btn.textContent = 'Đang gửi...'; }
-        let handled = false;
+        const retry = () => { send(); };
         try {
-            await ensureToken(form);
-            const res = await fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                credentials: 'same-origin',
-                headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-            });
+            await tokenFor(form);
+            let res = await post();
+            if (res.status === 419) {
+                // Token hết hạn/đổi session: làm mới và thử lại đúng 1 lần.
+                await tokenFor(form, true);
+                res = await post();
+            }
             const isJson = (res.headers.get('content-type') || '').includes('json');
             const data = isJson ? await res.json().catch(() => null) : null;
 
-            if (res.status === 429) {
-                handled = true;
-                showStatus(form, 'error', 'Bạn thao tác hơi nhanh. Vui lòng thử lại sau ít phút hoặc gọi hotline.');
-            } else if (res.status === 422 && data?.errors) {
-                handled = true;
+            if (res.status === 422 && data?.errors) {
                 showFieldErrors(form, data.errors);
                 showStatus(form, 'error', 'Vui lòng kiểm tra lại các trường được đánh dấu.');
-                form.querySelector('[aria-invalid="true"]')?.focus({ preventScroll: true });
-                form.querySelector('[data-form-status]')?.focus();
-            } else if (res.ok && data?.ok) {
-                handled = true;
+                form.querySelector('[data-js-invalid]')?.focus();
+            } else if (res.status === 429) {
+                showStatus(form, 'error', 'Bạn thao tác hơi nhanh. Vui lòng thử lại sau ít phút hoặc gọi hotline.');
+            } else if (res.status === 419) {
+                showStatus(form, 'error', 'Phiên làm việc đã hết hạn và chưa làm mới được. Dữ liệu của bạn vẫn được giữ.', { retry });
+            } else if (res.ok && (data?.ok || !isJson)) {
                 form.reset();
-                showStatus(form, 'ok', data.message || 'Cảm ơn bạn. Chúng tôi đã nhận được thông tin và sẽ liên hệ lại sớm.');
-            } else if (res.ok && res.redirected && !isJson) {
-                // Backend chưa trả JSON: đọc kết quả từ trang HTML sau redirect (đã gửi 1 lần, không submit lại).
-                handled = true;
-                const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-                const invalid = [...doc.querySelectorAll('[aria-invalid="true"][aria-describedby]')];
-                if (invalid.length) {
-                    const errors = {};
-                    invalid.forEach((el) => { errors[el.getAttribute('name')] = doc.getElementById(el.getAttribute('aria-describedby'))?.textContent || 'Chưa hợp lệ'; });
-                    showFieldErrors(form, errors);
-                    showStatus(form, 'error', 'Vui lòng kiểm tra lại các trường được đánh dấu.');
-                    form.querySelector('[aria-invalid="true"]')?.focus({ preventScroll: true });
-                    form.querySelector('[data-form-status]')?.focus();
-                } else if (doc.querySelector('[role="status"]')) {
-                    form.reset();
-                    showStatus(form, 'ok', 'Cảm ơn bạn. Chúng tôi đã nhận được thông tin và sẽ liên hệ lại sớm.');
-                } else {
-                    showStatus(form, 'error', 'Chưa gửi được. Vui lòng thử lại hoặc gọi hotline.');
-                }
+                keyInput.value = uuid();
+                showStatus(form, 'ok', data?.message || 'Cảm ơn bạn. Chúng tôi đã nhận được thông tin và sẽ liên hệ lại sớm.', { focus: true });
+            } else {
+                showStatus(form, 'error', 'Chưa xác nhận được việc gửi. Dữ liệu của bạn vẫn được giữ, hãy bấm Thử lại (sẽ không tạo yêu cầu trùng).', { retry });
             }
         } catch (err) {
-            handled = false;
+            showStatus(form, 'error', 'Chưa xác nhận được việc gửi (lỗi kết nối). Dữ liệu của bạn vẫn được giữ, hãy bấm Thử lại (sẽ không tạo yêu cầu trùng).', { retry });
+        } finally {
+            if (btn) { btn.disabled = false; btn.textContent = label; }
         }
-        if (btn) { btn.disabled = false; btn.textContent = label; }
-        // Không xử lý được (mạng/JS/không phải JSON): quay về submit thường (HTML redirect).
-        if (!handled) {
-            HTMLFormElement.prototype.submit.call(form);
-        }
+    };
+
+    form.addEventListener('submit', (e) => {
+        if (!window.fetch || !window.FormData) return; // để trình duyệt submit thường
+        e.preventDefault();
+        send();
     });
 });

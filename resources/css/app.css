@@ -71,6 +71,7 @@
     --color-ink-100: #e8eef0;
     --color-ink-200: #d3dde1;
     --color-ink-300: #b7c4ca;
+    --color-control: #6f7f87; /* viền control, ≥3:1 trên trắng (WCAG 1.4.11) */
     --color-ink-500: #5b6b73;
     --color-ink-700: #3a4a53;
     --color-ink-900: #1d2a32;
@@ -189,7 +190,7 @@
     .btn-lg { @apply min-h-12 px-6 py-3 text-lg; }
     .btn-primary { @apply bg-brand-600 text-white; }
     .btn-primary:hover { @apply bg-brand-700; }
-    .btn-outline { @apply border-ink-300 bg-white text-ink-900; }
+    .btn-outline { @apply border-control bg-white text-ink-900; }
     .btn-outline:hover { @apply border-brand-600 text-brand-700; }
     .btn-light { @apply bg-white text-brand-700; }
     .btn-light:hover { @apply bg-brand-50; }
@@ -216,9 +217,9 @@
     .field { @apply flex flex-col gap-1.5; }
     .field label { @apply text-sm font-semibold text-ink-900; }
     .input {
-        @apply min-h-11 w-full rounded-md border border-ink-300 bg-white px-3.5 py-2.5 text-ink-900 placeholder:text-ink-500;
+        @apply min-h-11 w-full rounded-md border border-control bg-white px-3.5 py-2.5 text-ink-900 placeholder:text-ink-500;
     }
-    .input:hover { @apply border-ink-500; }
+    .input:hover { @apply border-ink-700; }
     .input:focus-visible { @apply border-brand-600; outline-offset: 1px; }
     .input[aria-invalid="true"] { @apply border-danger-600 bg-danger-50; }
     .field-error { @apply text-sm font-semibold text-danger-600; }
@@ -248,6 +249,11 @@
     .prose-he blockquote { @apply border-l-4 border-brand-200 pl-4 text-ink-700; }
     .prose-he table { @apply w-full border-collapse text-left; }
     .prose-he th, .prose-he td { @apply border border-ink-200 px-3 py-2; }
+
+    /* Progressive enhancement: không JS thì menu mobile hiển thị sẵn, nút bật/tắt và form cần token ẩn */
+    .js [data-nav-panel]:not(.is-open) { display: none; }
+    html:not(.js) [data-nav-toggle] { display: none; }
+    html:not(.js) [data-csrf-deferred] { display: none; }
 
     /* Header */
     .nav-link { @apply inline-flex min-h-11 items-center rounded-md px-3 font-semibold text-ink-700 no-underline; }

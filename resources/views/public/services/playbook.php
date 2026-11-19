@@ -20,43 +20,16 @@ return [
             ['title' => 'Người mua quét mã', 'text' => 'Xem thông tin xác thực ngay trên điện thoại.'],
         ],
     ],
+    // TaskFlow: chỉ giữ lợi ích khớp mô tả seed (tối ưu quy trình, giảm sai sót, nâng cao hiệu suất). Chưa có quy trình đã xác nhận.
     'taskflow' => [
         'h1' => 'TaskFlow: quản lý dự án và công việc cho đội nhóm',
         'benefits' => [
-            ['title' => 'Giao việc rõ ràng', 'text' => 'Mỗi đầu việc có người phụ trách, hạn xử lý và trạng thái minh bạch.'],
-            ['title' => 'Theo dõi tiến độ', 'text' => 'Nắm tình hình dự án mà không phải hỏi từng người.'],
-            ['title' => 'Giảm sai sót', 'text' => 'Quy trình làm việc thống nhất giúp hạn chế bỏ sót và trùng lặp.'],
-        ],
-        'steps' => [
-            ['title' => 'Tạo dự án', 'text' => 'Khai báo dự án và thành viên tham gia.'],
-            ['title' => 'Giao và nhận việc', 'text' => 'Chia nhỏ công việc, giao cho từng người, đặt hạn xử lý.'],
-            ['title' => 'Theo dõi và hoàn tất', 'text' => 'Cập nhật trạng thái trên điện thoại, xem tiến độ tổng thể.'],
+            ['title' => 'Tối ưu quy trình làm việc', 'text' => 'Quản lý dự án và công việc trên một nền tảng thống nhất.'],
+            ['title' => 'Giảm thiểu sai sót', 'text' => 'Quy trình rõ ràng giúp hạn chế bỏ sót và trùng lặp.'],
+            ['title' => 'Nâng cao hiệu suất', 'text' => 'Đội nhóm theo dõi được công việc và tiến độ của mình.'],
         ],
     ],
-    'minicrm' => [
-        'h1' => 'MiniCRM: quản lý khách hàng gọn nhẹ cho doanh nghiệp nhỏ',
-        'benefits' => [
-            ['title' => 'Thông tin khách hàng tập trung', 'text' => 'Một nơi lưu hồ sơ và lịch sử trao đổi, không thất lạc khi đổi người phụ trách.'],
-            ['title' => 'Chăm sóc đúng lúc', 'text' => 'Theo dõi từng khách hàng để không bỏ lỡ cơ hội.'],
-            ['title' => 'Dễ dùng', 'text' => 'Gọn nhẹ, phù hợp đội ngũ nhỏ chưa có quy trình CRM phức tạp.'],
-        ],
-        'steps' => [
-            ['title' => 'Nhập danh sách khách hàng', 'text' => 'Đưa thông tin khách hàng hiện có vào hệ thống.'],
-            ['title' => 'Ghi nhận trao đổi', 'text' => 'Lưu lại từng lần liên hệ và việc cần làm tiếp theo.'],
-            ['title' => 'Theo dõi và chăm sóc', 'text' => 'Xem danh sách khách cần liên hệ lại và kết quả chăm sóc.'],
-        ],
-    ],
-    'farm2home' => [
-        'h1' => 'Farm2Home: kết nối trực tiếp nông dân với người tiêu dùng',
-        'benefits' => [
-            ['title' => 'Đi thẳng từ nông trại', 'text' => 'Rút ngắn khâu trung gian giữa người sản xuất và người mua.'],
-            ['title' => 'Biết rõ nguồn gốc', 'text' => 'Người mua nắm được sản phẩm đến từ đâu.'],
-            ['title' => 'Mở thêm kênh bán', 'text' => 'Nông dân và hợp tác xã có thêm kênh tiếp cận khách hàng.'],
-        ],
-        'steps' => [
-            ['title' => 'Nông dân đăng sản phẩm', 'text' => 'Cập nhật sản phẩm và thông tin nguồn gốc.'],
-            ['title' => 'Người mua lựa chọn', 'text' => 'Xem sản phẩm và đặt mua trực tiếp.'],
-            ['title' => 'Giao nhận', 'text' => 'Sản phẩm đến tay người tiêu dùng.'],
-        ],
-    ],
+    // MiniCRM / Farm2Home: chỉ giữ H1 theo mô tả seed. Các bước/lợi ích CHƯA được chủ sản phẩm xác nhận nên ẩn.
+    'minicrm' => ['h1' => 'MiniCRM: quản lý khách hàng và mối quan hệ khách hàng'],
+    'farm2home' => ['h1' => 'Farm2Home: kết nối trực tiếp nông dân với người tiêu dùng'],
 ];

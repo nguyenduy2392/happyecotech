@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <div id="mobile-nav" data-nav-panel class="hidden border-t border-ink-100 bg-white lg:hidden">
+    <div id="mobile-nav" data-nav-panel class="border-t border-ink-100 bg-white lg:hidden">
         <nav aria-label="Điều hướng chính (di động)" class="container-page flex flex-col gap-1 py-4">
             @foreach ($headerMenu as $item)
                 @php

@@ -1,6 +1,7 @@
 @php
-    $ios = $data['ios_url'] ?? setting('app_store_url');
-    $android = $data['android_url'] ?? setting('google_play_url');
+    $safe = fn ($u) => function_exists('safe_url') ? safe_url($u) : null; // R2-01: mọi URL từ CMS đi qua safe_url()
+    $ios = $safe($data['ios_url'] ?? setting('app_store_url'));
+    $android = $safe($data['android_url'] ?? setting('google_play_url'));
     $iosQr = filled($data['ios_qr_media_id'] ?? null) ? \App\Models\MediaAsset::find($data['ios_qr_media_id']) : null;
     $androidQr = filled($data['android_qr_media_id'] ?? null) ? \App\Models\MediaAsset::find($data['android_qr_media_id']) : null;
 @endphp

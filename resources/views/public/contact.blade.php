@@ -1,12 +1,13 @@
 @extends('layouts.public')
 
 @php
+    $safe = fn ($u) => function_exists('safe_url') ? safe_url($u) : null; // R2-01: mọi URL từ CMS đi qua safe_url()
     $phone = setting('contact_phone');
     $tel = $phone ? preg_replace('/[^\d+]/', '', $phone) : null;
     $email = setting('contact_email');
     $address = setting('contact_address');
     $hours = setting('working_hours');
-    $mapEmbed = setting('map_embed_url');
+    $mapEmbed = $safe(setting('map_embed_url'));
 @endphp
 
 @section('content')
@@ -34,7 +35,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('contact.submit') }}" class="mt-8 grid gap-5" novalidate data-ajax-form>
+                <form method="POST" action="{{ route('contact.submit') }}" class="mt-8 grid gap-5" novalidate data-ajax-form @if (\Illuminate\Support\Facades\Route::has('csrf.token')) data-csrf-endpoint="{{ route('csrf.token', [], false) }}" @endif>
                     <div data-form-status tabindex="-1" class="hidden" aria-live="polite"></div>
                     @csrf
                     <div class="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">

@@ -10,11 +10,13 @@
     // Trang công khai được cache HTML: token CSRF không được nằm trong HTML cache -> lấy qua endpoint (luồng A) khi có.
     $tokenUrl = \Illuminate\Support\Facades\Route::has('csrf.token') ? route('csrf.token', [], false) : null;
 @endphp
-<form method="POST" action="{{ route('contact.submit') }}" class="grid gap-4" novalidate data-lead-form data-ajax-form>
+@if ($tokenUrl)
+    <noscript><p class="rounded-lg border border-ink-200 p-4">Biểu mẫu nhanh cần JavaScript. Vui lòng dùng <a class="font-semibold underline" href="{{ route('contact') }}#contact-form">trang Liên hệ</a> hoặc gọi hotline.</p></noscript>
+@endif
+<form method="POST" action="{{ route('contact.submit') }}" class="grid gap-4" novalidate data-lead-form data-ajax-form @if ($tokenUrl) data-csrf-deferred data-csrf-endpoint="{{ $tokenUrl }}" @endif>
     <div data-form-status tabindex="-1" class="hidden" aria-live="polite"></div>
     @if ($tokenUrl)
         <input type="hidden" name="_token" value="" data-csrf-from="{{ $tokenUrl }}" />
-        <noscript><p class="field-hint">Vui lòng bật JavaScript hoặc dùng <a class="underline" href="{{ route('contact') }}#contact-form">trang Liên hệ</a>.</p></noscript>
     @else
         @csrf
     @endif

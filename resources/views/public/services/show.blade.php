@@ -1,12 +1,15 @@
 @extends('layouts.public')
 
 @php
+    $safe = fn ($u) => function_exists('safe_url') ? safe_url($u) : null; // R2-01: mọi URL từ CMS đi qua safe_url()
     $playbook = (require resource_path('views/public/services/playbook.php'))[$service->slug] ?? [];
     $cms = fn (string $key) => is_array($service->getAttribute($key) ?? null) ? $service->getAttribute($key) : null;
 
     $h1 = $service->getAttribute('h1') ?: ($playbook['h1'] ?? $service->name);
-    $benefits = collect($cms('benefits') ?? $playbook['benefits'] ?? []);
-    $steps = collect($cms('steps') ?? $playbook['steps'] ?? []);
+    // Farm2Home: quy trình/lợi ích chưa được chủ sản phẩm xác nhận -> ẩn, kể cả khi CMS có dữ liệu (bỏ cờ này khi đã xác nhận).
+    $unverifiedProcess = in_array($service->slug, ['farm2home'], true);
+    $benefits = $unverifiedProcess ? collect() : collect($cms('benefits') ?? $playbook['benefits'] ?? []);
+    $steps = $unverifiedProcess ? collect() : collect($cms('steps') ?? $playbook['steps'] ?? []);
     $faq = collect($cms('faq') ?? [
         ['question' => 'Tôi có thể trải nghiệm demo '.$service->name.' không?', 'answer' => 'Có. Để lại thông tin liên hệ, đội ngũ Happy Ecotech sẽ sắp xếp buổi demo phù hợp với nhu cầu của bạn.'],
         ['question' => 'Chi phí sử dụng '.$service->name.' được tính thế nào?', 'answer' => 'Chi phí phụ thuộc quy mô và phạm vi sử dụng. Chúng tôi tư vấn và báo giá cụ thể sau khi trao đổi nhu cầu với bạn.'],
@@ -24,7 +27,10 @@
     }
 
     $ctaText = $service->cta_text ?: 'Nhận tư vấn';
-    $ctaUrl = $service->cta_url ?: (route('contact').'#contact-form');
+    $ctaUrl = $safe($service->cta_url) ?: (route('contact').'#contact-form');
+    $externalUrl = $safe($service->external_url);
+    $appStoreUrl = $safe($service->app_store_url);
+    $googlePlayUrl = $safe($service->google_play_url);
 @endphp
 
 @section('content')
@@ -38,19 +44,24 @@
                 @endif
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                     <a href="{{ $ctaUrl }}" class="btn btn-primary btn-lg">{{ $ctaText }} <x-glyph name="arrow-right" /></a>
-                    @if ($service->external_url)
-                        <a href="{{ $service->external_url }}" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">Truy cập {{ $service->name }}</a>
+                    @if ($externalUrl)
+                        <a href="{{ $externalUrl }}" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">Truy cập {{ $service->name }}</a>
                     @endif
-                    @if ($service->app_store_url)
-                        <a href="{{ $service->app_store_url }}" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer"><x-glyph name="smartphone" /> App Store</a>
+                    @if ($appStoreUrl)
+                        <a href="{{ $appStoreUrl }}" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer"><x-glyph name="smartphone" /> App Store</a>
                     @endif
-                    @if ($service->google_play_url)
-                        <a href="{{ $service->google_play_url }}" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer"><x-glyph name="smartphone" /> Google Play</a>
+                    @if ($googlePlayUrl)
+                        <a href="{{ $googlePlayUrl }}" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer"><x-glyph name="smartphone" /> Google Play</a>
                     @endif
                 </div>
             </div>
-            <x-art :name="'service-'.$service->slug" width="800" height="600" :priority="true" :alt="$service->name"
-                class="w-full rounded-xl" sizes="(min-width: 1024px) 400px, 100vw" />
+            @if ($service->cover)
+                <x-media-img :media="$service->cover" :alt="$service->cover->alt ?: $service->name" :priority="true"
+                    class="h-auto w-full rounded-xl" sizes="(min-width: 1024px) 400px, 100vw" />
+            @else
+                <x-art :name="'service-'.$service->slug" width="800" height="600" :priority="true" :alt="$service->name"
+                    class="w-full rounded-xl" sizes="(min-width: 1024px) 400px, 100vw" />
+            @endif
         </div>
     </section>
 
