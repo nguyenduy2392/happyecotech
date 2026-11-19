@@ -81,8 +81,44 @@
         </section>
     @endif
 
+    @php
+        $featureList = $service->features->isNotEmpty()
+            ? $service->features->map(fn ($f) => ['icon' => $f->icon, 'title' => $f->title, 'text' => $f->description])
+            : collect($playbook['features'] ?? []);
+        $knownIcons = ['check-square', 'folder', 'map-pin', 'clock', 'message', 'clipboard', 'users', 'filter', 'file-text', 'bar-chart', 'lock', 'calendar', 'camera', 'bell', 'layers', 'target', 'workflow'];
+        $cycle = ['check-square', 'layers', 'clipboard', 'workflow', 'target', 'file-text'];
+    @endphp
+    @if ($featureList->isNotEmpty())
+        <section class="section section-tint" aria-labelledby="features-title">
+            <div class="container-page">
+                <div class="section-head"><h2 id="features-title">Tính năng chính của {{ $service->name }}</h2></div>
+                <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($featureList as $i => $f)
+                        <li class="card">
+                            <h3 class="flex items-start gap-3">
+                                <x-glyph :name="in_array($f['icon'] ?? null, $knownIcons, true) ? $f['icon'] : $cycle[$i % count($cycle)]" :size="24" class="mt-0.5 text-brand-600" />
+                                {{ $f['title'] ?? '' }}
+                            </h3>
+                            @if (! empty($f['text']))<p class="mt-2 text-ink-700">{{ $f['text'] }}</p>@endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+    @endif
+
+    @php $hasShots = $service->gallery->isNotEmpty() || ! empty(glob(public_path("assets/img/v2/screen-{$service->slug}-*.webp"))); @endphp
+    @if ($hasShots)
+        <section class="section" aria-labelledby="gallery-title">
+            <div class="container-page">
+                <h2 id="gallery-title" class="mb-8 text-h2">Màn hình {{ $service->name }}</h2>
+                <x-service-shots :service="$service" :limit="6" />
+            </div>
+        </section>
+    @endif
+
     @if ($steps->isNotEmpty())
-        <section class="section section-tint" aria-labelledby="how-title">
+        <section class="section" aria-labelledby="how-title">
             <div class="container-page">
                 <div class="section-head"><h2 id="how-title">{{ $service->name }} hoạt động thế nào</h2></div>
                 <ol class="steps" style="--steps: {{ min($steps->count(), 4) }}">
@@ -98,43 +134,11 @@
             </div>
         </section>
     @endif
-
-    @if ($service->features->isNotEmpty())
-        <section class="section" aria-labelledby="features-title">
-            <div class="container-page">
-                <div class="section-head"><h2 id="features-title">Tính năng chính</h2></div>
-                <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    @foreach ($service->features as $feature)
-                        <li class="card">
-                            <h3>{{ $feature->title }}</h3>
-                            @if ($feature->description)<p class="mt-2 text-ink-700">{{ $feature->description }}</p>@endif
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        </section>
-    @endif
-
     @if ($hasDetail)
         <section class="section section-tint" aria-labelledby="detail-title">
             <div class="container-page">
                 <h2 id="detail-title" class="mb-8 text-h2">Chi tiết về {{ $service->name }}</h2>
                 <div class="prose-he">{!! $service->content !!}</div>
-            </div>
-        </section>
-    @endif
-
-    @if ($service->gallery->isNotEmpty())
-        <section class="section" aria-labelledby="gallery-title">
-            <div class="container-page">
-                <h2 id="gallery-title" class="mb-8 text-h2">Hình ảnh</h2>
-                <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    @foreach ($service->gallery as $media)
-                        <li class="overflow-hidden rounded-lg border border-ink-100">
-                            <x-media-img :media="$media" :alt="$media->alt ?: $service->name" class="w-full" sizes="(min-width: 1024px) 380px, 100vw" />
-                        </li>
-                    @endforeach
-                </ul>
             </div>
         </section>
     @endif

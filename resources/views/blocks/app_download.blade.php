@@ -9,6 +9,7 @@
     <section class="section section-tint" aria-labelledby="app-title" id="ung-dung">
         <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
             <div>
+                <p class="mb-3 flex items-center gap-3 font-semibold"><x-art name="icon-taskflow-48" width="40" height="40" :alt="''" class="size-10 !border-0 !bg-transparent !p-0 [&>span]:hidden" sizes="40px" /> TaskFlow</p>
                 <h2 id="app-title" class="text-h2">{{ $data['heading'] ?? 'Ứng dụng TaskFlow trên điện thoại' }}</h2>
                 @if (! empty($data['lead']))
                     <p class="mt-4 max-w-xl text-lead text-ink-700">{{ $data['lead'] }}</p>

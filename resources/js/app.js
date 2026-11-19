@@ -194,3 +194,20 @@ document.querySelectorAll('form[data-ajax-form]').forEach((form, i) => {
         send();
     });
 });
+
+// ---- Lightbox ảnh màn hình: <a data-lightbox> mở <dialog>; tắt JS thì link mở ảnh gốc ----
+const lightbox = document.querySelector('[data-lightbox-dialog]');
+if (lightbox && lightbox.showModal) {
+    const big = lightbox.querySelector('img');
+    document.querySelectorAll('a[data-lightbox]').forEach((a) => {
+        a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const thumb = a.querySelector('img');
+            big.src = a.href;
+            big.alt = thumb?.alt || '';
+            lightbox.showModal();
+        });
+    });
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.close(); });
+    lightbox.addEventListener('close', () => { big.removeAttribute('src'); });
+}

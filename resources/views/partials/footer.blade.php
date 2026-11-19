@@ -1,3 +1,4 @@
+@include('partials.ui-services')
 @php
     $safe = fn ($u) => function_exists('safe_url') ? safe_url($u) : null; // R2-01: mọi URL từ CMS đi qua safe_url()
     $footerLogo = setting('footer_logo_media_id') ?? setting('logo_media_id');
@@ -57,11 +58,11 @@
                 </ul>
             </nav>
 
-            @if ($showServices && $footerServices->isNotEmpty())
-                <nav aria-label="Giải pháp">
-                    <h2 class="text-lg text-white">Giải pháp</h2>
+            @if ($showServices && app('ui.services')->isNotEmpty())
+                <nav aria-label="Sản phẩm">
+                    <h2 class="text-lg text-white">Sản phẩm</h2>
                     <ul class="mt-4 space-y-1">
-                        @foreach ($footerServices as $service)
+                        @foreach (app('ui.services') as $service)
                             <li><a href="{{ route('services.show', $service) }}" class="inline-flex min-h-11 items-center text-ink-300 hover:text-white">{{ $service->name }}</a></li>
                         @endforeach
                     </ul>

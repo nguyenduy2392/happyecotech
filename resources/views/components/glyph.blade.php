@@ -25,6 +25,16 @@
         'youtube' => '<path d="M22 8.6a3 3 0 0 0-2-2.1C18 6 12 6 12 6s-6 0-8 .5A3 3 0 0 0 2 8.6 31 31 0 0 0 1.6 12 31 31 0 0 0 2 15.4a3 3 0 0 0 2 2.1c2 .5 8 .5 8 .5s6 0 8-.5a3 3 0 0 0 2-2.1 31 31 0 0 0 .4-3.4 31 31 0 0 0-.4-3.4z"/><path d="m10 15 5-3-5-3z"/>',
         'linkedin' => '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>',
         'clock' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        'check-square' => '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',
+        'folder' => '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+        'camera' => '<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>',
+        'calendar' => '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+        'bell' => '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+        'bar-chart' => '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+        'clipboard' => '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/>',
+        'filter' => '<path d="M3 5h18l-7 8v6l-4-2v-4z"/>',
+        'lock' => '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+        'zoom' => '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/>',
         'target' => '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
     ];
     $inner = $paths[$name] ?? $paths['link'];

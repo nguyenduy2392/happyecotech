@@ -275,13 +275,13 @@
         border-left: 2px dashed var(--color-brand-200);
     }
     .step-arrow { display: none; }
-    .step h3 { font-size: var(--text-h3); line-height: var(--text-h3--line-height); padding-top: 0.5rem; }
+    .step h3, .step h4 { font-size: var(--text-h3); line-height: var(--text-h3--line-height); padding-top: 0.5rem; }
     .step p { @apply mt-2 text-ink-700; }
     @media (min-width: 48rem) {
         .steps { grid-template-columns: repeat(var(--steps, 3), minmax(0, 1fr)); gap: 2.5rem; }
         .step { padding-left: 0; padding-top: 3.75rem; }
         .step-num { top: 0; }
-        .step h3 { padding-top: 0; }
+        .step h3, .step h4 { padding-top: 0; }
         .step:not(:last-child)::before {
             left: 3.5rem;
             right: -1.5rem;
@@ -292,6 +292,12 @@
         }
         .step-arrow { display: block; position: absolute; top: 0.6875rem; right: -2.25rem; @apply text-brand-600; }
     }
+
+    /* Lightbox ảnh màn hình (native <dialog>: Esc đóng, giữ focus) */
+    .lightbox { margin: auto; max-width: min(96vw, 72rem); max-height: 94vh; padding: 0; border: 0; background: transparent; overflow: visible; }
+    .lightbox::backdrop { background: rgb(20 30 36 / 0.8); }
+    .lightbox-img { max-width: 100%; max-height: 88vh; width: auto; height: auto; margin-inline: auto; border-radius: var(--radius-lg); background: var(--color-white); }
+    .lightbox-close { @apply absolute -top-3 right-0 z-10 !min-h-11 !px-3; }
 
     /* Nút lên đầu trang: fixed (không gây CLS), nằm trên thanh Gọi/Zalo ở mobile */
     .back-to-top {

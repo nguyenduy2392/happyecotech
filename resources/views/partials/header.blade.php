@@ -1,3 +1,4 @@
+@include('partials.ui-services')
 @php
     $logo = setting('logo_media_id');
     $siteName = setting('site_name', 'Happy Ecotech');
@@ -19,16 +20,22 @@
             @foreach ($headerMenu as $item)
                 @php
                     $active = $item->link_type === 'route' && $item->route_name && request()->routeIs($item->route_name);
+                    // Mục trỏ tới danh sách dịch vụ tự có menu con: TaskFlow → MiniCRM → giải pháp khác (không cần cấu hình tay).
+                    $subs = $item->children->isNotEmpty()
+                        ? $item->children->map(fn ($c) => ['label' => $c->label, 'url' => $c->resolveUrl(), 'blank' => $c->target_blank])
+                        : (($item->link_type === 'route' && $item->route_name === 'services.index')
+                            ? app('ui.services')->map(fn ($sv) => ['label' => $sv->name, 'url' => route('services.show', $sv), 'blank' => false])
+                            : collect());
                 @endphp
                 <div class="group relative">
                     <a href="{{ $item->resolveUrl() }}" class="nav-link" @if ($active) aria-current="page" @endif
                         @if ($item->target_blank) target="_blank" rel="noopener noreferrer" @endif>{{ $item->label }}</a>
-                    @if ($item->children->isNotEmpty())
+                    @if ($subs->isNotEmpty())
                         <ul class="invisible absolute left-0 top-full min-w-56 rounded-lg border border-ink-100 bg-white p-2 opacity-0 shadow-card group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                            @foreach ($item->children as $child)
+                            @foreach ($subs as $child)
                                 <li>
-                                    <a href="{{ $child->resolveUrl() }}" class="nav-link w-full"
-                                        @if ($child->target_blank) target="_blank" rel="noopener noreferrer" @endif>{{ $child->label }}</a>
+                                    <a href="{{ $child['url'] }}" class="nav-link w-full"
+                                        @if ($child['blank']) target="_blank" rel="noopener noreferrer" @endif>{{ $child['label'] }}</a>
                                 </li>
                             @endforeach
                         </ul>
@@ -51,12 +58,18 @@
             @foreach ($headerMenu as $item)
                 @php
                     $active = $item->link_type === 'route' && $item->route_name && request()->routeIs($item->route_name);
+                    // Mục trỏ tới danh sách dịch vụ tự có menu con: TaskFlow → MiniCRM → giải pháp khác (không cần cấu hình tay).
+                    $subs = $item->children->isNotEmpty()
+                        ? $item->children->map(fn ($c) => ['label' => $c->label, 'url' => $c->resolveUrl(), 'blank' => $c->target_blank])
+                        : (($item->link_type === 'route' && $item->route_name === 'services.index')
+                            ? app('ui.services')->map(fn ($sv) => ['label' => $sv->name, 'url' => route('services.show', $sv), 'blank' => false])
+                            : collect());
                 @endphp
                 <a href="{{ $item->resolveUrl() }}" class="nav-link text-lg" @if ($active) aria-current="page" @endif
                     @if ($item->target_blank) target="_blank" rel="noopener noreferrer" @endif>{{ $item->label }}</a>
-                @foreach ($item->children as $child)
-                    <a href="{{ $child->resolveUrl() }}" class="nav-link pl-8"
-                        @if ($child->target_blank) target="_blank" rel="noopener noreferrer" @endif>{{ $child->label }}</a>
+                @foreach ($subs as $child)
+                    <a href="{{ $child['url'] }}" class="nav-link pl-8"
+                        @if ($child['blank']) target="_blank" rel="noopener noreferrer" @endif>{{ $child['label'] }}</a>
                 @endforeach
             @endforeach
             <a href="{{ route('contact') }}#contact-form" data-cta="header-mobile" class="btn btn-primary btn-lg mt-3">Nhận tư vấn</a>
