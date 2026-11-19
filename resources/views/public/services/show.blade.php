@@ -169,7 +169,7 @@
     @if ($related->isNotEmpty())
         <section class="section pt-0" aria-labelledby="related-services-title">
             <div class="container-page">
-                <h2 id="related-services-title" class="mb-8 text-h2">Giải pháp khác</h2>
+                <h2 id="related-services-title" class="mb-8 text-h2">Sản phẩm và giải pháp liên quan</h2>
                 <ul class="grid gap-4 md:grid-cols-3">
                     @foreach ($related as $item)
                         <li>

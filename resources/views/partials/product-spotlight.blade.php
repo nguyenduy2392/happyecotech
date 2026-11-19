@@ -12,7 +12,10 @@
     $cycle = $flagship ? ['check-square', 'folder', 'map-pin', 'clock', 'message', 'clipboard'] : ['users', 'filter', 'message', 'file-text'];
     $appStore = $safe($service->app_store_url);
     $playStore = $safe($service->google_play_url);
-    $h = $heading ?? ($flagship ? 'Sản phẩm chủ lực: '.$service->name : 'Sản phẩm thứ hai: '.$service->name);
+    $metaAll = require resource_path('views/public/services/meta.php');
+    $m = $metaAll[$service->slug] ?? [];
+    $eyebrow = $service->getAttribute('category_label') ?: ($m['category'] ?? null);
+    $h = $heading ?? ($service->getAttribute('tagline') ?: ($m['headline'] ?? $service->name));
     $titleId = 'product-'.$service->slug.'-title';
 
 @endphp
@@ -20,6 +23,7 @@
     <div class="container-page">
         <div class="grid items-start gap-10 lg:gap-16 {{ $flagship ? 'lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]' : 'lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]' }}">
             <div class="{{ $flagship ? '' : 'lg:order-2' }}">
+                @if ($eyebrow)<p class="mb-2 font-semibold text-brand-700">{{ $eyebrow }}</p>@endif
                 <h2 id="{{ $titleId }}" class="{{ $flagship ? 'text-h2' : 'text-h3 md:text-2xl' }}">{{ $h }}</h2>
                 @if ($service->short_description)
                     <p class="mt-4 max-w-xl {{ $flagship ? 'text-lead' : '' }} text-ink-700">{{ $service->short_description }}</p>

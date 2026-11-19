@@ -70,12 +70,22 @@
                         </div>
                     </div>
 
+                    @php
+                        $solSlug = request('solution');
+                        $solMeta = (require resource_path('views/public/services/meta.php'))[$solSlug] ?? null;
+                        $solHasService = $solSlug && $services->contains('slug', $solSlug);
+                    @endphp
+                    @if ($solSlug && ! $solHasService && $solMeta)
+                        {{-- Giải pháp chưa có trang chi tiết: gửi kèm tên giải pháp quan tâm. --}}
+                        <input type="hidden" name="solution" value="{{ $solMeta['name'] ?? $solSlug }}" />
+                        <p class="rounded-lg bg-brand-50 p-3 text-sm">Giải pháp quan tâm: <strong>{{ $solMeta['name'] ?? $solSlug }}</strong></p>
+                    @endif
                     <div class="field">
                         <label for="c-service">Giải pháp quan tâm <span class="font-normal text-ink-500">(không bắt buộc)</span></label>
                         <select class="input" id="c-service" name="service_id">
                             <option value="">Chưa chọn, cần tư vấn thêm</option>
                             @foreach ($services as $svc)
-                                <option value="{{ $svc->id }}" data-slug="{{ $svc->slug }}" @selected((string) old('service_id', request('service')) === (string) $svc->id)>{{ $svc->name }}</option>
+                                <option value="{{ $svc->id }}" data-slug="{{ $svc->slug }}" @selected((string) old('service_id', request('service')) === (string) $svc->id || (! old('service_id') && request('solution') === $svc->slug))>{{ $svc->name }}</option>
                             @endforeach
                         </select>
                     </div>

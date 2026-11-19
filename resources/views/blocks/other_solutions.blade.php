@@ -1,53 +1,55 @@
-@include('partials.ui-services')
+@include('partials.ui-ecosystem')
 @php
-    // Giải pháp phụ (không phải TaskFlow/MiniCRM). Admin có thể ghi đè nhóm bằng $data['groups'] = [{title, description, icon, slugs: []}].
-    $all = app('ui.services')->reject(fn ($s) => in_array($s->slug, ['taskflow', 'minicrm'], true));
-    $groups = collect($data['groups'] ?? [
-        ['title' => 'Truy xuất nguồn gốc & tem điện tử', 'icon' => 'qr', 'slugs' => ['smartlabel', 'farm2home'],
-            'description' => 'SmartLabel gắn mã QR để người mua kiểm tra nguồn gốc, kiểm định và chất lượng sản phẩm; Farm2Home kết nối nông dân với người tiêu dùng.'],
-        ['title' => 'Hành chính số cấp xã, phường', 'icon' => 'building', 'slugs' => ['datahub', 'omc'],
-            'description' => 'DataHub Văn thư số AI và OMC trong hệ sinh thái hành chính số.'],
-    ])->map(function ($g) use ($all) {
-        $g['services'] = $all->filter(fn ($s) => in_array($s->slug, $g['slugs'] ?? [], true))->values();
-
-        return $g;
-    });
-    $used = $groups->flatMap(fn ($g) => $g['services']->pluck('id'))->all();
-    $rest = $all->reject(fn ($s) => in_array($s->id, $used, true))->values();
-    if ($rest->isNotEmpty()) {
-        $groups->push(['title' => 'Giải pháp khác', 'icon' => 'layers', 'description' => 'Các sản phẩm khác trong hệ sinh thái Happy Ecotech.', 'services' => $rest]);
-    }
+    // Các giải pháp còn lại (ngoài TaskFlow/MiniCRM), mỗi giải pháp 1 hàng lớn xen kẽ trái/phải.
+    $meta = require resource_path('views/public/services/meta.php');
+    $rows = app('ui.ecosystem')->reject(fn ($it) => in_array($it['slug'], ['taskflow', 'minicrm'], true))->values();
+    $groupTitles = collect($meta['_groups']);
+    $heading = $data['other_heading'] ?? 'Truy xuất nguồn gốc và số hoá cho chuỗi cung ứng và chính quyền cơ sở';
 @endphp
-<section class="section section-tint" aria-labelledby="other-title" id="giai-phap-khac">
+<section class="section section-tint" aria-labelledby="other-title" id="giai-phap">
     <div class="container-page">
         <div class="section-head">
-            <h2 id="other-title">{{ $data['other_heading'] ?? 'Giải pháp khác của Happy Ecotech' }}</h2>
+            <h2 id="other-title">{{ $heading }}</h2>
         </div>
-        <div class="grid gap-6 md:grid-cols-2">
-            @foreach ($groups as $g)
-                <div class="card">
-                    <h3 class="flex items-center gap-3"><x-glyph :name="$g['icon'] ?? 'layers'" :size="24" class="text-brand-600" />{{ $g['title'] }}</h3>
-                    <p class="mt-2 text-ink-700">{{ $g['description'] ?? '' }}</p>
-                    <ul class="mt-4 space-y-1 border-t border-ink-100 pt-3">
-                        @forelse ($g['services'] as $service)
-                            <li>
-                                <a href="{{ route('services.show', $service) }}" data-cta="other-{{ $service->slug }}" class="flex min-h-11 items-center justify-between gap-3 font-semibold text-ink-900 no-underline hover:text-brand-700">
-                                    <span class="flex items-center gap-3">
-                                        <x-art :name="'icon-'.$service->slug.'-48'" width="28" height="28" :alt="''" class="size-7 !border-0 !bg-transparent !p-0 [&>span]:hidden" sizes="28px" />
-                                        {{ $service->name }}
-                                    </span>
-                                    <x-glyph name="arrow-right" :size="18" class="text-brand-600" />
-                                </a>
-                            </li>
-                        @empty
-                            <li>
-                                <a href="{{ route('contact') }}#contact-form" class="flex min-h-11 items-center justify-between gap-3 font-semibold text-brand-700 no-underline hover:underline">
-                                    Liên hệ để được tư vấn <x-glyph name="arrow-right" :size="18" />
-                                </a>
-                            </li>
-                        @endforelse
-                    </ul>
-                </div>
+        <div class="space-y-6 md:space-y-8">
+            @foreach ($rows as $i => $it)
+                @php
+                    $svc = $it['service'];
+                    $m = $meta[$it['slug']] ?? [];
+                    $points = collect($svc && is_array($svc->getAttribute('highlights') ?? null) ? $svc->getAttribute('highlights') : ($svc && is_array($svc->benefits ?? null) && $svc->benefits ? collect($svc->benefits)->pluck('title')->all() : ($m['points'] ?? [])))->take(3);
+                    $blurb = $svc ? $svc->short_description : ($m['blurb'] ?? $it['summary']);
+                    $consultUrl = route('contact', ['solution' => $it['slug']]).'#contact-form';
+                    $flip = $i % 2 === 1;
+                @endphp
+                <article id="giai-phap-{{ $it['slug'] }}" class="grid items-center gap-6 overflow-hidden rounded-xl border border-ink-100 bg-white md:grid-cols-2 md:gap-0">
+                    <div class="{{ $flip ? 'md:order-2' : '' }}">
+                        @if ($svc?->cover)
+                            <x-media-img :media="$svc->cover" :alt="$svc->cover->alt ?: $svc->name" class="h-auto w-full" sizes="(min-width: 768px) 560px, 100vw" />
+                        @else
+                            <x-art :name="'service-'.$it['slug']" width="800" height="600" :alt="$it['name']" class="w-full !rounded-none !border-0" sizes="(min-width: 768px) 560px, 100vw" />
+                        @endif
+                    </div>
+                    <div class="p-6 md:p-10 {{ $flip ? 'md:order-1' : '' }}">
+                        @if ($it['category'])<p class="text-sm font-semibold text-brand-700">{{ $it['category'] }}</p>@endif
+                        <h3 class="mt-1 text-h2">{{ $it['headline'] }}</h3>
+                        @if ($blurb)<p class="mt-3 text-ink-700">{{ $blurb }}</p>@endif
+                        @if ($points->isNotEmpty())
+                            <ul class="mt-4 space-y-2">
+                                @foreach ($points as $pt)
+                                    <li class="flex gap-2 text-sm"><x-glyph name="check" :size="18" class="mt-0.5 text-brand-600" />{{ $pt }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                        <div class="mt-6 flex flex-wrap gap-3">
+                            @if ($it['url'])
+                                <a href="{{ $it['url'] }}" data-cta="other-{{ $it['slug'] }}" class="btn btn-primary">{{ $it['cta'] }} <x-glyph name="arrow-right" :size="18" /></a>
+                                <a href="{{ $consultUrl }}" data-cta="other-{{ $it['slug'] }}-consult" class="btn btn-ghost">Nhận tư vấn</a>
+                            @else
+                                <a href="{{ $consultUrl }}" data-cta="other-{{ $it['slug'] }}-consult" class="btn btn-primary">{{ $it['cta'] }} <x-glyph name="arrow-right" :size="18" /></a>
+                            @endif
+                        </div>
+                    </div>
+                </article>
             @endforeach
         </div>
     </div>
