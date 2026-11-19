@@ -3,7 +3,7 @@
 
     // Nhóm giải pháp. Admin có thể ghi đè bằng $data['groups'] = [{title, description, icon, slugs: []}].
     $groups = collect($data['groups'] ?? [
-        ['title' => 'Truy xuất & Tem điện tử', 'icon' => 'qr', 'art' => 'group-traceability', 'slugs' => ['smartlabel'],
+        ['title' => 'Truy xuất & Tem điện tử', 'icon' => 'qr', 'art' => 'group-traceability', 'slugs' => ['smartlabel', 'farm2home'],
             'description' => 'Gắn mã QR để người mua tự kiểm tra nguồn gốc, kiểm định và chất lượng sản phẩm.'],
         ['title' => 'Quản trị vận hành', 'icon' => 'workflow', 'art' => 'group-operations', 'slugs' => ['taskflow', 'minicrm'],
             'description' => 'Quản lý công việc, dự án và khách hàng trên nền tảng gọn nhẹ, dùng được cả trên điện thoại.'],
@@ -46,9 +46,7 @@
                             <li>
                                 <a href="{{ route('services.show', $service) }}" class="flex min-h-11 items-center justify-between gap-3 font-semibold text-ink-900 no-underline hover:text-brand-700">
                                     <span class="flex items-center gap-3">
-                                        @if ($service->icon)
-                                            <x-media-img :media="$service->icon" :alt="''" width="28" height="29" class="size-7 rounded-sm object-contain" sizes="28px" />
-                                        @endif
+                                        <x-art :name="'icon-'.$service->slug.'-48'" width="28" height="28" :alt="''" class="size-7 !border-0 !bg-transparent !p-0 [&>span]:hidden" sizes="28px" />
                                         {{ $service->name }}
                                     </span>
                                     <x-glyph name="arrow-right" :size="18" class="text-brand-600" />

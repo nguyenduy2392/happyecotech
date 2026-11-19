@@ -20,9 +20,13 @@
         }
     }
     // Biến thể responsive {name}-sm/md/lg.webp (480/960/1600) nếu có.
-    $srcset = collect(['sm' => 480, 'md' => 960, 'lg' => 1600])
-        ->filter(fn ($w, $k) => is_file("{$dir}/{$name}-{$k}.webp"))
-        ->map(fn ($w, $k) => asset("assets/img/v2/{$name}-{$k}.webp")." {$w}w")->implode(', ');
+    // Chỉ nhận biến thể cùng tỉ lệ với slot (tránh nhảy bố cục khi trình duyệt đổi nguồn).
+    $sameRatio = fn ($f) => ($d = @getimagesize($f)) && abs($d[0] / max($d[1], 1) - $width / $height) < 0.02;
+    $srcset = collect(['sm', 'md', 'lg'])
+        ->filter(fn ($k) => is_file("{$dir}/{$name}-{$k}.webp") && $sameRatio("{$dir}/{$name}-{$k}.webp"))
+        ->map(fn ($k) => asset("assets/img/v2/{$name}-{$k}.webp").' '.(@getimagesize("{$dir}/{$name}-{$k}.webp")[0] ?? 0).'w')
+        ->when($found && str_ends_with($found, '.webp') && ! str_contains($found, '-lg.') && $sameRatio("{$dir}/{$found}"), fn ($c) => $c->push(asset("assets/img/v2/{$found}").' '.(@getimagesize("{$dir}/{$found}")[0] ?? 0).'w'))
+        ->unique()->implode(', ');
     $manifestAlt = null;
     if ($found && is_file("{$dir}/manifest.json")) {
         $m = json_decode((string) file_get_contents("{$dir}/manifest.json"), true);

@@ -16,9 +16,7 @@
                     @foreach ($services as $service)
                         <li>
                             <a href="{{ route('services.show', $service) }}" class="card h-full gap-4">
-                                @if ($service->icon)
-                                    <x-media-img :media="$service->icon" :alt="''" width="56" height="58" class="size-14 rounded-md object-contain" sizes="56px" />
-                                @endif
+                                <x-art :name="'icon-'.$service->slug" width="56" height="56" :alt="''" class="size-14 !border-0 !bg-transparent !p-0 [&>span]:hidden" sizes="56px" />
                                 <h2 class="text-h3">{{ $service->name }}</h2>
                                 <p class="text-ink-700">{{ $service->short_description }}</p>
                                 <span class="mt-auto inline-flex items-center gap-2 pt-2 font-semibold text-brand-700">
