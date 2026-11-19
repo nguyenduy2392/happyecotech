@@ -23,8 +23,8 @@
 
     if ($page->slug === 'gioi-thieu' && ! $blocks->contains('block_type', 'leadership')) {
         $cta = $blocks->firstWhere('block_type', 'cta');
-        $lead = new \App\Models\PageBlock(['block_type' => 'leadership', 'data' => [], 'is_enabled' => true]);
-        $blocks = $cta ? $blocks->reject(fn ($b) => $b === $cta)->push($lead, $cta)->values() : $blocks->push($lead);
+        $leadershipBlock = new \App\Models\PageBlock(['block_type' => 'leadership', 'data' => [], 'is_enabled' => true]);
+        $blocks = $cta ? $blocks->reject(fn ($b) => $b === $cta)->push($leadershipBlock, $cta)->values() : $blocks->push($leadershipBlock);
     }
 
     $heroBlock = $blocks->firstWhere('block_type', 'hero');
@@ -35,6 +35,7 @@
     @unless ($heroBlock)
         @include('partials.page-hero', [
             'title' => $page->title,
+            'lead' => null,
             'crumbs' => [['label' => $page->title]],
         ])
     @endunless
