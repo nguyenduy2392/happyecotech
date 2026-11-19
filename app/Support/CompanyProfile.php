@@ -14,13 +14,17 @@ final class CompanyProfile
 
     public const CEO_ROLE = 'Tổng giám đốc';
 
+    public const CEO_NAME = 'Nguyễn Duy Hùng';
+
     public const CEO_SLUG = 'tong-giam-doc';
 
     public const CEO_FILE = 'team/ceo-portrait-lg.webp';
 
     public const CEO_PHOTO = 'img/v2/'.self::CEO_FILE;
 
-    public const CEO_ALT = 'Tổng giám đốc Happy Ecotech';
+    public const CEO_ALT = self::CEO_NAME.' – '.self::CEO_ROLE.' Happy Ecotech';
+
+    public const PREVIOUS_CEO_ALT = 'Tổng giám đốc Happy Ecotech';
 
     public static function url(string $key): ?string
     {
@@ -44,6 +48,15 @@ final class CompanyProfile
         return TeamMember::query()->ordered()->lock($lock ?: null)->get()->first(self::isChiefExecutive(...));
     }
 
+    public static function person(?TeamMember $member): ?array
+    {
+        if ($member === null || $member->slug !== self::CEO_SLUG || Str::squish($member->name) !== self::CEO_NAME) {
+            return null;
+        }
+
+        return ['name' => self::CEO_NAME, 'jobTitle' => self::CEO_ROLE, 'image' => $member->photo?->url];
+    }
+
     public static function attachPortrait(?TeamMember $member): void
     {
         if ($member?->photo_media_id !== null) {
@@ -61,7 +74,7 @@ final class CompanyProfile
         }
 
         TeamMember::firstOrCreate(['slug' => self::CEO_SLUG], [
-            'name' => self::CEO_ROLE,
+            'name' => self::CEO_NAME,
             'position' => self::CEO_ROLE,
             'group' => 'Lãnh đạo',
             'status' => 'published',

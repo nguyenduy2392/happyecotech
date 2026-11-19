@@ -50,7 +50,7 @@ class MediaAssetSeeder extends Seeder
             }
         }
 
-        MediaAsset::firstOrCreate(
+        $media = MediaAsset::firstOrCreate(
             ['disk' => 'assets', 'path' => $path],
             [
                 'file_name' => basename($path),
@@ -64,6 +64,9 @@ class MediaAssetSeeder extends Seeder
                 'folder' => $folder,
             ],
         );
+        if ($path === CompanyProfile::CEO_PHOTO && $media->alt === CompanyProfile::PREVIOUS_CEO_ALT) {
+            $media->update(['alt' => CompanyProfile::CEO_ALT]);
+        }
     }
 
     private function mime(string $path): string
