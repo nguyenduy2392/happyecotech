@@ -31,16 +31,17 @@ Route::post('/lien-he', [ContactController::class, 'submit'])
     ->middleware('throttle:contact')
     ->name('contact.submit');
 
-Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::middleware([])->withoutMiddleware([
+    StartSession::class,
+    ShareErrorsFromSession::class,
+    PreventRequestForgery::class,
+])->group(function () {
+    Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+    Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+});
 Route::get('/csrf-token', fn () => response()->json(
     ['token' => csrf_token()], 200, ['Cache-Control' => 'private, no-store'],
-))->name('csrf.token');
-Route::get('/robots.txt', [SitemapController::class, 'robots'])
-    ->withoutMiddleware([
-        StartSession::class,
-        ShareErrorsFromSession::class,
-        PreventRequestForgery::class,
-    ])->name('robots');
+))->middleware('throttle:30,1')->name('csrf.token');
 
 // Trang tĩnh động (chính sách, điều khoản...). PHẢI đặt cuối và loại trừ các prefix hệ thống
 // để không bao giờ che route /admin, /livewire, /storage...

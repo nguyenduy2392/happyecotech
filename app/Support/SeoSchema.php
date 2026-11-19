@@ -7,22 +7,26 @@ class SeoSchema
     public static function graph(array $data, string $url, string $siteName, string $image): array
     {
         $home = seo_url('/');
-        $organization = $home.'#organization';
+        $organization = [
+            '@type' => 'Organization',
+            '@id' => $home.'#organization',
+            'name' => setting('company_name') ?: $siteName,
+            'url' => $home,
+        ];
         $graph = [];
         if ($url === $home) {
-            $address = setting('contact_address');
-            $graph[] = array_filter([
-                '@type' => ['Organization', 'LocalBusiness'],
-                '@id' => $organization,
-                'name' => setting('company_name') ?: $siteName,
-                'url' => $home,
+            $parts = array_map('trim', explode(',', (string) setting('contact_address'), 2));
+            if (preg_match('/\d/', $parts[0]) && filled($parts[1] ?? null)) {
+                $organization['@type'] = ['Organization', 'LocalBusiness'];
+                $organization['address'] = ['@type' => 'PostalAddress', 'streetAddress' => $parts[0], 'addressLocality' => $parts[1]];
+            }
+            $graph[] = $organization + array_filter([
                 'telephone' => setting('contact_phone'),
                 'email' => setting('contact_email'),
-                'address' => filled($address) ? ['@type' => 'PostalAddress', 'streetAddress' => $address] : null,
-                'logo' => setting('logo_media_id')?->url,
+                'logo' => self::absoluteUrl(setting('logo_media_id')?->url),
             ]);
             $graph[] = ['@type' => 'WebSite', '@id' => $home.'#website', 'url' => $home,
-                'name' => $siteName, 'publisher' => ['@id' => $organization]];
+                'name' => $siteName, 'publisher' => ['@id' => $organization['@id']]];
         } else {
             $crumbs = [[$siteName, $home], ...($data['breadcrumbs'] ?? []), [$data['title'] ?? $siteName, $url]];
             $items = [];
@@ -33,7 +37,12 @@ class SeoSchema
         }
 
         if (isset($data['entity'])) {
-            $graph[] = array_filter($data['entity'] + ['url' => $url, 'image' => $image]);
+            $entity = $data['entity'] + ['url' => $url, 'image' => $image];
+            $entity['image'] = self::absoluteUrl($entity['image']);
+            if ($url !== $home && in_array($organization['@id'], [$entity['provider']['@id'] ?? null, $entity['publisher']['@id'] ?? null], true)) {
+                $graph[] = $organization;
+            }
+            $graph[] = array_filter($entity);
         }
 
         $questions = [];
@@ -49,5 +58,17 @@ class SeoSchema
         }
 
         return ['@context' => 'https://schema.org', '@graph' => $graph];
+    }
+
+    private static function absoluteUrl(?string $url): ?string
+    {
+        if (blank($url)) {
+            return null;
+        }
+        if (preg_match('~^https?://~i', $url)) {
+            return $url;
+        }
+
+        return str_starts_with($url, '//') ? parse_url(config('app.url'), PHP_URL_SCHEME).':'.$url : seo_url($url);
     }
 }

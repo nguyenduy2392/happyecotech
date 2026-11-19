@@ -19,6 +19,11 @@ class CachePublicHtml
         Cache::forever(self::VERSION, (string) Str::uuid());
     }
 
+    public static function key(string $uri): string
+    {
+        return 'public-content:'.hash('sha256', Cache::get(self::VERSION, 'initial').'|'.seo_url($uri));
+    }
+
     public function handle(Request $request, Closure $next): Response
     {
         if (! $request->routeIs('home', 'about', 'page.show', 'services.*', 'posts.*', 'team', 'contact', 'contact.submit')) {
@@ -32,7 +37,7 @@ class CachePublicHtml
             return $response;
         }
 
-        $key = 'public-html:'.hash('sha256', Cache::get(self::VERSION, 'initial').'|'.$request->fullUrl());
+        $key = self::key($request->getPathInfo().($request->query() === [] ? '' : '?page='.$request->query('page')));
         $cached = Cache::get($key);
         if (is_string($cached)) {
             return response($cached, 200, ['Cache-Control' => 'private, no-cache']);
@@ -104,10 +109,25 @@ class CachePublicHtml
             && preg_match('/^[1-9][0-9]{0,2}$/D', (string) $query['page'])
         );
 
-        return $request->isMethod('GET') && ! $request->routeIs('contact') && ! $request->user()
+        return $request->isMethod('GET') && $this->isCanonicalHost($request)
+            && ! $request->routeIs('contact') && ! $request->user()
             && ! $request->expectsJson() && $validQuery
             && ! $request->session()->hasAny(['errors', '_old_input'])
             && $request->session()->get('_flash.old', []) === []
             && $request->session()->get('_flash.new', []) === [];
+    }
+
+    private function isCanonicalHost(Request $request): bool
+    {
+        $url = parse_url(config('app.url')) ?: [];
+        $host = strtolower($url['host'] ?? '');
+        $authority = $host.(isset($url['port']) ? ':'.$url['port'] : '');
+        foreach ([$request->headers->get('host', ''), ...$request->headers->all('x-forwarded-host')] as $header) {
+            if (strtolower($header) !== $authority) {
+                return false;
+            }
+        }
+
+        return $host !== '' && $request->getHttpHost() === $authority && $request->getScheme() === ($url['scheme'] ?? null);
     }
 }

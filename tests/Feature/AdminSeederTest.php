@@ -28,9 +28,15 @@ class AdminSeederTest extends TestCase
     public function test_seeder_never_replaces_an_existing_admin_password(): void
     {
         $password = Str::random(32);
-        config(['happyecotech.admin_password' => $password]);
+        config([
+            'happyecotech.admin_password' => $password,
+            'happyecotech.admin_email' => 'admin-test@example.test',
+            'happyecotech.admin_name' => 'Quản trị thử nghiệm',
+        ]);
         $this->seed(RolePermissionSeeder::class);
         $admin = User::firstOrFail();
+        $this->assertSame('admin-test@example.test', $admin->email);
+        $this->assertSame('Quản trị thử nghiệm', $admin->name);
         $this->assertTrue(Hash::check($password, $admin->password));
         $this->assertTrue($admin->hasRole('SuperAdmin'));
 

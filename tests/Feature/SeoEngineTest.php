@@ -4,15 +4,19 @@ namespace Tests\Feature;
 
 use App\Filament\Resources\Pages\Pages\EditPage;
 use App\Filament\Resources\Pages\RelationManagers\BlocksRelationManager;
+use App\Http\Middleware\CachePublicHtml;
 use App\Models\MediaAsset;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\ServiceSeeder;
 use DOMDocument;
 use DOMXPath;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
@@ -135,9 +139,85 @@ class SeoEngineTest extends TestCase
 
         foreach (['/dich-vu/smartlabel' => 'Service', route('posts.show', Post::published()->firstOrFail()) => 'BlogPosting'] as $url => $type) {
             $graph = $this->graph($this->html($this->get($url)->assertOk()->getContent()));
-            $this->assertSame($type === 'Service' ? ['BreadcrumbList', 'Service', 'FAQPage'] : ['BreadcrumbList', $type], array_column($graph, '@type'));
+            $this->assertSame(['BreadcrumbList', 'Organization', $type], array_column($graph, '@type'));
+            $this->assertSame($graph[1]['@id'], $graph[2][$type === 'Service' ? 'provider' : 'publisher']['@id']);
+            $this->assertStringStartsWith(seo_url('/'), $graph[2]['image']);
         }
+        SiteSetting::put('contact_address', 'Hải Phòng, Việt Nam');
+        $graph = $this->graph($this->html($this->get('/')->assertOk()->getContent()));
+        $this->assertSame('Organization', $graph[0]['@type']);
         $this->get('/nonexistent')->assertNotFound()->assertSee('noindex,follow');
+    }
+
+    public function test_service_faq_uses_verified_or_editor_content_without_reseeding_existing_fields(): void
+    {
+        $taskflow = Service::whereSlug('taskflow')->firstOrFail();
+        $smartlabel = Service::whereSlug('smartlabel')->firstOrFail();
+        $this->assertSame('FAQPage', $this->serviceGraphTypes($taskflow)[3]);
+        $legacy = ['question' => 'Tìm hiểu SmartLabel ở đâu?', 'answer' => 'Bạn có thể liên hệ Happy Ecotech để trao đổi nhu cầu và phạm vi triển khai phù hợp.'];
+        $smartlabel->update(['faq' => [$legacy]]);
+        $taskflow->update(['faq' => null, 'h1' => 'Tiêu đề của biên tập viên', 'benefits' => null]);
+        $this->seed(ServiceSeeder::class);
+        $this->assertSame([$legacy], $smartlabel->refresh()->faq);
+        $this->assertNull($taskflow->refresh()->faq);
+        $this->assertNull($taskflow->benefits);
+        $this->assertSame('Tiêu đề của biên tập viên', $taskflow->h1);
+        $this->assertNotContains('FAQPage', $this->serviceGraphTypes($smartlabel));
+        $smartlabel->update(['faq' => [['question' => 'Khách xem hồ sơ ở đâu?', 'answer' => 'Quét tem trên sản phẩm.']]]);
+        $this->assertContains('FAQPage', $this->serviceGraphTypes($smartlabel));
+    }
+
+    private function serviceGraphTypes(Service $service): array
+    {
+        return array_column($this->graph($this->html($this->get(route('services.show', $service))->assertOk()->getContent())), '@type');
+    }
+
+    public function test_sitemap_and_html_change_together_on_unpublish_and_delete(): void
+    {
+        $page = Page::create(['title' => 'Trang vòng đời', 'slug' => 'vong-doi', 'status' => 'published']);
+        $this->get('/vong-doi')->assertOk();
+        $this->assertTrue(Cache::has(CachePublicHtml::key('/vong-doi')));
+        $this->get('/sitemap.xml')->assertSee(seo_url('/vong-doi'))->assertHeaderMissing('Set-Cookie');
+        $this->get('/robots.txt')->assertHeaderMissing('Set-Cookie');
+        $this->assertTrue(Cache::has(CachePublicHtml::key('/sitemap.xml')));
+
+        $page->update(['status' => 'draft']);
+        $this->get('/vong-doi')->assertNotFound();
+        $this->get('/sitemap.xml')->assertDontSee(seo_url('/vong-doi'));
+        $this->assertFalse(Cache::has(CachePublicHtml::key('/vong-doi')));
+        $page->update(['status' => 'published']);
+        $this->get('/vong-doi')->assertOk();
+        $this->get('/sitemap.xml')->assertSee(seo_url('/vong-doi'));
+        $page->delete();
+        $this->get('/vong-doi')->assertNotFound();
+        $this->get('/sitemap.xml')->assertDontSee(seo_url('/vong-doi'));
+        $this->assertFalse(Cache::has(CachePublicHtml::key('/vong-doi')));
+    }
+
+    public function test_cache_skips_unknown_hosts_flash_and_logged_in_admin(): void
+    {
+        $page = Page::create(['title' => 'Cache an toàn', 'slug' => 'cache-an-toan', 'status' => 'published']);
+        $key = CachePublicHtml::key('/'.$page->slug);
+        $canonical = seo_url('/'.$page->slug);
+        $this->get('http://foreign.example/'.$page->slug)->assertOk()->assertHeader('Cache-Control', 'no-store, private');
+        $this->get($canonical, ['X-Forwarded-Host' => 'foreign.example'])->assertOk()->assertHeader('Cache-Control', 'no-store, private');
+        $this->assertFalse(Cache::has($key));
+        $this->withSession(['_flash' => ['old' => ['notice'], 'new' => []], 'notice' => 'Thử flash'])
+            ->get($canonical)->assertOk()->assertHeader('Cache-Control', 'no-store, private');
+        $this->assertFalse(Cache::has($key));
+        $this->get($canonical)->assertOk()->assertHeader('Cache-Control', 'no-cache, private');
+        $this->assertTrue(Cache::has($key));
+        $this->actingAs(User::whereEmail(config('happyecotech.admin_email'))->firstOrFail())
+            ->get($canonical)->assertOk()->assertHeader('Cache-Control', 'no-store, private');
+    }
+
+    public function test_csrf_endpoint_is_throttled(): void
+    {
+        for ($i = 0; $i < 30; $i++) {
+            $this->getJson('/csrf-token')->assertOk();
+        }
+
+        $this->getJson('/csrf-token')->assertTooManyRequests();
     }
 
     public function test_guest_html_cache_is_invalidated_on_save_and_contact_keeps_session(): void
