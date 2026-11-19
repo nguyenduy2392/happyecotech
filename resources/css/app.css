@@ -1,8 +1,9 @@
 /* Hallmark · shape: B2B trust page · genre: modern-minimal · posture: restrained · hero: split-text-left · nav: bar+CTA · footer: ink-band */
 /* critique: nền trắng/xanh nhạt, một màu nhấn xanh lá thương hiệu; thẻ phẳng viền mảnh, không gradient/emoji/eyebrow; mọi màu qua token @theme. */
 
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @source "../views";
+@source "../js";
 
 /* ------------------------------------------------------------------ */
 /* Fonts: self-host, chỉ 2 weight (400/600), swap + fallback cùng metric */
@@ -169,7 +170,7 @@
 /* ------------------------------------------------------------------ */
 @layer components {
     /* Tiêu đề hero: gradient trái→phải chỉ trên chữ (nền phẳng), giới hạn 680px */
-    .hero-title { @apply max-w-2xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl; background-image: linear-gradient(to right, var(--color-ink-900), var(--color-ink-500)); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 0.12em; }
+    .hero-title { @apply max-w-2xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl; background-image: linear-gradient(to right, var(--color-ink-900), var(--color-ink-500)); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 0.12em; }
     .hero-lead { @apply body-lead max-w-2xl text-ink-700; }
 
     .container-page {

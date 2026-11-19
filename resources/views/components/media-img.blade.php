@@ -66,6 +66,6 @@
         alt="{{ $alt }}"
         @if ($width) width="{{ $width }}" @endif
         @if ($height) height="{{ $height }}" @endif
-        @if ($priority) fetchpriority="high" decoding="async" @else loading="lazy" decoding="async" @endif
+        @if ($priority) fetchpriority="high" @else loading="lazy" decoding="async" @endif
         {{ $attributes }} />
 @endif

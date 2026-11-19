@@ -26,14 +26,14 @@
         </div>
         @if ($image)
             <x-media-img :media="$image" :alt="$data['image_alt'] ?? null" :priority="true"
-                sizes="(min-width: 1024px) 560px, 100vw" class="h-auto w-full rounded-2xl" />
+                sizes="(min-width: 1024px) 560px, (min-width: 640px) 80vw, 260px" class="h-auto w-full rounded-2xl" />
         @else
             @if ($fallbackArt === 'hero-taskflow')
                 <x-art name="hero-taskflow" width="1600" height="1000" :priority="true" :alt="$data['image_alt'] ?? null"
-                    sizes="(min-width: 1024px) 560px, 100vw" class="w-full rounded-2xl" />
+                    sizes="(min-width: 1024px) 560px, (min-width: 640px) 80vw, 260px" class="w-full rounded-2xl" />
             @else
                 <x-art name="service-taskflow" width="800" height="600" :priority="true" :alt="$data['image_alt'] ?? 'Ứng dụng TaskFlow'"
-                    sizes="(min-width: 1024px) 560px, 100vw" class="w-full rounded-2xl" />
+                    sizes="(min-width: 1024px) 560px, (min-width: 640px) 80vw, 260px" class="w-full rounded-2xl" />
             @endif
         @endif
     </div>

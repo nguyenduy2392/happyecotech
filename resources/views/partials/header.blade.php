@@ -27,9 +27,9 @@
             <a href="{{ route('home') }}" class="flex shrink-0 items-center" aria-label="{{ $siteName }} - Trang chủ">
                 @if ($isDefaultLogo)
                     <img src="{{ asset('assets/img/logo/logo-full.webp') }}" alt="{{ $siteName }}" width="380" height="141"
-                        class="h-9 w-auto md:h-10" fetchpriority="high" decoding="async" />
+                        class="h-9 w-auto md:h-10" decoding="async" />
                 @else
-                    <x-media-img :media="$logo" :alt="$siteName" :priority="true" class="h-9 w-auto md:h-10" sizes="160px" />
+                    <x-media-img :media="$logo" :alt="$siteName" class="h-9 w-auto md:h-10" sizes="160px" />
                 @endif
             </a>
 

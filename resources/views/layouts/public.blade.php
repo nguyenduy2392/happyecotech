@@ -20,11 +20,12 @@
         <meta name="zalo-platform-site-verification" content="{{ $zalo }}" />
     @endif
 
+    @stack('head')
+    <link rel="preload" href="{{ asset('assets/fonts/bvp-600-vietnamese.woff2') }}" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="{{ asset('assets/fonts/bvp-600-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="{{ asset('assets/fonts/bvp-400-vietnamese.woff2') }}" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="{{ asset('assets/fonts/bvp-400-latin.woff2') }}" as="font" type="font/woff2" crossorigin />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    @stack('head')
 </head>
 
 <body>

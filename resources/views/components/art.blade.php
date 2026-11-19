@@ -47,7 +47,7 @@
     @endif
     <img src="{{ asset('assets/img/v2/'.$found) }}" alt="{{ $alt }}" width="{{ $width }}" height="{{ $height }}"
         @if ($srcset) srcset="{{ $srcset }}" @endif sizes="{{ $sizes }}"
-        @if ($priority) fetchpriority="high" decoding="async" @else loading="lazy" decoding="async" @endif
+        @if ($priority) fetchpriority="high" @else loading="lazy" decoding="async" @endif
         {{ $attributes }} />
 @else
     <div {{ $attributes->class(['flex items-center justify-center rounded-2xl border border-dashed border-brand-200 bg-brand-50 p-4 text-center text-sm text-ink-500']) }}

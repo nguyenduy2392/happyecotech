@@ -59,9 +59,9 @@
 
             <div class="{{ $flagship ? '' : 'lg:order-1' }}">
                 @if ($service->cover)
-                    <x-media-img :media="$service->cover" :alt="$service->cover->alt ?: $service->name" class="h-auto w-full rounded-2xl" sizes="(min-width: 1024px) 520px, 100vw" />
+                    <x-media-img :media="$service->cover" :alt="$service->cover->alt ?: $service->name" class="h-auto w-full rounded-2xl" sizes="(min-width: 1024px) 520px, (min-width: 640px) 80vw, 260px" />
                 @else
-                    <x-art :name="'service-'.$service->slug" width="800" height="600" :alt="$service->name" class="w-full rounded-2xl" sizes="(min-width: 1024px) 520px, 100vw" />
+                    <x-art :name="'service-'.$service->slug" width="800" height="600" :alt="$service->name" class="w-full rounded-2xl" sizes="(min-width: 1024px) 520px, (min-width: 640px) 80vw, 260px" />
                 @endif
                 <x-service-shots :service="$service" :limit="$flagship ? 4 : 3" class="mt-4" />
             </div>
