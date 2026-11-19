@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\MediaAsset;
 use App\Models\SiteSetting;
 use App\Models\SocialLink;
+use App\Support\CompanyProfile;
 use App\Support\ProductPositioning;
 use Illuminate\Database\Seeder;
 
@@ -31,6 +32,8 @@ class SiteSettingSeeder extends Seeder
             ['contact', 'contact_email', 'hung.duy@happyecotech.com', 'string'],
             ['contact', 'contact_address', '198 Trường Chinh, Hải Phòng', 'string'],
             ['contact', 'working_hours', '', 'string'],
+            ['contact', 'contact_zalo', CompanyProfile::ZALO, 'string'],
+            ['social', 'social_facebook', CompanyProfile::FACEBOOK, 'string'],
             ['contact', 'map_embed_url', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4520.861944537773!2d106.66066972918166!3d20.835788870260203!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314a709c3b095cb9%3A0x6fca0a200afd143!2zMTk4IMSQLiBUcsaw4budbmcgQ2hpbmgsIFF1w6FuIFRy4buvLCBLaeG6v24gQW4sIEjhuqNpIFBow7JuZywgVmnhu4d0IE5hbQ!5e1!3m2!1svi!2sus!4v1765598428061!5m2!1svi!2sus', 'text'],
 
             // SEO
@@ -74,7 +77,7 @@ class SiteSettingSeeder extends Seeder
 
     private function seedSocialLinks(): void
     {
-        // Social thật chưa được cung cấp → seed disabled, admin điền URL và bật sau.
+        // Liên kết chính thức Zalo và Facebook được quản lý qua SiteSetting.
         $links = [
             ['facebook', 'Facebook', ''],
             ['linkedin', 'LinkedIn', ''],

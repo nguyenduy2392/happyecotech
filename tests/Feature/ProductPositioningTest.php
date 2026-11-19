@@ -2,15 +2,21 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Pages\ManageSettings;
 use App\Models\MediaAsset;
 use App\Models\MenuItem;
 use App\Models\Page;
 use App\Models\Service;
+use App\Models\SiteSetting;
+use App\Models\TeamMember;
+use App\Models\User;
+use App\Support\CompanyProfile;
 use App\Support\ProductPositioning;
 use Database\Seeders\DatabaseSeeder;
 use DOMDocument;
 use DOMXPath;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class ProductPositioningTest extends TestCase
@@ -90,6 +96,55 @@ class ProductPositioningTest extends TestCase
         $this->assertDatabaseHas('services', ['slug' => 'datahub', 'status' => 'draft']);
         $this->assertDatabaseHas('services', ['slug' => 'omc', 'status' => 'draft']);
         $this->assertDatabaseHas('pages', ['slug' => 'chinh-sach-bao-mat', 'status' => 'draft']);
+    }
+
+    public function test_official_profiles_and_portrait_are_published_without_a_placeholder_person_in_schema(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        $this->assertSame(CompanyProfile::ZALO, setting('contact_zalo'));
+        $this->assertSame(CompanyProfile::FACEBOOK, setting('social_facebook'));
+        $home = $this->html($this->get('/')->assertOk()->getContent());
+        $this->assertSame([CompanyProfile::FACEBOOK, CompanyProfile::ZALO], $this->schema($home)[0]['sameAs']);
+
+        $leader = TeamMember::whereSlug(CompanyProfile::CEO_SLUG)->firstOrFail();
+        $this->assertSame(CompanyProfile::CEO_ROLE, $leader->name);
+        $this->assertSame(CompanyProfile::CEO_PHOTO, $leader->photo->path);
+        $this->assertSame(CompanyProfile::CEO_ALT, $leader->photo->alt);
+        foreach (['sm' => [160, 200], 'md' => [240, 300], 'lg' => [360, 450], 'original' => [361, 481]] as $version => $dimensions) {
+            $path = public_path("assets/img/v2/team/ceo-portrait-{$version}.webp");
+            $this->assertSame($dimensions, array_slice(getimagesize($path), 0, 2));
+            $this->assertLessThanOrEqual(40000, filesize($path));
+        }
+        $this->assertStringEndsWith('team/ceo-portrait-sm.webp', media_url($leader->photo, 'sm'));
+
+        $team = $this->html($this->get('/doi-ngu')->assertOk()->getContent());
+        $this->assertNotContains('Person', array_column($this->schema($team), '@type'));
+        $leader->update(['name' => 'Tên thật đã xác nhận trong fixture']);
+        $team = $this->html($this->get('/doi-ngu')->assertOk()->getContent());
+        $this->assertContains('Person', array_column($this->schema($team), '@type'));
+    }
+
+    public function test_company_update_keeps_edited_facebook_and_attaches_existing_leader(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        SiteSetting::put('social_facebook', 'https://www.facebook.com/edited', 'social');
+        SiteSetting::put('contact_zalo', 'http://zalo.me/1747723032009789626?src=qr', 'contact');
+        $leader = TeamMember::whereSlug(CompanyProfile::CEO_SLUG)->firstOrFail();
+        $leader->update(['slug' => 'lanh-dao-hien-co', 'name' => 'Hồ sơ đã có', 'photo_media_id' => null]);
+        $this->artisan('ecotech:apply-positioning')->assertSuccessful();
+        $this->assertNull($leader->refresh()->photo_media_id);
+        $this->artisan('ecotech:apply-positioning', ['--force' => true])->assertSuccessful();
+        $this->assertSame(CompanyProfile::ZALO, setting('contact_zalo'));
+        $this->assertSame('https://www.facebook.com/edited', setting('social_facebook'));
+        $this->assertSame('Hồ sơ đã có', $leader->refresh()->name);
+        $this->assertSame(CompanyProfile::CEO_PHOTO, $leader->photo->path);
+        $this->assertDatabaseCount('team_members', 1);
+
+        $this->actingAs(User::whereEmail(config('happyecotech.admin_email'))->firstOrFail());
+        Livewire::test(ManageSettings::class)->fillForm([
+            'contact_zalo' => 'http://zalo.me/1747723032009789626',
+            'social_facebook' => 'javascript:alert(1)',
+        ])->call('save')->assertHasFormErrors(['contact_zalo', 'social_facebook']);
     }
 
     private function html(string $html): DOMXPath

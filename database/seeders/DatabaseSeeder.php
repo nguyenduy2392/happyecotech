@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             ServiceSeeder::class,
             MenuSeeder::class,
             PageSeeder::class,
+            TeamMemberSeeder::class,
             BlogSeeder::class,
         ]);
     }

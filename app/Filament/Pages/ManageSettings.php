@@ -67,6 +67,7 @@ class ManageSettings extends Page
                     Tab::make('Liên hệ')->schema([
                         TextInput::make('company_name')->label('Tên công ty'),
                         TextInput::make('contact_phone')->label('Điện thoại'),
+                        TextInput::make('contact_zalo')->label('Zalo chính thức')->rules([new SafeUrl(httpsOnly: true)]),
                         TextInput::make('contact_email')->label('Email')->email(),
                         TextInput::make('contact_address')->label('Địa chỉ'),
                         TextInput::make('working_hours')->label('Giờ làm việc'),
@@ -74,6 +75,7 @@ class ManageSettings extends Page
                     ])->columns(2),
 
                     Tab::make('Mạng xã hội')->schema([
+                        TextInput::make('social_facebook')->label('Facebook chính thức')->rules([new SafeUrl(httpsOnly: true)]),
                         Repeater::make('social_links')
                             ->label('Liên kết mạng xã hội')
                             ->schema([
@@ -151,7 +153,12 @@ class ManageSettings extends Page
 
         foreach ($data as $key => $value) {
             $row = $existing->get($key);
-            SiteSetting::put($key, $value, $row?->group ?? 'general', $row?->type ?? 'string');
+            $group = match ($key) {
+                'contact_zalo' => 'contact',
+                'social_facebook' => 'social',
+                default => 'general',
+            };
+            SiteSetting::put($key, $value, $row?->group ?? $group, $row?->type ?? 'string');
         }
 
         $this->syncSocialLinks($socialLinks);

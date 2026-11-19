@@ -7,6 +7,7 @@ use App\Models\MenuItem;
 use App\Models\Page;
 use App\Models\Service;
 use App\Models\SiteSetting;
+use App\Support\CompanyProfile;
 use App\Support\ProductPositioning;
 use Database\Seeders\LandingCopy;
 use Illuminate\Console\Command;
@@ -28,10 +29,12 @@ class ApplyPositioning extends Command
         $this->write = $this->option('force') && ! $this->option('dry-run');
         $this->info($this->write ? 'Áp dụng định vị sản phẩm.' : 'Dry-run: chỉ xem trước, dùng --force để áp dụng.');
 
-        if (! is_file(public_path('assets/img/v2/hero-taskflow.webp'))) {
-            $this->error('Thiếu public/assets/img/v2/hero-taskflow.webp.');
+        foreach (['img/v2/hero-taskflow.webp', CompanyProfile::CEO_PHOTO] as $asset) {
+            if (! is_file(public_path('assets/'.$asset))) {
+                $this->error("Thiếu public/assets/{$asset}.");
 
-            return self::FAILURE;
+                return self::FAILURE;
+            }
         }
 
         if ($this->write) {
@@ -64,6 +67,34 @@ class ApplyPositioning extends Command
         $setting = SiteSetting::where('key', 'seo_default_description')->lock($this->write ?: null)->first();
         if ($setting) {
             $this->updateFields($setting, 'seo_default_description', ['value' => ProductPositioning::HOME_DESCRIPTION], ['value' => self::LEGACY_DESCRIPTION]);
+        }
+        $this->updateCompanyProfile();
+    }
+
+    private function updateCompanyProfile(): void
+    {
+        foreach ([
+            ['social_facebook', 'social', CompanyProfile::FACEBOOK, []],
+            ['contact_zalo', 'contact', CompanyProfile::ZALO, ['http://zalo.me/1747723032009789626?src=qr', CompanyProfile::ZALO.'?src=qr']],
+        ] as [$key, $group, $url, $legacy]) {
+            $setting = SiteSetting::where('key', $key)->lock($this->write ?: null)->first();
+            if (! $setting) {
+                $this->line("  {$key} → {$url}");
+                if ($this->write) {
+                    SiteSetting::firstOrCreate(['key' => $key], ['group' => $group, 'type' => 'string', 'value' => $url]);
+                }
+            } else {
+                $before = in_array($setting->value, $legacy, true) ? ['value' => $setting->value] : [];
+                $this->updateFields($setting, $key, ['value' => $url], $before);
+            }
+        }
+
+        $leader = CompanyProfile::chiefExecutive($this->write);
+        if ($leader?->photo_media_id === null) {
+            $this->line('  team.tong-giam-doc.photo → '.CompanyProfile::CEO_FILE);
+            if ($this->write) {
+                CompanyProfile::attachPortrait($leader);
+            }
         }
     }
 
