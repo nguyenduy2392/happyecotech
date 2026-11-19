@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Filament\Resources\Pages\Pages\EditPage;
 use App\Filament\Resources\Pages\RelationManagers\BlocksRelationManager;
+use App\Models\MediaAsset;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\SiteSetting;
@@ -110,7 +111,7 @@ class SeoEngineTest extends TestCase
     {
         $home = Page::whereSlug('home')->firstOrFail();
         $home->update(['seo_title' => 'Tiêu đề SEO trang chủ']);
-        $home->blocks()->create(['block_type' => 'faq', 'is_enabled' => true, 'data' => [
+        $home->blocks()->where('block_type', 'faq')->firstOrFail()->update(['data' => [
             'items' => [['question' => 'Câu hỏi?', 'answer' => 'Đáp án </script>']],
         ]]);
         SiteSetting::put('company_name', 'Tên công ty thử nghiệm');
@@ -126,24 +127,41 @@ class SeoEngineTest extends TestCase
 
         foreach (['/dich-vu/smartlabel' => 'Service', route('posts.show', Post::published()->firstOrFail()) => 'BlogPosting'] as $url => $type) {
             $graph = $this->graph($this->html($this->get($url)->assertOk()->getContent()));
-            $this->assertSame(['BreadcrumbList', $type], array_column($graph, '@type'));
+            $this->assertSame($type === 'Service' ? ['BreadcrumbList', 'Service', 'FAQPage'] : ['BreadcrumbList', $type], array_column($graph, '@type'));
         }
         $this->get('/nonexistent')->assertNotFound()->assertSee('noindex,follow');
     }
 
     public function test_guest_html_cache_is_invalidated_on_save_and_contact_keeps_session(): void
     {
-        $this->get('/')->assertOk();
+        $page = Page::create(['title' => 'Trang kiểm tra cache', 'slug' => 'kiem-tra-cache', 'status' => 'published']);
+        $this->get('/kiem-tra-cache')->assertOk();
         DB::enableQueryLog();
-        $this->get('/')->assertOk()->assertSee('Minh bạch từ gốc');
+        $this->get('/kiem-tra-cache')->assertOk()->assertSee('Trang kiểm tra cache');
         $queries = collect(DB::getQueryLog())->pluck('query');
         DB::disableQueryLog();
         $this->assertCount(0, $queries->filter(fn ($sql) => str_contains($sql, '"page_blocks"')));
 
-        Page::whereSlug('home')->firstOrFail()->update(['seo_title' => 'Tiêu đề đã xuất bản']);
-        $this->get('/')->assertOk()->assertSee('Tiêu đề đã xuất bản');
+        $page->update(['seo_title' => 'Tiêu đề đã xuất bản']);
+        $this->get('/kiem-tra-cache')->assertOk()->assertSee('Tiêu đề đã xuất bản');
         $this->withSession(['contact_success' => true])->get('/lien-he')
             ->assertOk()->assertHeader('Cache-Control', 'no-store, private')->assertSee('name="_token"', false);
+    }
+
+    public function test_seeded_assets_exist_and_hero_media_accepts_model_or_id(): void
+    {
+        foreach (MediaAsset::whereDisk('assets')->cursor() as $media) {
+            $this->assertFileExists(public_path('assets/'.$media->path));
+        }
+        foreach (json_decode(file_get_contents(public_path('assets/img/v2/manifest.json')), true, flags: JSON_THROW_ON_ERROR) as $asset) {
+            $this->assertFileExists(public_path('assets/img/v2/'.$asset['file']));
+        }
+        $hero = Page::whereSlug('home')->firstOrFail()->blocks()->where('block_type', 'hero')->firstOrFail();
+        $media = MediaAsset::findOrFail($hero->data['image_media_id']);
+        $this->assertStringEndsWith('/hero-md.webp', media_url($media, 'md'));
+        $this->assertSame(media_url($media, 'sm'), media_url($media->id, 'sm'));
+        $this->assertDatabaseHas('services', ['slug' => 'datahub', 'status' => 'draft']);
+        $this->assertDatabaseHas('services', ['slug' => 'omc', 'status' => 'draft']);
     }
 
     private function graph(DOMXPath $document): array

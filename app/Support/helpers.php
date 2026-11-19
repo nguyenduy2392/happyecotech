@@ -77,8 +77,7 @@ if (! function_exists('he_seo')) {
             html_entity_decode(strip_tags((string) $text), ENT_QUOTES | ENT_HTML5, 'UTF-8')
         );
         $canonical = $overrides['canonical'] ?? seo_url(request()->getPathInfo());
-        $logo = $ogImage ? null : setting('logo_media_id');
-        $image = $ogImage ?: $logo?->url ?: seo_url('/assets/img/logo/logo-full.png');
+        $image = $ogImage ?: seo_url('/assets/img/v2/og.png');
         $description = $clean($overrides['description'] ?? '') ?: $clean(setting('seo_default_description'))
             ?: $clean(setting('tagline')) ?: $siteName;
         $robots = $overrides['robots'] ?? setting('seo_robots', 'index,follow');
@@ -88,7 +87,7 @@ if (! function_exists('he_seo')) {
             'description' => Str::limit($description, 160, '…'),
             'canonical' => $canonical,
             'og_image' => $image,
-            'image_alt' => ($ogImage ? $imageAlt : $logo?->alt) ?: $siteName,
+            'image_alt' => ($ogImage ? $imageAlt : null) ?: $siteName,
             'site_name' => $siteName,
             'locale' => config('app.locale') === 'vi' ? 'vi_VN' : str_replace('-', '_', config('app.locale')),
             'robots' => $robots,

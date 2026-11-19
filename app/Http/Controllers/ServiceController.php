@@ -36,9 +36,10 @@ class ServiceController extends Controller
                 'title' => $service->seo_title ?: $service->name,
                 'description' => $service->seo_description ?: $service->short_description,
                 'canonical' => seo_url(route('services.show', $service, false)),
-                'og_image' => ($image = $service->ogImage ?? $service->cover)?->url,
-                'image_alt' => $image?->alt ?: $service->name,
+                'og_image' => $this->socialImage($service),
+                'image_alt' => $service->ogImage?->alt ?: $service->name,
                 'breadcrumbs' => [['Dịch vụ', seo_url('/dich-vu')]],
+                'faq' => $service->faq ?? [],
                 'entity' => [
                     '@type' => 'Service',
                     'name' => $service->name,
@@ -47,5 +48,12 @@ class ServiceController extends Controller
                 ],
             ]),
         ]);
+    }
+
+    private function socialImage(Service $service): ?string
+    {
+        $path = '/assets/img/v2/og-service-'.$service->slug.'.webp';
+
+        return $service->ogImage?->url ?? (is_file(public_path($path)) ? seo_url($path) : $service->cover?->url);
     }
 }

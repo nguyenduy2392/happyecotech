@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\Services\Schemas;
 
 use App\Filament\Support\Forms;
+use App\Filament\Support\PageBlockFields;
 use App\Models\Service;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -21,6 +23,12 @@ class ServiceForm
     {
         return $schema
             ->components([
+                Section::make('Nội dung trang giải pháp')->collapsed()->schema([
+                    TextInput::make('h1')->label('H1 trang')->maxLength(255),
+                    self::items('benefits', 'Lợi ích'),
+                    self::items('steps', 'Các bước thực hiện'),
+                    PageBlockFields::faq('faq'),
+                ]),
                 Section::make('Thông tin dịch vụ')
                     ->columns(2)
                     ->schema([
@@ -82,5 +90,13 @@ class ServiceForm
                         Textarea::make('seo_description')->label('SEO description')->rows(2)->columnSpanFull(),
                     ]),
             ]);
+    }
+
+    private static function items(string $name, string $label): Repeater
+    {
+        return Repeater::make($name)->label($label)->schema([
+            TextInput::make('title')->label('Tiêu đề')->required(),
+            Textarea::make('text')->label('Nội dung')->required(),
+        ])->defaultItems(0);
     }
 }

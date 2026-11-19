@@ -15,6 +15,14 @@ class MediaVariants
         if (! $asset->path || ! $asset->exists || ! isset(self::WIDTHS[$variant])) {
             return null;
         }
+        if ($asset->disk === 'assets' && str_starts_with($asset->path, 'img/v2/')) {
+            $assets = Storage::disk('assets');
+            $stem = preg_replace('/-lg$/', '', pathinfo($asset->path, PATHINFO_FILENAME));
+            $variantPath = 'img/v2/'.$stem.'-'.$variant.'.webp';
+            if ($assets->exists($variantPath)) {
+                return $assets->url($variantPath);
+            }
+        }
         $disk = Storage::disk('public');
         $path = self::path($asset, $variant);
 

@@ -15,15 +15,17 @@ class MediaAssetSeeder extends Seeder
     {
         $items = [
             ['img/logo/logo-full.png', 'logo', 'Happy Ecotech'],
-            ['img/favicon.svg', 'favicon', 'Favicon Happy Ecotech'],
-            ['img/project-icon/smart-tray.png', 'service', 'SmartLabel'],
-            ['img/project-icon/task-flow.png', 'service', 'TaskFlow'],
-            ['img/project-icon/mini-crm.png', 'service', 'MiniCRM'],
-            ['img/project-icon/farm2home.png', 'service', 'Farm2Home'],
+            ['img/v2/favicon.svg', 'favicon', 'Favicon Happy Ecotech'],
             ['qr/ios.png', 'qr', 'QR tải TaskFlow trên App Store'],
             ['qr/google-play.png', 'qr', 'QR tải TaskFlow trên Google Play'],
-            ['img/hero/hero-1.png', 'hero', 'Ảnh hero trang chủ'],
         ];
+
+        $manifest = json_decode(file_get_contents(public_path('assets/img/v2/manifest.json')), true, flags: JSON_THROW_ON_ERROR);
+        foreach ($manifest as $asset) {
+            if ($asset['file'] === 'hero.webp' || preg_match('/^(?:service-.+-lg\.webp|icon-(?!.*-48).*\.svg|og[^\/]*\.(?:png|webp))$/D', $asset['file'])) {
+                $items[] = ['img/v2/'.$asset['file'], str($asset['use'])->before('.')->toString(), $asset['alt']];
+            }
+        }
 
         foreach ($items as [$path, $folder, $alt]) {
             $this->register($path, $folder, $alt);
@@ -33,7 +35,10 @@ class MediaAssetSeeder extends Seeder
     private function register(string $path, string $folder, ?string $alt = null): void
     {
         $full = public_path('assets/'.$path);
-        $size = is_file($full) ? filesize($full) : null;
+        if (! is_file($full)) {
+            throw new \RuntimeException("Thiếu tài sản tĩnh: {$path}");
+        }
+        $size = filesize($full);
         $width = $height = null;
 
         if ($size && str_starts_with($this->mime($path), 'image/') && ! str_ends_with($path, '.svg')) {
