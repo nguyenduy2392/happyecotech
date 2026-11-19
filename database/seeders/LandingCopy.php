@@ -75,16 +75,6 @@ final class LandingCopy
         ],
         'farm2home' => [
             'h1' => 'Farm2Home: kết nối trực tiếp nông dân với người tiêu dùng',
-            'benefits' => [
-                ['title' => 'Đi thẳng từ nông trại', 'text' => 'Rút ngắn khâu trung gian giữa người sản xuất và người mua.'],
-                ['title' => 'Biết rõ nguồn gốc', 'text' => 'Người mua nắm được sản phẩm đến từ đâu.'],
-                ['title' => 'Mở thêm kênh bán', 'text' => 'Nông dân và hợp tác xã có thêm kênh tiếp cận khách hàng.'],
-            ],
-            'steps' => [
-                ['title' => 'Nông dân đăng sản phẩm', 'text' => 'Cập nhật sản phẩm và thông tin nguồn gốc.'],
-                ['title' => 'Người mua lựa chọn', 'text' => 'Xem sản phẩm và đặt mua trực tiếp.'],
-                ['title' => 'Giao nhận', 'text' => 'Sản phẩm đến tay người tiêu dùng.'],
-            ],
         ],
     ];
 }

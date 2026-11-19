@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Menus\RelationManagers;
 
 use App\Models\MenuItem;
+use App\Rules\SafeUrl;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -36,6 +37,7 @@ class ItemsRelationManager extends RelationManager
                     ->required(),
                 TextInput::make('url')
                     ->label('URL')
+                    ->rules([new SafeUrl])
                     ->maxLength(255),
                 TextInput::make('route_name')
                     ->label('Tên route')

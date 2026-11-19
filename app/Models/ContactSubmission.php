@@ -22,7 +22,7 @@ class ContactSubmission extends Model
 
     protected $fillable = [
         'name', 'phone', 'email', 'company', 'service_id', 'service_interest',
-        'message', 'source', 'status', 'assigned_to', 'ip_address', 'user_agent', 'consent',
+        'message', 'source', 'idempotency_key', 'status', 'assigned_to', 'ip_address', 'user_agent', 'consent',
     ];
 
     protected $casts = [

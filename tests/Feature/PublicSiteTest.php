@@ -6,6 +6,8 @@ use App\Models\ContactSubmission;
 use App\Models\Service;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class PublicSiteTest extends TestCase
@@ -123,6 +125,25 @@ class PublicSiteTest extends TestCase
         $this->post('/lien-he', ['name' => 'Người gửi thử', 'phone' => '024 1234.5678', 'message' => 'Tư vấn'])
             ->assertRedirect()->assertSessionHas('contact_success');
         $this->assertDatabaseHas('contact_submissions', ['phone' => '024 1234.5678', 'consent' => false]);
+    }
+
+    public function test_retry_keeps_one_submission_and_one_notification(): void
+    {
+        Mail::shouldReceive('raw')->once();
+        $lead = [
+            'name' => 'Người gửi thử', 'phone' => '0936685886', 'source' => 'lead-form',
+            'consent' => '1', 'idempotency_key' => (string) Str::uuid(),
+        ];
+        $first = $this->postJson('/lien-he', $lead)->assertOk()->assertJsonPath('ok', true)->json();
+        $this->postJson('/lien-he', array_replace($lead, [
+            'name' => 'Không ghi đè', 'idempotency_key' => strtoupper($lead['idempotency_key']),
+        ]))->assertOk()->assertExactJson($first);
+        $this->assertDatabaseCount('contact_submissions', 1);
+        $this->assertDatabaseHas('contact_submissions', [
+            'idempotency_key' => $lead['idempotency_key'], 'name' => $lead['name'],
+        ]);
+        $this->postJson('/lien-he', array_replace($lead, ['idempotency_key' => 'invalid']))
+            ->assertUnprocessable()->assertJsonValidationErrors('idempotency_key');
     }
 
     public function test_sitemap_lists_published_service(): void

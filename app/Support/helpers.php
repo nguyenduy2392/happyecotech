@@ -106,3 +106,20 @@ function seo_url(string $path): string
 {
     return rtrim(config('app.url'), '/').'/'.ltrim($path, '/');
 }
+
+function safe_url(?string $url): ?string
+{
+    $url = trim($url ?? '', ' ');
+    if ($url === '' || str_contains($url, '\\') || preg_match('/[\x00-\x20\x7f]|\p{Z}/u', $url) !== 0) {
+        return null;
+    }
+    if (str_starts_with($url, '#') || (str_starts_with($url, '/') && ! str_starts_with($url, '//'))) {
+        return $url;
+    }
+    if (! preg_match('~^https?://~i', $url) || ! filter_var($url, FILTER_VALIDATE_URL)
+        || parse_url($url, PHP_URL_USER) !== null || parse_url($url, PHP_URL_PASS) !== null) {
+        return null;
+    }
+
+    return $url;
+}
