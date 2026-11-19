@@ -1,0 +1,137 @@
+[
+  {
+    "file": "hero-smartlabel-lg.webp",
+    "w": 1600,
+    "h": 1000,
+    "use": "home.hero",
+    "alt": "Thùng cam dán tem SmartLabel, màn hình quản lý tem và điện thoại hiển thị hồ sơ nguồn gốc.",
+    "source": "render",
+    "notes": "Mockup minh họa. Ký hiệu quét cách điệu dùng để minh họa; không phải mã dẫn đến hồ sơ thật."
+  },
+  {
+    "file": "hero-smartlabel-sm.webp",
+    "w": 480,
+    "h": 300,
+    "use": "home.hero",
+    "alt": "Thùng cam dán tem SmartLabel, màn hình quản lý tem và điện thoại hiển thị hồ sơ nguồn gốc.",
+    "source": "render",
+    "notes": "Mockup minh họa. Ký hiệu quét cách điệu dùng để minh họa; không phải mã dẫn đến hồ sơ thật."
+  },
+  {
+    "file": "hero-smartlabel-md.webp",
+    "w": 960,
+    "h": 600,
+    "use": "home.hero",
+    "alt": "Thùng cam dán tem SmartLabel, màn hình quản lý tem và điện thoại hiển thị hồ sơ nguồn gốc.",
+    "source": "render",
+    "notes": "Mockup minh họa. Ký hiệu quét cách điệu dùng để minh họa; không phải mã dẫn đến hồ sơ thật."
+  },
+  {
+    "file": "hero.webp",
+    "w": 1200,
+    "h": 900,
+    "use": "home.hero.4x3",
+    "alt": "Thùng cam dán tem SmartLabel, màn hình quản lý tem và điện thoại hiển thị hồ sơ nguồn gốc.",
+    "source": "render",
+    "notes": "Bản cắt 4:3 dành cho layout B. Ký hiệu quét cách điệu dùng để minh họa; không phải mã dẫn đến hồ sơ thật."
+  },
+  {
+    "file": "hero-sm.webp",
+    "w": 480,
+    "h": 360,
+    "use": "home.hero.4x3",
+    "alt": "Thùng cam dán tem SmartLabel, màn hình quản lý tem và điện thoại hiển thị hồ sơ nguồn gốc.",
+    "source": "render",
+    "notes": "Bản cắt 4:3 dành cho layout B. Ký hiệu quét cách điệu dùng để minh họa; không phải mã dẫn đến hồ sơ thật."
+  },
+  {
+    "file": "hero-md.webp",
+    "w": 960,
+    "h": 720,
+    "use": "home.hero.4x3",
+    "alt": "Thùng cam dán tem SmartLabel, màn hình quản lý tem và điện thoại hiển thị hồ sơ nguồn gốc.",
+    "source": "render",
+    "notes": "Bản cắt 4:3 dành cho layout B. Ký hiệu quét cách điệu dùng để minh họa; không phải mã dẫn đến hồ sơ thật."
+  },
+  {
+    "file": "og.png",
+    "w": 1200,
+    "h": 630,
+    "use": "og.default",
+    "alt": "Ảnh chia sẻ Happy Ecotech với tiêu đề “Minh bạch từ gốc”.",
+    "source": "render",
+    "notes": "Logo từ tài sản chính thức của Happy Ecotech."
+  },
+  {
+    "file": "og-service.webp",
+    "w": 1200,
+    "h": 630,
+    "use": "og.service",
+    "alt": "Ảnh chia sẻ Happy Ecotech với tiêu đề “Tên giải pháp”.",
+    "source": "render",
+    "notes": "Logo từ tài sản chính thức của Happy Ecotech. Thay dòng “Tên giải pháp” khi tạo OG riêng."
+  },
+  {
+    "file": "og-news.webp",
+    "w": 1200,
+    "h": 630,
+    "use": "og.news",
+    "alt": "Ảnh chia sẻ Happy Ecotech với tiêu đề “Tin tức”.",
+    "source": "render",
+    "notes": "Logo từ tài sản chính thức của Happy Ecotech."
+  },
+  {
+    "file": "og-about-contact.webp",
+    "w": 1200,
+    "h": 630,
+    "use": "og.about-contact",
+    "alt": "Ảnh chia sẻ Happy Ecotech với tiêu đề “Kết nối cùng Happy Ecotech”.",
+    "source": "render",
+    "notes": "Logo từ tài sản chính thức của Happy Ecotech."
+  },
+  {
+    "file": "favicon.svg",
+    "w": 64,
+    "h": 64,
+    "use": "brand.favicon",
+    "alt": "Biểu trưng khiên và lá của Happy Ecotech.",
+    "source": "vector",
+    "notes": ""
+  },
+  {
+    "file": "app-icon.png",
+    "w": 512,
+    "h": 512,
+    "use": "brand.app-icon",
+    "alt": "Biểu trưng khiên và lá của Happy Ecotech trên nền sáng.",
+    "source": "render",
+    "notes": "Biểu trưng vẽ lại từ logo chính thức."
+  },
+  {
+    "file": "pwa-maskable.png",
+    "w": 512,
+    "h": 512,
+    "use": "brand.pwa-maskable",
+    "alt": "Biểu trưng khiên và lá của Happy Ecotech trên nền sáng.",
+    "source": "render",
+    "notes": "Biểu trưng vẽ lại từ logo chính thức."
+  },
+  {
+    "file": "pwa-192.png",
+    "w": 192,
+    "h": 192,
+    "use": "brand.pwa-192",
+    "alt": "Biểu trưng khiên và lá của Happy Ecotech trên nền sáng.",
+    "source": "render",
+    "notes": "Biểu trưng vẽ lại từ logo chính thức."
+  },
+  {
+    "file": "apple-touch-icon.png",
+    "w": 180,
+    "h": 180,
+    "use": "brand.apple-touch-icon",
+    "alt": "Biểu trưng khiên và lá của Happy Ecotech trên nền sáng.",
+    "source": "render",
+    "notes": "Biểu trưng vẽ lại từ logo chính thức."
+  }
+]
