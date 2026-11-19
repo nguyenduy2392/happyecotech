@@ -100,8 +100,16 @@ class ApplyPositioning extends Command
 
     private function updateHomeBlocks(Page $home): void
     {
-        foreach ($home->blocks()->whereIn('block_type', ['hero', 'featured_services'])->lock($this->write ?: null)->get() as $block) {
+        foreach ($home->blocks()->whereIn('block_type', ['hero', 'featured_services', 'faq'])->lock($this->write ?: null)->get() as $block) {
             $data = $block->data ?? [];
+            if ($block->block_type === 'faq') {
+                $changes = $this->changes($data, LandingCopy::HOME['faq'], LandingCopy::LEGACY_HOME['faq'], "home.faq.{$block->id}");
+                if ($this->write && $changes !== []) {
+                    $block->update(['data' => array_replace($data, $changes)]);
+                }
+
+                continue;
+            }
             $isHero = $block->block_type === 'hero';
             $next = $isHero ? ProductPositioning::HERO : [
                 'heading' => 'Sản phẩm và giải pháp',

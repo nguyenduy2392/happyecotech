@@ -7,6 +7,35 @@ final class LandingCopy
     public const HOME = [
         'faq' => [
             'heading' => 'Câu hỏi thường gặp',
+            'subheading' => 'Tìm hiểu TaskFlow, MiniCRM và các giải pháp khác của Happy Ecotech.',
+            'items' => [
+                [
+                    'question' => 'TaskFlow là gì và dành cho ai?',
+                    'answer' => 'TaskFlow giúp đội nhóm quản lý công việc theo dự án. Nhóm có thể giao đầu việc, đặt ngày kết thúc và theo dõi trạng thái.',
+                ],
+                [
+                    'question' => 'TaskFlow có ứng dụng trên điện thoại không?',
+                    'answer' => 'Có. Bạn có thể tải TaskFlow trên iOS qua App Store hoặc trên Android qua Google Play.',
+                ],
+                [
+                    'question' => 'Ai có thể xem và cập nhật công việc trong TaskFlow?',
+                    'answer' => 'Quyền xem chi tiết công việc được kiểm tra theo cấu hình vai trò. Người thực hiện có thể cập nhật trạng thái của công việc được giao.',
+                ],
+                [
+                    'question' => 'MiniCRM giúp đội kinh doanh theo dõi những gì?',
+                    'answer' => 'MiniCRM lưu hồ sơ khách hàng, giai đoạn bán hàng và lịch sử tương tác. Khi ghi nhận một lần trao đổi, bạn có thể lưu ngày hẹn và bước xử lý tiếp theo.',
+                ],
+                [
+                    'question' => 'SmartLabel hỗ trợ truy xuất nguồn gốc như thế nào?',
+                    'answer' => 'SmartLabel dùng tem QR để người mua xem thông tin nguồn gốc và kiểm định của sản phẩm.',
+                ],
+            ],
+        ],
+    ];
+
+    public const LEGACY_HOME = [
+        'faq' => [
+            'heading' => 'Câu hỏi thường gặp',
             'subheading' => 'Những điều doanh nghiệp, hợp tác xã và đơn vị hành chính hay hỏi trước khi bắt đầu.',
             'items' => [
                 [
