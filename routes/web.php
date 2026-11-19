@@ -6,6 +6,9 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TeamController;
+use App\Http\Middleware\NormalizePublicUrl;
+use App\Models\Page;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
@@ -26,9 +29,15 @@ Route::post('/lien-he', [ContactController::class, 'submit'])
     ->name('contact.submit');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 // Trang tĩnh động (chính sách, điều khoản...). PHẢI đặt cuối và loại trừ các prefix hệ thống
 // để không bao giờ che route /admin, /livewire, /storage...
 Route::get('/{page:slug}', [HomeController::class, 'page'])
-    ->where('page', '^(?!admin|livewire|storage|assets|api|sitemap).+$')
+    ->where('page', Page::PUBLIC_SLUG_PATTERN)
+    ->missing(function (Request $request) {
+        $path = Page::redirectPath($request->getPathInfo());
+
+        return $path ? NormalizePublicUrl::redirect($request, $path) : abort(404);
+    })
     ->name('page.show');

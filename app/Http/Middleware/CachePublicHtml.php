@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
+
+class CachePublicHtml
+{
+    private const VERSION = 'public-html:version';
+
+    public static function invalidate(): void
+    {
+        // Requests that began before publication can only populate an old cache key.
+        Cache::forever(self::VERSION, (string) Str::uuid());
+    }
+
+    public function handle(Request $request, Closure $next): Response
+    {
+        if (! $request->routeIs('home', 'about', 'page.show', 'services.*', 'posts.*', 'team', 'contact', 'contact.submit')) {
+            return $next($request);
+        }
+
+        if (! $this->cacheableRequest($request)) {
+            $response = $next($request);
+            $response->headers->set('Cache-Control', 'private, no-store');
+
+            return $response;
+        }
+
+        $key = 'public-html:'.hash('sha256', Cache::get(self::VERSION, 'initial').'|'.$request->fullUrl());
+        $cached = Cache::get($key);
+        if (is_string($cached)) {
+            return response($cached, 200, ['Cache-Control' => 'private, no-cache']);
+        }
+
+        $response = $next($request);
+        $html = $response->getContent();
+        $token = $request->session()->token();
+        if ($response->getStatusCode() !== 200 || ! is_string($html)
+            || ! str_starts_with((string) $response->headers->get('Content-Type'), 'text/html')
+            || $response->headers->getCookies() !== []
+            || preg_match('/<form\b|\bwire:id\s*=/i', $html) || ($token && str_contains($html, $token))) {
+            $response->headers->set('Cache-Control', 'private, no-store');
+
+            return $response;
+        }
+
+        Cache::put($key, $html, now()->addMinutes(5));
+        $response->headers->set('Cache-Control', 'private, no-cache');
+
+        return $response;
+    }
+
+    private function cacheableRequest(Request $request): bool
+    {
+        $query = $request->query();
+        $validQuery = $query === [] || (
+            $request->routeIs('posts.index', 'posts.category')
+            && count($query) === 1 && is_scalar($query['page'] ?? null)
+            && preg_match('/^[1-9][0-9]{0,2}$/D', (string) $query['page'])
+        );
+
+        return $request->isMethod('GET') && ! $request->routeIs('contact') && ! $request->user()
+            && ! $request->expectsJson() && $validQuery
+            && ! $request->session()->hasAny(['errors', '_old_input'])
+            && $request->session()->get('_flash.old', []) === []
+            && $request->session()->get('_flash.new', []) === [];
+    }
+}

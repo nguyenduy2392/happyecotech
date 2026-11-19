@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasBlameable;
+use App\Support\MediaVariants;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
@@ -70,6 +71,15 @@ class MediaAsset extends Model
                 }
             } catch (\Throwable) {
                 // Không chặn lưu nếu disk không hỗ trợ path() (ví dụ S3).
+            }
+        });
+        static::saved(function (MediaAsset $media) {
+            if ($media->disk === 'public' && ($media->wasRecentlyCreated || $media->wasChanged(['path', 'disk']))) {
+                try {
+                    MediaVariants::generate($media);
+                } catch (\Throwable $exception) {
+                    report($exception);
+                }
             }
         });
     }

@@ -2,17 +2,25 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\CachePublicHtml;
 use App\Models\AuditLog;
+use App\Models\MediaAsset;
 use App\Models\Menu;
+use App\Models\MenuItem;
 use App\Models\Page;
+use App\Models\PageBlock;
 use App\Models\Post;
+use App\Models\PostCategory;
 use App\Models\Service;
+use App\Models\ServiceFeature;
 use App\Models\SiteSetting;
 use App\Models\SocialLink;
+use App\Models\Tag;
 use App\Models\TeamMember;
 use App\Models\User;
 use App\Observers\AuditObserver;
 use App\Policies\RolePolicy;
+use App\Support\RequestMedia;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -30,12 +38,24 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->scoped(RequestMedia::class);
     }
 
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+
+        foreach ([
+            Page::class, PageBlock::class, Post::class, PostCategory::class,
+            Service::class, ServiceFeature::class, TeamMember::class, MediaAsset::class,
+            SiteSetting::class, Menu::class, MenuItem::class, SocialLink::class, Tag::class,
+        ] as $model) {
+            $invalidate = static fn (Model $record) => $record->getConnection()->afterCommit(
+                fn () => CachePublicHtml::invalidate(),
+            );
+            $model::saved($invalidate);
+            $model::deleted($invalidate);
+        }
 
         // SuperAdmin có toàn quyền — áp dụng cho mọi Gate/policy.
         Gate::before(fn ($user) => $user->hasRole('SuperAdmin') ? true : null);

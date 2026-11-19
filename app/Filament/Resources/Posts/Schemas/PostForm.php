@@ -98,9 +98,6 @@ class PostForm
                         TextInput::make('seo_title')
                             ->label('Tiêu đề SEO')
                             ->maxLength(255),
-                        TextInput::make('seo_canonical')
-                            ->label('URL Canonical')
-                            ->maxLength(255),
                         Textarea::make('seo_description')
                             ->label('Mô tả SEO')
                             ->rows(3)
