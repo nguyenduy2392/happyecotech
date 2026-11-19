@@ -19,7 +19,7 @@
                 <a href="{{ $cta2Url }}" class="btn btn-outline btn-lg">{{ $cta2Text }}</a>
             </div>
         </div>
-        <x-art name="hero" width="1200" height="900" :priority="true" :alt="$data['image_alt'] ?? null"
+        <x-art name="hero-smartlabel" width="1600" height="1000" :priority="true" :alt="$data['image_alt'] ?? null"
             sizes="(min-width: 1024px) 560px, 100vw" class="w-full rounded-xl" />
     </div>
 </section>

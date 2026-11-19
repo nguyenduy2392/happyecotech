@@ -12,12 +12,17 @@
 @php
     $dir = public_path('assets/img/v2');
     $found = null;
-    foreach (['webp', 'svg', 'png', 'jpg'] as $ext) {
-        if (is_file("{$dir}/{$name}.{$ext}")) {
-            $found = "{$name}.{$ext}";
-            break;
+    foreach ([$name, $name.'-lg'] as $stem) {
+        foreach (['webp', 'svg', 'png', 'jpg'] as $ext) {
+            if (! $found && is_file("{$dir}/{$stem}.{$ext}")) {
+                $found = "{$stem}.{$ext}";
+            }
         }
     }
+    // Biến thể responsive {name}-sm/md/lg.webp (480/960/1600) nếu có.
+    $srcset = collect(['sm' => 480, 'md' => 960, 'lg' => 1600])
+        ->filter(fn ($w, $k) => is_file("{$dir}/{$name}-{$k}.webp"))
+        ->map(fn ($w, $k) => asset("assets/img/v2/{$name}-{$k}.webp")." {$w}w")->implode(', ');
     $manifestAlt = null;
     if ($found && is_file("{$dir}/manifest.json")) {
         $m = json_decode((string) file_get_contents("{$dir}/manifest.json"), true);
@@ -32,7 +37,7 @@
 @endphp
 @if ($found)
     <img src="{{ asset('assets/img/v2/'.$found) }}" alt="{{ $alt }}" width="{{ $width }}" height="{{ $height }}"
-        sizes="{{ $sizes }}"
+        @if ($srcset) srcset="{{ $srcset }}" @endif sizes="{{ $sizes }}"
         @if ($priority) fetchpriority="high" decoding="async" @else loading="lazy" decoding="async" @endif
         {{ $attributes }} />
 @else
