@@ -24,7 +24,7 @@ class PublicSiteTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('TaskFlow giúp đội nhóm giao việc rõ ràng', false)
+            ->assertSee('Quản lý công việc với TaskFlow', false)
             ->assertSee('SmartLabel');
     }
 
@@ -84,6 +84,16 @@ class PublicSiteTest extends TestCase
         $this->assertDatabaseHas('contact_submissions', [
             'company' => 'Công ty Demo', 'service_interest' => 'SmartLabel', 'source' => 'lead-form', 'message' => null,
         ]);
+    }
+
+    public function test_draft_solution_slug_survives_contact_form_without_publishing_the_solution(): void
+    {
+        $this->get('/lien-he?solution=datahub')->assertOk()->assertViewHas('selectedSolution', 'datahub');
+        $this->postJson('/lien-he', [
+            'name' => 'Người gửi thử', 'phone' => '0936685886', 'source' => 'lead-form', 'consent' => '1', 'solution' => 'datahub',
+        ])->assertOk();
+        $this->assertDatabaseHas('contact_submissions', ['service_interest' => 'datahub', 'service_id' => null]);
+        $this->assertDatabaseHas('services', ['slug' => 'datahub', 'status' => 'draft']);
     }
 
     public function test_contact_validation_errors(): void
