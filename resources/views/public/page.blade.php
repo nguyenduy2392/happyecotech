@@ -18,6 +18,12 @@
         $blocks = $blocks->sortBy(fn ($b) => $order[$b->block_type] ?? 50)->values();
     }
 
+    if ($page->slug === 'gioi-thieu' && ! $blocks->contains('block_type', 'leadership')) {
+        $cta = $blocks->firstWhere('block_type', 'cta');
+        $lead = new \App\Models\PageBlock(['block_type' => 'leadership', 'data' => [], 'is_enabled' => true]);
+        $blocks = $cta ? $blocks->reject(fn ($b) => $b === $cta)->push($lead, $cta)->values() : $blocks->push($lead);
+    }
+
     $heroBlock = $blocks->firstWhere('block_type', 'hero');
     $isFirstHeroH1 = true;
 @endphp

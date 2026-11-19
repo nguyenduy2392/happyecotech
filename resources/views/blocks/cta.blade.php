@@ -1,4 +1,6 @@
+@include('partials.ui-channels')
 @php
+    $ch = app('ui.channels');
     $safe = fn ($u) => function_exists('safe_url') ? safe_url($u) : null; // R2-01: mọi URL từ CMS đi qua safe_url()
     $phone = setting('contact_phone');
     $tel = $phone ? preg_replace('/[^\d+]/', '', $phone) : null;
@@ -19,9 +21,11 @@
                 @if ($hasButton)
                     <a href="{{ $ctaUrl ?: route('contact').'#contact-form' }}" data-cta="cta-block" class="btn btn-light btn-lg">{{ $ctaText ?: 'Liên hệ với chúng tôi' }}</a>
                 @endif
-                @if ($tel)
-                    <a href="tel:{{ $tel }}" class="btn btn-light btn-lg"><x-glyph name="phone" /> {{ $phone }}</a>
-                    <a href="https://zalo.me/{{ $tel }}" class="btn btn-zalo btn-lg" target="_blank" rel="noopener noreferrer"><x-glyph name="message" /> Chat Zalo</a>
+                @if ($ch['tel'])
+                    <a href="tel:{{ $ch['tel'] }}" class="btn btn-light btn-lg"><x-glyph name="phone" /> {{ $ch['phone'] }}</a>
+                @endif
+                @if ($ch['zalo'])
+                    <a href="{{ $ch['zalo'] }}" class="btn btn-zalo btn-lg" target="_blank" rel="noopener noreferrer" aria-label="Chat Zalo Happy Ecotech"><x-glyph name="message" /> Chat Zalo</a>
                 @endif
             </div>
         </div>

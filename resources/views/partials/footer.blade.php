@@ -1,4 +1,5 @@
 @include('partials.ui-services')
+@include('partials.ui-channels')
 @php
     $safe = fn ($u) => function_exists('safe_url') ? safe_url($u) : null; // R2-01: mọi URL từ CMS đi qua safe_url()
     $footerLogo = setting('footer_logo_media_id') ?? setting('logo_media_id');
@@ -31,14 +32,22 @@
                 @if (setting('footer_description'))
                     <p class="mt-5 max-w-sm text-ink-300">{{ setting('footer_description') }}</p>
                 @endif
-                @if ($showSocial && $socialLinks->isNotEmpty())
+                @php $ch = app('ui.channels'); @endphp
+                @if ($showSocial && ($ch['zalo'] || $ch['facebook'] || $ch['others']->isNotEmpty()))
                     <ul class="mt-5 flex gap-2">
-                        @foreach ($socialLinks as $social)
-                            @continue(blank($safe($social->url)))
+                        @foreach ([['Zalo Happy Ecotech', $ch['zalo'], 'message'], ['Facebook Happy Ecotech', $ch['facebook'], 'facebook']] as [$label, $url, $icon])
+                            @if ($url)
+                                <li>
+                                    <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ $label }}"
+                                        class="flex size-11 items-center justify-center rounded-md border border-ink-700 text-white hover:bg-ink-700"><x-glyph :name="$icon" /></a>
+                                </li>
+                            @endif
+                        @endforeach
+                        @foreach ($ch['others'] as $social)
                             <li>
                                 <a href="{{ $safe($social->url) }}" target="_blank" rel="noopener noreferrer"
                                     class="flex size-11 items-center justify-center rounded-md border border-ink-700 text-white hover:bg-ink-700"
-                                    aria-label="{{ $social->label ?: $social->platform }}">
+                                    aria-label="{{ $social->label ?: $social->platform }} Happy Ecotech">
                                     <x-glyph :name="$socialIcons[strtolower((string) $social->platform)] ?? 'link'" />
                                 </a>
                             </li>

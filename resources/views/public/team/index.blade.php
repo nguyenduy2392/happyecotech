@@ -7,6 +7,9 @@
         'crumbs' => [['label' => 'Đội ngũ']],
     ])
 
+    @include('partials.leadership', ['withBg' => false])
+    @php $members = $members->reject(fn ($m) => $m->photo && ($m->group === 'leadership' || str_contains((string) $m->position, 'Tổng giám đốc')))->values(); @endphp
+
     <section class="section">
         <div class="container-page">
             @if ($members->isEmpty())

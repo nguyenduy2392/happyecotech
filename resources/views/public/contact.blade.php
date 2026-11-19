@@ -1,6 +1,8 @@
 @extends('layouts.public')
 
+@include('partials.ui-channels')
 @php
+    $ch = app('ui.channels');
     $safe = fn ($u) => function_exists('safe_url') ? safe_url($u) : null; // R2-01: mọi URL từ CMS đi qua safe_url()
     $phone = setting('contact_phone');
     $tel = $phone ? preg_replace('/[^\d+]/', '', $phone) : null;
@@ -105,7 +107,15 @@
                 <ul class="mt-6 space-y-5">
                     @if ($phone)
                         <li class="flex gap-4"><x-glyph name="phone" :size="22" class="mt-1 text-brand-600" />
-                            <span><span class="block text-sm text-ink-500">Điện thoại</span><a href="tel:{{ $tel }}" class="font-semibold">{{ $phone }}</a></span></li>
+                            <span><span class="block text-sm text-ink-500">Hotline</span><a href="tel:{{ $tel }}" class="font-semibold">{{ $phone }}</a></span></li>
+                    @endif
+                    @if ($ch['zalo'])
+                        <li class="flex gap-4"><x-glyph name="message" :size="22" class="mt-1 text-brand-600" />
+                            <span><span class="block text-sm text-ink-500">Zalo</span><a href="{{ $ch['zalo'] }}" class="font-semibold" target="_blank" rel="noopener noreferrer" aria-label="Zalo Happy Ecotech">Nhắn tin Zalo Happy Ecotech</a></span></li>
+                    @endif
+                    @if ($ch['facebook'])
+                        <li class="flex gap-4"><x-glyph name="facebook" :size="22" class="mt-1 text-brand-600" />
+                            <span><span class="block text-sm text-ink-500">Facebook</span><a href="{{ $ch['facebook'] }}" class="font-semibold" target="_blank" rel="noopener noreferrer" aria-label="Facebook Happy Ecotech">Trang Facebook Happy Ecotech</a></span></li>
                     @endif
                     @if ($email)
                         <li class="flex gap-4"><x-glyph name="mail" :size="22" class="mt-1 text-brand-600" />
@@ -120,9 +130,6 @@
                             <span><span class="block text-sm text-ink-500">Giờ làm việc</span><span class="font-semibold">{{ $hours }}</span></span></li>
                     @endif
                 </ul>
-                @if ($tel)
-                    <a href="https://zalo.me/{{ $tel }}" class="btn btn-zalo mt-6" target="_blank" rel="noopener noreferrer"><x-glyph name="message" /> Chat Zalo</a>
-                @endif
                 @if ($mapEmbed)
                     <iframe src="{{ $mapEmbed }}" title="Bản đồ văn phòng" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
                         class="mt-8 h-72 w-full rounded-lg border border-ink-100"></iframe>

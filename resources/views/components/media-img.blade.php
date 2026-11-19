@@ -56,6 +56,11 @@
     }
 @endphp
 @if ($fallbackSrc)
+    @if ($priority && $srcset)
+        @push('head')
+            <link rel="preload" as="image" imagesrcset="{{ $srcset }}" imagesizes="{{ $sizes }}" fetchpriority="high" />
+        @endpush
+    @endif
     <img src="{{ $fallbackSrc }}"
         @if ($srcset) srcset="{{ $srcset }}" sizes="{{ $sizes }}" @endif
         alt="{{ $alt }}"

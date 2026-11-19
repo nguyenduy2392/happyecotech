@@ -1,4 +1,5 @@
 @include('partials.ui-services')
+@include('partials.ui-channels')
 @php
     $logo = setting('logo_media_id');
     $siteName = setting('site_name', 'Happy Ecotech');
@@ -45,6 +46,13 @@
         </nav>
 
         <div class="flex items-center gap-2">
+            @php $ch = app('ui.channels'); @endphp
+            @foreach ([['Zalo Happy Ecotech', $ch['zalo'], 'message'], ['Facebook Happy Ecotech', $ch['facebook'], 'facebook']] as [$label, $url, $icon])
+                @if ($url)
+                    <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ $label }}"
+                        class="hidden size-11 items-center justify-center rounded-md text-ink-700 hover:bg-brand-50 hover:text-brand-700 xl:flex"><x-glyph :name="$icon" :size="22" /></a>
+                @endif
+            @endforeach
             <a href="{{ route('contact') }}#contact-form" data-cta="header" class="btn btn-primary hidden sm:inline-flex">Nhận tư vấn</a>
             <button type="button" class="btn btn-outline px-3 lg:hidden" data-nav-toggle aria-expanded="false"
                 aria-controls="mobile-nav" aria-label="Mở menu">
