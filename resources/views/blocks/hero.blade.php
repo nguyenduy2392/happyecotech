@@ -11,6 +11,9 @@
     $cta2Url = $safe($data['secondary_cta_url'] ?? null) ?? ($tf ? route('services.show', $tf) : route('services.index'));
     $fallbackArt = is_file(public_path('assets/img/v2/hero-taskflow-lg.webp')) || is_file(public_path('assets/img/v2/hero-taskflow.webp')) ? 'hero-taskflow' : 'service-taskflow';
     $image = filled($data['image_media_id'] ?? null) ? \App\Models\MediaAsset::find($data['image_media_id']) : null;
+    if (($page->slug ?? null) === 'home' && $image?->disk === 'assets' && $image->path === 'img/hero/hero-1.png') {
+        $image = null;
+    }
 @endphp
 <section class="section-brand overflow-hidden border-b border-ink-100">
     <div class="container-page grid items-center gap-10 py-12 md:py-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14 lg:py-20">

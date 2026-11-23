@@ -25,6 +25,18 @@ class ProductPositioningTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_home_uses_new_hero_for_the_legacy_image_reference(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+        $hero = Page::whereSlug('home')->firstOrFail()->blocks()->where('block_type', 'hero')->firstOrFail();
+        $legacy = MediaAsset::firstOrCreate(['disk' => 'assets', 'path' => 'img/hero/hero-1.png'], ['alt' => 'Ảnh cũ']);
+        $hero->update(['data' => array_merge($hero->data, ['image_media_id' => $legacy->id])]);
+
+        $response = $this->get('/')->assertOk();
+        $response->assertSee('hero-taskflow', false);
+        $response->assertDontSee('assets/img/hero/hero-1.png', false);
+    }
+
     public function test_fresh_site_leads_with_taskflow_then_minicrm_and_emits_software_schema(): void
     {
         $this->seed(DatabaseSeeder::class);
